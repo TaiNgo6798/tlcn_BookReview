@@ -1,0 +1,40 @@
+body{
+  background-color: #FAFAFA;
+}
+
+.nav{
+  height: 77px;
+  width: 100vw;
+  background-color: #FFFFFF;
+  border-bottom: 1px #DBDBDB solid; 
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  .container{
+    max-width: 1000px;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    .logo{
+      content:url('../../assets/logo.png');
+      height: 100%;
+      max-width: 200px;
+    }
+    .notify{
+      height: 80%;
+      width: 132px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      .icon{
+        font-size: 25px;
+        :hover{
+          cursor: pointer;
+        }
+      }
+    }
+  }
+}
+
