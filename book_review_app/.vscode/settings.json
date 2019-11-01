@@ -1,3 +1,4 @@
 {
-  "editor.fontFamily": "Manjari, Consolas, 'Courier New', monospace"
+  "editor.fontFamily": "Manjari, Consolas, 'Courier New', monospace",
+  "git.ignoreLimitWarning": true
 }

@@ -11,7 +11,7 @@ function Index() {
   const [ messageCount, setMessageCount ] = useState(0)
 
   const loadNotify = () => {
-    let myCount = setInterval(() => {
+    setInterval(() => {
       setMessageCount(messageCount => messageCount + 1)
     }, 1000);
   }
