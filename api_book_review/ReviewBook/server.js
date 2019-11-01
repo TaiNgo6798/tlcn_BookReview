@@ -34,6 +34,7 @@ var firebaseConfig = {
   measurementId: "G-GP50EN1R49"
 };
 firebase.initializeApp(firebaseConfig);
+firebase.auth.Auth.Persistence.LOCAL;
 
 var userRouter = require("./apiRouter/userRouter");
 app.use("/reviewbook", userRouter);

@@ -7,7 +7,7 @@ userRouter.route("/register").post((req, res) => {
     .auth()
     .createUserWithEmailAndPassword(req.body.email, req.body.password)
     .then(function() {
-      res.send({success:true});
+      res.send({ success: true });
     })
     .catch(function(error) {
       var errorMessage = error.message;
@@ -20,7 +20,7 @@ userRouter.route("/login").post((req, res) => {
     .auth()
     .signInWithEmailAndPassword(req.body.email, req.body.password)
     .then(function() {
-      res.send({success:true});
+      res.send({ success: true });
     })
     .catch(function(error) {
       // Handle Errors here.
@@ -34,12 +34,36 @@ userRouter.route("/forgot").post((req, res) => {
     .auth()
     .sendPasswordResetEmail(req.body.email)
     .then(function() {
-      res.send({success:true});
+      res.send({ success: true });
     })
     .catch(function(error) {
       var errorMessage = error.message;
       res.send(errorMessage);
     });
+});
+
+userRouter.route("/setting").post((req, res) => {
+  var rootRef = firebase
+    .database()
+    .ref()
+    .child("Users");
+  var userID = firebase.auth().currentUser.uid;
+  var usersRef = rootRef.child(userID);
+  var userData = {
+    firstName: req.body.fName,
+    secondName: req.body.sName,
+    gender: req.body.gender,
+    phone: req.body.phone
+  };
+
+  usersRef.set(userData, function(err) {
+    if (err) {
+      var errorMessage = error.message;
+      res.send(errorMessage);
+    } else {
+      res.send({ success: true });
+    }
+  });
 });
 
 module.exports = userRouter;
