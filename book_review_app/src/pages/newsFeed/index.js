@@ -35,7 +35,7 @@ const comments1 =  [
 const comments2 =  [
   {
     author: "taingo6798",
-    comment: "Lẹo cái đỉ mẹ m",
+    comment: "=)))))",
     action: null,
     likes: "0",
     disLikes: "0"
@@ -43,14 +43,14 @@ const comments2 =  [
 
   {
     author: "thedang",
-    comment: "Nhai quài đéo chán ? ",
+    comment: "Nhai quài ko chán ? ",
     action: null,
     likes: "0",
     disLikes: "0"
   },
   {
     author: "vudat",
-    comment: "cc !",
+    comment: "lol !",
     action: null,
     likes: "0",
     disLikes: "0"

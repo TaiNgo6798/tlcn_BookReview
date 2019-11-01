@@ -8,10 +8,7 @@
   background-color: #FAFAFA;
 }
 
- .login-form {
 
-  max-width: 300px;
-}
  .login-form-forgot {
   float: right;
 }
@@ -20,8 +17,19 @@
 }
 
 .form-login{
+  height: fit-content;
+  width: fit-content;
   background-color: #FFFFFF;
   border: 1px #EBEDF0 solid;
   border-radius: 20px;
   padding: 2em;
+  .registerForm{
+    width: 400px;
+  }
+  .btnRegister{
+    float: right;
+  }
+  .btnBackLogin{
+    float: left
+  }
 }
