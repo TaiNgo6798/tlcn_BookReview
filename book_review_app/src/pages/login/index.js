@@ -1,5 +1,5 @@
 
-import React from 'react'
+import React, { useRef } from 'react'
 import { Form, Icon, Input, Button, Checkbox } from 'antd'
 import { withRouter } from 'react-router-dom'
 // import css
@@ -8,12 +8,26 @@ import './index.scss'
 
 
 const index = (props) => {
+  const emailRef = useRef(null)
+  const passwordRef = useRef(null)
 
   const handleSubmit = e => {
     e.preventDefault()
     props.form.validateFields((err, values) => {
       if (!err) {
-        props.history.push('/newsFeed')
+        // props.history.push('/newsFeed')
+        axios({
+          method: 'post',
+          url: 'localhost:8080/reviewbook/login',
+          data: {
+            email: emailRef,
+            password: passwordRef
+          }
+        }).then(function (res) {
+          console.log(res)
+        }).catch(err => {
+          console.log(err)
+        })
       }
     })
   }
@@ -26,11 +40,12 @@ const index = (props) => {
         <Form onSubmit={handleSubmit} className="login-form">
           <Form.Item>
             {getFieldDecorator('username', {
-              rules: [{ required: true, message: 'Please input your username!' }],
+              rules: [{ required: true, message: 'Please input your email!' }],
             })(
               <Input
                 prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-                placeholder="Username"
+                placeholder="Email" 
+                ref={emailRef}
               />,
             )}
           </Form.Item>
@@ -42,6 +57,7 @@ const index = (props) => {
                 prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
                 type="password"
                 placeholder="Password"
+                ref={passwordRef}
               />,
             )}
           </Form.Item>
