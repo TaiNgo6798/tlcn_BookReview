@@ -1,3 +1,91 @@
 .postForm{
-  
+  border: 1px #EBEDF0 solid;
+  border-radius: 20px;
+  background-color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 30px;
+  margin-bottom: 50px;
+  .body{
+    >img{
+      object-fit: cover;
+      width: 100%;
+      max-height: 600px
+    }
+  }
+  .header{
+    display: flex;
+    width: 100%;
+    padding: 20px;
+    align-items: center;
+    >div{
+      margin: 0 8px 0 0
+    }
+    .username{
+      font-weight: 800;
+    }
+    
+  }
+
+  .likes{
+    width: 100%;
+    display: flex;
+    padding: 0 20px;
+    margin-top: .75em;
+    >i{
+      margin-right: 10px;
+      :hover{
+        cursor: pointer;
+      }
+    }
+    :last-child{
+      margin-left: auto;
+      margin-right: 0;
+    }
+  }
+
+  .likeCount{
+    width: 100%;
+    display: flex;
+    padding: 0 20px;
+    margin-top: .75em;
+    font-weight: bold;
+  }
+
+  .userContent{
+    width: 100%;
+    display: flex;
+    padding: 0 20px;
+    margin-top: .75em;
+    :first-child{
+      font-weight: bold;
+      margin-right: .5em;
+    }
+  }
+
+  .comments{
+    width: 100%;
+    padding: 0 20px;
+    .seeAll{
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      margin-bottom: 20px;
+    }
+  }
+
+  .postComment{
+    width: 100%;
+    padding: 0 20px;
+    display: flex;
+    :first-child{
+      width: 90%;
+      margin-right: 2px;
+    }
+    :last-child{
+      border: none;
+      box-shadow: none;
+    }
+  }
 }

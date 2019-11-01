@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { Input, Badge, Icon } from 'antd';
 
 
@@ -6,7 +6,22 @@ import './index.scss'
 
 const { Search } = Input;
 
-const index = () => {
+function Index() {
+
+  const [ messageCount, setMessageCount ] = useState(0)
+
+  const loadNotify = () => {
+    let myCount = setInterval(() => {
+      setMessageCount(messageCount => messageCount + 1)
+    }, 1000);
+  }
+  useEffect(() => {
+    loadNotify()
+    window.addEventListener('scroll', (a) => {
+      console.log(window.pageYOffset)
+    })
+  }, [])
+
   return (
     <div className='nav'>
       <div className='container'>
@@ -19,10 +34,10 @@ const index = () => {
           />
         </div>
         <div className='notify'>
-          <Badge count={1}>
+          <Badge count={0}>
           <Icon type="usergroup-delete" className='icon'/>
           </Badge>
-          <Badge count={15}>
+          <Badge count={messageCount}>
           <Icon type="mail"  className='icon'/>
           </Badge>
           <Badge count={5}>
@@ -34,4 +49,4 @@ const index = () => {
   )
 }
 
-export default index
+export default Index
