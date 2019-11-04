@@ -5,6 +5,7 @@ import {
   Button
 } from 'antd';
 import Swal from 'sweetalert2'
+import { withRouter } from 'react-router-dom'
 import axios from 'axios'
 // import css
 import './index.scss'
@@ -36,6 +37,7 @@ class RegistrationForm extends React.Component {
               showConfirmButton: false,
               timer: 1500
             })
+            this.props.history.push('/login')
           } else {
             Swal.fire({
               position: 'center',
@@ -84,7 +86,6 @@ class RegistrationForm extends React.Component {
 
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { autoCompleteResult } = this.state;
 
     const formItemLayout = {
       labelCol: {
@@ -96,21 +97,7 @@ class RegistrationForm extends React.Component {
         sm: { span: 16 },
       },
     };
-    const tailFormItemLayout = {
-      wrapperCol: {
-        xs: {
-          span: 24,
-          offset: 0,
-        },
-        sm: {
-          span: 16,
-          offset: 8,
-        },
-      },
-    };
     
-
-  
 
     return (
       <Form {...formItemLayout} onSubmit={this.handleSubmit}>
@@ -163,4 +150,4 @@ class RegistrationForm extends React.Component {
 
 const WrappedRegistrationForm = Form.create({ name: 'register' })(RegistrationForm);
 
-export default WrappedRegistrationForm
+export default withRouter(WrappedRegistrationForm)

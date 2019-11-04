@@ -1,6 +1,6 @@
 
 import React, { useRef, useState } from 'react'
-import { Form, Icon, Input, Button, Checkbox } from 'antd'
+import { Form, Icon, Input, Button, Checkbox, Modal } from 'antd'
 import Swal from 'sweetalert2'
 import { withRouter } from 'react-router-dom'
 import axios from 'axios'
@@ -15,45 +15,45 @@ import './index.scss'
 const Index = (props) => {
   const emailRef = useRef(null)
   const passwordRef = useRef(null)
+  const forgotEmailRef = useRef(null)
+  const [forgotForm, setForgotForm] = useState(false)
   const [isLogin, setIsLogin] = useState(true)
 
   const registerClick = () => {
     setIsLogin(false)
   }
 
-  const forgotHandler = () => {
-    Swal.fire({
-      title: 'Quên mật khẩu ?',
-      text: 'Nhập email để admin reset mật khẩu cho bạn ',
-      input: 'text'
-    }).then(res => {
+  const forgotHandler = (e) => {
+      e.preventDefault()
+      setForgotForm(false)
       axios({
         method: 'post',
         url: 'http://localhost:8080/reviewbook/forgot',
         data: {
-          email: res.value
+          email: forgotEmailRef.current.state.value
         }
       }).then(res => {
         if (res.data.success) {
           Swal.fire({
             position: 'center',
             type: 'success',
-            title: 'Vui lòng kiểm tra email để đổi lại mật khẩu mới !',
-            showConfirmButton: false,
-            timer: 1500
+            title: 'Please check your email to reset your password !',
+            showConfirmButton: true,
+            
           })
         } else {
           Swal.fire({
             position: 'center',
             type: 'error',
-            title: 'Email không tồn tại hoặc sai định dạng, vui lòng kiểm tra lại!',
-            showConfirmButton: false,
-            timer: 1500
+            title: 'Email is not registered, please check again !',
+            showConfirmButton: true,
+
           })
+          setForgotForm(true)
         }
+        
       })
-    })
-  }
+    }
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -75,7 +75,7 @@ const Index = (props) => {
               type: 'success',
               title: 'Đăng nhập thành công !',
               showConfirmButton: false,
-              timer: 1000
+              timer: 1500
             })
             props.history.push('/newsFeed')
           } else {
@@ -84,7 +84,7 @@ const Index = (props) => {
               type: 'error',
               title: res.data,
               showConfirmButton: false,
-              timer: 1000
+              timer: 1500
             })
           }
         })
@@ -129,7 +129,7 @@ const Index = (props) => {
                     valuePropName: 'checked',
                     initialValue: true,
                   })(<Checkbox>Remember me</Checkbox>)}
-                  <a className="login-form-forgot" onClick={() => forgotHandler()}>
+                  <a className="login-form-forgot" onClick={() => setForgotForm(true)}>
                     Forgot password
                 </a>
                   <Button type="primary" htmlType="submit" className="login-form-button">
@@ -144,9 +144,41 @@ const Index = (props) => {
         {
           (!isLogin) && (
             <>
-            <h2 style={{ display: 'block', textAlign: 'center' }}>Register</h2>
-              <RegisterForm backLogin={() => setIsLogin(true)}/>
+              <h2 style={{ display: 'block', textAlign: 'center' }}>Register</h2>
+              <RegisterForm backLogin={() => setIsLogin(true)} />
             </>
+          )
+        }
+        {
+          (forgotForm) && (
+            <Modal
+              onCancel={() => {setForgotForm(false)}}
+              centered
+              visible={forgotForm}
+              onOk={() => { console.log('ok') }}
+              footer={null}
+            >
+              <Form onSubmit={(e) => forgotHandler(e)}>
+                  <h2>Please submit your email to reset password !</h2>
+                <Form.Item >
+                  {getFieldDecorator('email', {
+                    rules: [
+                      {
+                        type: 'email',
+                        message: 'The input is not valid E-mail!',
+                      },
+                      {
+                        required: true,
+                        message: 'Please input your E-mail!',
+                      },
+                    ],
+                  })(<Input ref={forgotEmailRef}/>)}
+                </Form.Item>
+                <Form.Item>
+                <Button type='primary' style={{float:'right'}} htmlType='submit'>Send</Button>
+                </Form.Item>
+              </Form>
+            </Modal>
           )
         }
 
