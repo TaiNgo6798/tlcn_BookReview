@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom'
 import axios from 'axios'
 
 import RegisterForm from './register-form'
+import ForgotForm from './forgot-form'
 
 // import css
 import './index.scss'
@@ -13,47 +14,15 @@ import './index.scss'
 
 
 const Index = (props) => {
+
   const emailRef = useRef(null)
   const passwordRef = useRef(null)
-  const forgotEmailRef = useRef(null)
   const [forgotForm, setForgotForm] = useState(false)
   const [isLogin, setIsLogin] = useState(true)
 
   const registerClick = () => {
     setIsLogin(false)
   }
-
-  const forgotHandler = (e) => {
-      e.preventDefault()
-      setForgotForm(false)
-      axios({
-        method: 'post',
-        url: 'http://localhost:8080/reviewbook/forgot',
-        data: {
-          email: forgotEmailRef.current.state.value
-        }
-      }).then(res => {
-        if (res.data.success) {
-          Swal.fire({
-            position: 'center',
-            type: 'success',
-            title: 'Please check your email to reset your password !',
-            showConfirmButton: true,
-            
-          })
-        } else {
-          Swal.fire({
-            position: 'center',
-            type: 'error',
-            title: 'Email is not registered, please check again !',
-            showConfirmButton: true,
-
-          })
-          setForgotForm(true)
-        }
-        
-      })
-    }
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -70,13 +39,13 @@ const Index = (props) => {
           }
         }).then(function (res) {
           if (res.data.success) {
-            Swal.fire({
-              position: 'center',
-              type: 'success',
-              title: 'Đăng nhập thành công !',
-              showConfirmButton: false,
-              timer: 1500
-            })
+            // Swal.fire({
+            //   position: 'center',
+            //   type: 'success',
+            //   title: 'Đăng nhập thành công !',
+            //   showConfirmButton: false,
+            //   timer: 1500
+            // })
             props.history.push('/newsFeed')
           } else {
             Swal.fire({
@@ -91,6 +60,7 @@ const Index = (props) => {
       }
     })
   }
+  
   const { getFieldDecorator } = props.form
 
   return (
@@ -129,7 +99,7 @@ const Index = (props) => {
                     valuePropName: 'checked',
                     initialValue: true,
                   })(<Checkbox>Remember me</Checkbox>)}
-                  <a className="login-form-forgot" onClick={() => setForgotForm(true)}>
+                  <a className="forgotBtn" onClick={() => setForgotForm(true)}>
                     Forgot password
                 </a>
                   <Button type="primary" htmlType="submit" className="login-form-button">
@@ -149,38 +119,8 @@ const Index = (props) => {
             </>
           )
         }
-        {
-          (forgotForm) && (
-            <Modal
-              onCancel={() => {setForgotForm(false)}}
-              centered
-              visible={forgotForm}
-              onOk={() => { console.log('ok') }}
-              footer={null}
-            >
-              <Form onSubmit={(e) => forgotHandler(e)}>
-                  <h2>Please submit your email to reset password !</h2>
-                <Form.Item >
-                  {getFieldDecorator('email', {
-                    rules: [
-                      {
-                        type: 'email',
-                        message: 'The input is not valid E-mail!',
-                      },
-                      {
-                        required: true,
-                        message: 'Please input your E-mail!',
-                      },
-                    ],
-                  })(<Input ref={forgotEmailRef}/>)}
-                </Form.Item>
-                <Form.Item>
-                <Button type='primary' style={{float:'right'}} htmlType='submit'>Send</Button>
-                </Form.Item>
-              </Form>
-            </Modal>
-          )
-        }
+
+        <ForgotForm onCancel={() => setForgotForm(false)} visible={forgotForm}/>
 
       </div>
     </div>

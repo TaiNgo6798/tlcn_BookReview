@@ -2,7 +2,8 @@ import React from 'react'
 import {
   Form,
   Input,
-  Button
+  Button,
+  Spin
 } from 'antd';
 import Swal from 'sweetalert2'
 import { withRouter } from 'react-router-dom'
@@ -15,12 +16,15 @@ class RegistrationForm extends React.Component {
   state = {
     confirmDirty: false,
     autoCompleteResult: [],
+    loading: false
   };
 
   handleSubmit = e => {
     e.preventDefault();
+
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
+        this.setState({loading: true})
         axios({
           method: 'post',
           url: 'http://localhost:8080/reviewbook/register',
@@ -29,13 +33,14 @@ class RegistrationForm extends React.Component {
             password: values.password
           }
         }).then((res) => {
+          this.setState({loading: false})
           if (res.data.success) {
             Swal.fire({
               position: 'center',
               type: 'success',
               title: 'Đăng kí thành công !',
               showConfirmButton: false,
-              timer: 1500
+              timer: 1000
             })
             this.props.history.push('/login')
           } else {
@@ -43,7 +48,7 @@ class RegistrationForm extends React.Component {
               position: 'center',
               type: 'error',
               title: res.data,
-              showConfirmButton: false,
+              showConfirmButton: true,
               timer: 1500
             })
           }
@@ -97,53 +102,56 @@ class RegistrationForm extends React.Component {
         sm: { span: 16 },
       },
     };
-    
+
 
     return (
-      <Form {...formItemLayout} onSubmit={this.handleSubmit}>
-        <Form.Item label="E-mail" className='registerForm'>
-          {getFieldDecorator('email', {
-            rules: [
-              {
-                type: 'email',
-                message: 'The input is not valid E-mail!',
-              },
-              {
-                required: true,
-                message: 'Please input your E-mail!',
-              },
-            ],
-          })(<Input />)}
-        </Form.Item>
-        <Form.Item label="Password" hasFeedback className='registerForm'>
-          {getFieldDecorator('password', {
-            rules: [
-              {
-                required: true,
-                message: 'Please input your password!',
-              },
-              {
-                validator: this.validateToNextPassword,
-              },
-            ],
-          })(<Input.Password />)}
-        </Form.Item>
-        <Form.Item label="Confirm Password" hasFeedback className='registerForm'>
-          {getFieldDecorator('confirm', {
-            rules: [
-              {
-                required: true,
-                message: 'Please confirm your password!',
-              },
-              {
-                validator: this.compareToFirstPassword,
-              },
-            ],
-          })(<Input.Password onBlur={this.handleConfirmBlur} />)}
-        </Form.Item>
-        <Button type='primary' className='btnRegister' htmlType='submit'>Register</Button>
-        <Button className='btnBackLogin' onClick={() => {this.props.backLogin()}}>Back to login</Button>
-      </Form>
+      <Spin spinning={this.state.loading}>
+        <Form {...formItemLayout} onSubmit={this.handleSubmit}>
+          <Form.Item label="E-mail" className='registerForm'>
+            {getFieldDecorator('email', {
+              rules: [
+                {
+                  type: 'email',
+                  message: 'The input is not valid E-mail!',
+                },
+                {
+                  required: true,
+                  message: 'Please input your E-mail!',
+                },
+              ],
+            })(<Input />)}
+          </Form.Item>
+          <Form.Item label="Password" hasFeedback className='registerForm'>
+            {getFieldDecorator('password', {
+              rules: [
+                {
+                  required: true,
+                  message: 'Please input your password!',
+                },
+                {
+                  validator: this.validateToNextPassword,
+                },
+              ],
+            })(<Input.Password />)}
+          </Form.Item>
+          <Form.Item label="Confirm Password" hasFeedback className='registerForm'>
+            {getFieldDecorator('confirm', {
+              rules: [
+                {
+                  required: true,
+                  message: 'Please confirm your password!',
+                },
+                {
+                  validator: this.compareToFirstPassword,
+                },
+              ],
+            })(<Input.Password onBlur={this.handleConfirmBlur} />)}
+          </Form.Item>
+          <Button type='primary' className='btnRegister' htmlType='submit'>Register</Button>
+          <Button className='btnBackLogin' onClick={() => { this.props.backLogin() }}>Back to login</Button>
+        </Form>
+      </Spin>
+
     );
   }
 }

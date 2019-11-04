@@ -19,13 +19,13 @@ function Index() {
     loadNotify()
 
     window.addEventListener('scroll', () => {
-        if(window.pageYOffset >= 50 && heightChange === true)
+        if(window.scrollY >= 50 && heightChange === true)
         {
           window.document.querySelector('.nav').classList.add('minimize')
-          console.log('alo')
+          
           heightChange = false
         }
-        if(window.pageYOffset <= 50 && heightChange === false) {
+        if(window.scrollY <= 50 && heightChange === false) {
           window.document.querySelector('.nav').classList.remove('minimize')
           heightChange = true
         }

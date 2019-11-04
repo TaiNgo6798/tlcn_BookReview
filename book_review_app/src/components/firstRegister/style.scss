@@ -1,16 +1,7 @@
 
-.container{
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #FAFAFA;
-  transition: all 0.3s;
-}
 
 
-.login-form-forgot {
+.after-Regis-Form{
 	.ant-modal-content {
 		top: 50px;
 		width: 556px;
@@ -56,29 +47,4 @@
 
 		}
 	}
-}
-
-.login-form-button {
-  width: 100%;
-}
-
-.form-login{
-  height: fit-content;
-  width: fit-content;
-  background-color: #FFFFFF;
-  border: 1px #EBEDF0 solid;
-  border-radius: 20px;
-  padding: 2em;
-  .registerForm{
-    width: 400px;
-  }
-  .btnRegister{
-    float: right;
-  }
-  .btnBackLogin{
-    float: left
-  }
-  .forgotBtn{
-    float: right;
-  }
 }
