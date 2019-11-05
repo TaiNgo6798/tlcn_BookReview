@@ -139,7 +139,7 @@ const { userContent, avatar, firstName } = user
         </div>
 
         <div className='likeCount'>
-          {likeCount} likes
+          {likeCount} lượt thích
         </div>
 
         <div className='userContent'>
@@ -193,7 +193,7 @@ const { userContent, avatar, firstName } = user
         }
         <div className='postComment'>
           <TextArea value={commentText} placeholder="Type comment here ..." autoSize  style={{border: 'none'}} onChange={(e) => {onChangeCommentHandler(e)}}/>
-          <Button onClick={() => postCommentHandler()}>Post</Button>
+          <Button onClick={() => postCommentHandler()}>Đăng</Button>
         </div>
       </div>
     </>

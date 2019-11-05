@@ -22,11 +22,12 @@ function Index() {
         if(window.scrollY >= 50 && heightChange === true)
         {
           window.document.querySelector('.nav').classList.add('minimize')
-          
+          window.document.querySelector('.inforForm').classList.add('fixedPos')
           heightChange = false
         }
         if(window.scrollY <= 50 && heightChange === false) {
           window.document.querySelector('.nav').classList.remove('minimize')
+          window.document.querySelector('.inforForm').classList.remove('fixedPos')
           heightChange = true
         }
     })

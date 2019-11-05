@@ -100,7 +100,47 @@ const Index = () => {
               user={userThinh}
               likeCount={139}
               data={comments2}
-              img={imgThinh} />
+              img={imgThinh} 
+              />
+            <Post
+              user={userTai}
+              likeCount={256}
+              data={comments1}
+              img={imgTai}
+            />
+
+            <Post
+              user={userThinh}
+              likeCount={139}
+              data={comments2}
+              img={imgThinh} 
+              />
+            <Post
+              user={userTai}
+              likeCount={256}
+              data={comments1}
+              img={imgTai}
+            />
+
+            <Post
+              user={userThinh}
+              likeCount={139}
+              data={comments2}
+              img={imgThinh} 
+              />
+            <Post
+              user={userTai}
+              likeCount={256}
+              data={comments1}
+              img={imgTai}
+            />
+
+            <Post
+              user={userThinh}
+              likeCount={139}
+              data={comments2}
+              img={imgThinh} 
+              />
 
           </div>
           <div className='infor'>

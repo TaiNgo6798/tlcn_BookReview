@@ -1,6 +1,6 @@
 .inforForm{
   width: 300px;
-  position: fixed;
+
   .user{
     display: flex;
     align-items: center;
@@ -28,17 +28,25 @@
       height: 93.5%;
 
     }
-    .footer{
-      flex-wrap: wrap;
-      font: inherit;
-      color: #D1D1D1;
-      margin-top: 18px;
-      > :nth-child(2){
-        font-size: 11px;
-      }
-      >:nth-child(1){
-        font-size: 12px;
-      }
+    
+  }
+  .footer{
+    
+    flex-wrap: wrap;
+    font: inherit;
+    color: #D1D1D1;
+    margin-top: 18px;
+    > :nth-child(2){
+      font-size: 11px;
+    }
+    >:nth-child(1){
+      font-size: 12px;
     }
   }
+}
+
+.fixedPos{
+  position: fixed;
+  top: 0;
+  margin-top: 100px
 }

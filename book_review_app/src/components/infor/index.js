@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Avatar } from 'antd'
 
 import SuggestBooks from '../suggestBooks'
@@ -51,17 +51,17 @@ const Index = (props) => {
         </div>
         <div className='suggestBooks'>
           <div className='top'>
-              Suggest books for you 
-              <a style={{float: 'right', paddingRight: '20px'}}>See all</a>
+              Sách gợi ý cho bạn 
+              <a style={{float: 'right', paddingRight: '20px'}}>Xem tất cả</a>
           </div>
           <div className='listBooks'>
             <SuggestBooks /> 
           </div>
-          <div className='footer'>
+        </div>
+        <div className='footer'>
             <p>Design and Code by Ngo Thanh Tai and Vu Tan Dat</p>
             <p>©2019 BookReview</p>
           </div>
-        </div>
       </div>
     </>
   )
