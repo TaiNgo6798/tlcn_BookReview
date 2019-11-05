@@ -63,4 +63,22 @@ reviewRouter.route("/review/post")
     })
   })
 
+reviewRouter.route("/review/post/own")
+.get((req,res)=>{
+  var user = firebase.auth().currentUser;
+  var dbReviews = firebase.database().ref().child("Reviews").orderByChild('uid').equalTo(user.uid);
+  dbReviews.on('value',function(reviews){
+    var result = [];
+    if(reviews.exists){
+      reviews.forEach(child=>{
+        result.unshift(child);
+      })
+      res.send(result);
+    }else{
+      res.send({ success: true });
+    }
+  })
+})
+
+
 module.exports = reviewRouter;
