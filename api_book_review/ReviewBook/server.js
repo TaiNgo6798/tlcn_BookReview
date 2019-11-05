@@ -2,6 +2,7 @@ var express = require("express"); //	call express
 var app = express(); //	define our app usỉng express
 var bodyParser = require("body-parser"); //	get body-parser
 var firebase = require("firebase");
+require('firebase/storage');
 var morgan = require("morgan"); //	used to see requests
 var port = process.env.PORT || 8080; // set the port for our app
 
@@ -22,7 +23,6 @@ app.use(morgan("dev"));
 app.listen(port);
 console.log("Port can dung la: " + port);
 
-var firebase = require("firebase");
 var firebaseConfig = {
   apiKey: "AIzaSyAxsPNM6aufE4GYrx4Ia4C8GrzI4mAPX9g",
   authDomain: "reviewbook-1af0f.firebaseapp.com",
@@ -37,4 +37,6 @@ firebase.initializeApp(firebaseConfig);
 firebase.auth.Auth.Persistence.LOCAL;
 
 var userRouter = require("./apiRouter/userRouter");
+app.use("/reviewbook", userRouter);
+var userRouter = require("./apiRouter/reviewRouter");
 app.use("/reviewbook", userRouter);
