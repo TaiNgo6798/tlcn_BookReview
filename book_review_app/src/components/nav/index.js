@@ -9,7 +9,7 @@ const { Search } = Input;
 function Index() {
 
   const [ messageCount, setMessageCount ] = useState(0)
-
+  let heightChange = true
   const loadNotify = () => {
     setInterval(() => {
       setMessageCount(messageCount => messageCount + 1)
@@ -17,8 +17,18 @@ function Index() {
   }
   useEffect(() => {
     loadNotify()
-    window.addEventListener('scroll', (a) => {
-      console.log(window.pageYOffset)
+
+    window.addEventListener('scroll', () => {
+        if(window.scrollY >= 50 && heightChange === true)
+        {
+          window.document.querySelector('.nav').classList.add('minimize')
+          
+          heightChange = false
+        }
+        if(window.scrollY <= 50 && heightChange === false) {
+          window.document.querySelector('.nav').classList.remove('minimize')
+          heightChange = true
+        }
     })
   }, [])
 

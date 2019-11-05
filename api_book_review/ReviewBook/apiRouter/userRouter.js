@@ -56,9 +56,9 @@ userRouter.route("/setting").post((req, res) => {
     phone: req.body.phone
   };
 
-  usersRef.set(userData, function(error) {
-    if (error) {
-      var errorMessage = error.message;
+  usersRef.set(userData, function(err) {
+    if (err) {
+      var errorMessage = err.message;
       res.send(errorMessage);
     } else {
       res.send({ success: true });
