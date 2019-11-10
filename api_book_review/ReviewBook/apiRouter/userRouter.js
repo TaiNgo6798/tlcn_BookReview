@@ -1,5 +1,7 @@
 var firebase = require("firebase");
 var express = require("express");
+var User = require('./../model/user');
+global.XMLHttpRequest = require("xhr2");
 
 const userRouter = express.Router();
 userRouter.route("/register").post((req, res) => {
@@ -7,7 +9,10 @@ userRouter.route("/register").post((req, res) => {
     .auth()
     .createUserWithEmailAndPassword(req.body.email, req.body.password)
     .then(function() {
-      res.send({ success: true });
+      res.send({ 
+        success: true,
+        message: "Registering is successful"
+      });
     })
     .catch(function(error) {
       var errorMessage = error.message;
@@ -20,7 +25,10 @@ userRouter.route("/login").post((req, res) => {
     .auth()
     .signInWithEmailAndPassword(req.body.email, req.body.password)
     .then(function() {
-      res.send({ success: true });
+      res.send({
+        success: true,
+        message: "Logged in successfully"
+      })
     })
     .catch(function(error) {
       // Handle Errors here.
@@ -34,7 +42,10 @@ userRouter.route("/forgot").post((req, res) => {
     .auth()
     .sendPasswordResetEmail(req.body.email)
     .then(function() {
-      res.send({ success: true });
+      res.send({
+        success: true,
+        message: "Retrieve password successfully"
+      });
     })
     .catch(function(error) {
       var errorMessage = error.message;
@@ -47,23 +58,77 @@ userRouter.route("/setting").post((req, res) => {
     .database()
     .ref()
     .child("Users");
-  var userID = firebase.auth().currentUser.uid;
-  var usersRef = rootRef.child(userID);
-  var userData = {
-    firstName: req.body.fName,
-    secondName: req.body.sName,
-    gender: req.body.gender,
-    phone: req.body.phone
-  };
+  var user = firebase.auth().currentUser;
+  var usersRef = rootRef.child(user.uid);
+  var userData = new User(
+    req.body.fName,
+    req.body.sName,
+    req.body.gender,
+    req.body.phone,
+    req.body.birthday,
+    user.email
+  )
 
-  usersRef.set(userData, function(err) {
-    if (err) {
-      var errorMessage = err.message;
-      res.send(errorMessage);
-    } else {
-      res.send({ success: true });
-    }
-  });
+  firebase.storage().ref().child("Gender Image").child(userData.gender + ".jpg")
+    .getDownloadURL().
+    then(function(url){
+      userData.image = url;
+      usersRef.set(userData, function(err) {
+        if (err) {
+          var errorMessage = err.message;
+          res.send(errorMessage);
+        } else {
+          res.send({ 
+            success: true,
+            message:"account settings successfully"
+          });
+        }
+      });
+    })
 });
+
+userRouter.route("/current")
+.get((req,res)=>{
+  userID = firebase.auth().currentUser.uid;
+  dbUser = firebase.database().ref().child("Users").child(userID);
+  dbUser.once('value').then((snapshot)=>{
+    res.send(snapshot.val());
+  })
+})
+.put((req,res)=>{
+  userID = firebase.auth().currentUser.uid;
+  dbUser = firebase.database().ref().child("Users").child(userID);
+  dbUser.once('value').then((snapshot)=>{
+    var user = new User();
+    user = snapshot.val();
+    if(req.body.fName){
+      user.firstName = req.body.fName;
+    }
+    if(req.body.sName){
+      user.secondName = req.body.sName;
+    }
+    if(req.body.gender){
+      user.gender = req.body.gender;
+    }
+    if(req.body.phone){
+      user.phone = req.body.phone;
+    }
+    if(req.body.birthday){
+      user.birthday = req.body.birthday;
+    }
+
+    dbUser.update(user, error=>{
+      if (error) {
+        var errorMessage = error.message;
+        res.send(errorMessage);
+      } else {
+        res.send({
+           success: true,
+           message:'Update account successful'
+        });
+      }
+    })
+  })
+})
 
 module.exports = userRouter;
