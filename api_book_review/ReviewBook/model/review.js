@@ -15,6 +15,9 @@ class Review{
         this.desc = desc,
         this.uid = uid,
         this.name = name,
+        this.like = 0;
+        this.comment = 0;
+        this.share = 0;
         this.numberTime = Date.now();
         this.time = new Date().toLocaleString("vi", {
             hour: "numeric",

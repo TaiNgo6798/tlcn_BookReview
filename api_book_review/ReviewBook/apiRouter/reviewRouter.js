@@ -4,6 +4,7 @@ var Review = require('./../model/review');
 
 const reviewRouter = express.Router();
 reviewRouter.route("/review/post")
+  //dang 1 bai viet
   .post((req, res) => {
     var databaseRef = firebase.database().ref().child("Reviews");
     databaseRef.once("value").then(function(snapshot) {
@@ -35,6 +36,7 @@ reviewRouter.route("/review/post")
       });
     });
   })
+  //tra ve danh sach bai viet duoc sap xep theo thoi gian moi nhat
   .get((req,res)=>{
     var dbReviews = firebase.database().ref().child("Reviews").orderByChild('numberTime');
     dbReviews.on('value',function(reviews){
@@ -56,6 +58,7 @@ reviewRouter.route("/review/post")
   })
 
 reviewRouter.route("/review/post/own")
+//tra ve danh sach bai review cua tai khoan dang dang nhap sap xep theo thoi gian moi nhat
 .get((req,res)=>{
   var user = firebase.auth().currentUser;
   var dbReviews = firebase.database().ref().child("Reviews").orderByChild('uid').equalTo(user.uid);
@@ -72,6 +75,86 @@ reviewRouter.route("/review/post/own")
       res.send({
         success: true,
         message:"Get all post review of currentUser successful"
+      });
+    }
+  })
+})
+
+reviewRouter.route("/review/post/own/:review_id")
+//tra ve bai viet theo id
+.get((req,res)=>{
+  var user = firebase.auth().currentUser;
+  var dbReviews = firebase.database().ref().child("Reviews").child(req.params.review_id);
+  dbReviews.once('value',function(reviews){
+    if(reviews.val().uid === user.uid){
+      res.send(reviews.val());
+    }else{
+      res.send({
+        success:false,
+        message:"Not your review"
+      });
+    }
+  })
+})
+//update bai viet theo id
+.put((req,res)=>{
+  var user = firebase.auth().currentUser;
+  var dbReviews = firebase.database().ref().child("Reviews").child(req.params.review_id);
+  dbReviews.once('value',function(reviews){
+    if(reviews.val().uid === user.uid){
+      var review =  new Review(
+        reviews.val().title,
+        reviews.val().kind, 
+        reviews.val().url, 
+        reviews.val().nameImage,
+        reviews.val().desc,
+        reviews.val().uid,
+        reviews.val().name,
+        reviews.val().like,
+        reviews.val().comment,
+        reviews.val().share
+      );
+      if(req.body.title){
+        review.title = req.body.title;
+      }
+      if(req.body.kind){
+        review.kind = req.body.kind;
+      }
+      if(req.body.url){
+        review.urlImage = req.body.url;
+      }
+      if(req.body.desc){
+        review.desc = req.body.desc;
+      }
+      if(req.body.nameImage){
+        //delete file upload
+        var reviewStorageRef = firebase.storage().ref().child("Review Images").child(review.nameImage);
+        reviewStorageRef.delete().then(()=>{
+            review.nameImage = req.body.nameImage;
+            //update database reiview
+            dbReviews.update(review ,error=>{
+              if (error) {
+                var errorMessage = error.message;
+                res.send(errorMessage);
+              } else {
+                res.send({
+                   success: true,
+                   message:'Update review successful'
+                });
+              }
+            })      
+          }
+        ).catch(error=>{
+          res.send({
+            success: false,
+            message:error.message
+          })
+        })
+      }
+    }else{
+      res.send({
+        success:false,
+        message:"Not your review"
       });
     }
   })
