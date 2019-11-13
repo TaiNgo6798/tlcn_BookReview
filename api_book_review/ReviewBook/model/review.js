@@ -15,15 +15,15 @@ class Review{
         this.desc = desc,
         this.uid = uid,
         this.name = name,
-        this.like = 0;
-        this.comment = 0;
-        this.share = 0;
+        this.likes = new Array();
+        this.comments = new Array();
+        this.shares = new Array();
         this.numberTime = Date.now();
         this.time = new Date().toLocaleString("vi", {
             hour: "numeric",
             minute: "numeric"
         }),
-        this.Date = new Date().toLocaleDateString("vi", {
+        this.date = new Date().toLocaleDateString("vi", {
             weekday: "long",
             month: "long",
             day: "2-digit",

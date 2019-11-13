@@ -39,14 +39,14 @@ reviewRouter.route("/review/post")
   //tra ve danh sach bai viet duoc sap xep theo thoi gian moi nhat
   .get((req,res)=>{
     var dbReviews = firebase.database().ref().child("Reviews").orderByChild('numberTime');
-    dbReviews.on('value',function(reviews){
+    dbReviews.on('value', reviews=>{
       var result = [];
-      if(reviews.exists){
-        reviews.forEach(child=>{
+      if(reviews.exists()){
+        reviews.forEach( child=>{
           var obj ={};
-          obj[child.key] = child;
+          obj[child.key] = child.val();
           result.unshift(obj);
-        })
+        })       
         res.send(result);
       }else{
         res.send({ 
@@ -107,12 +107,7 @@ reviewRouter.route("/review/post/own/:review_id")
         reviews.val().kind, 
         reviews.val().url, 
         reviews.val().nameImage,
-        reviews.val().desc,
-        reviews.val().uid,
-        reviews.val().name,
-        reviews.val().like,
-        reviews.val().comment,
-        reviews.val().share
+        reviews.val().desc
       );
       if(req.body.title){
         review.title = req.body.title;
@@ -139,6 +134,7 @@ reviewRouter.route("/review/post/own/:review_id")
               } else {
                 res.send({
                    success: true,
+                   review:review,
                    message:'Update review successful'
                 });
               }
@@ -151,6 +147,35 @@ reviewRouter.route("/review/post/own/:review_id")
           })
         })
       }
+    }else{
+      res.send({
+        success:false,
+        message:"Not your review"
+      });
+    }
+  })
+})
+.delete((req,res)=>{
+  var user = firebase.auth().currentUser;
+  var dbReviews = firebase.database().ref().child("Reviews").child(req.params.review_id);
+  dbReviews.once('value',function(reviews){
+    if(reviews.val().uid === user.uid){
+      var reviewStorageRef = firebase.storage().ref().child("Review Images").child(reviews.val().nameImage);
+      reviewStorageRef.delete().then(()=>{
+        dbReviews.remove().then(error=>{
+          if(error){
+            res.send({
+              success:false,
+              message:error.message
+            })
+          }else{
+            res.send({
+              success:true,
+              message:"Delete review successful"
+            })
+          }
+        })
+      })
     }else{
       res.send({
         success:false,

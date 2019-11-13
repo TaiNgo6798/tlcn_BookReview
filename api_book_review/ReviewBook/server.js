@@ -38,5 +38,7 @@ firebase.auth.Auth.Persistence.LOCAL;
 
 var userRouter = require("./apiRouter/userRouter");
 app.use("/reviewbook", userRouter);
-var userRouter = require("./apiRouter/reviewRouter");
-app.use("/reviewbook", userRouter);
+var reviewRouter = require("./apiRouter/reviewRouter");
+app.use("/reviewbook", reviewRouter);
+var likeRouter = require("./apiRouter/likeRouter");
+app.use("/reviewbook", likeRouter);
