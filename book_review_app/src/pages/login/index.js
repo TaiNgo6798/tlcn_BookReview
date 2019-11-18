@@ -21,7 +21,14 @@ const Index = (props) => {
   const [isLogin, setIsLogin] = useState(true)
 
   const registerClick = () => {
-    setIsLogin(false)
+    const loginForm = window.document.querySelector('.login')
+     loginForm.classList.toggle('hide')
+    const registerForm = window.document.querySelector('.register')
+    registerForm.classList.toggle('show')
+    const imgRight = window.document.querySelector('.right-image')
+    imgRight.classList.toggle('hide-image')
+    const imgLeft = window.document.querySelector('.left-image')
+    imgLeft.classList.toggle('change-image')
   }
 
   const handleSubmit = e => {
@@ -60,16 +67,20 @@ const Index = (props) => {
       }
     })
   }
-  
+
   const { getFieldDecorator } = props.form
 
   return (
     <div className='container'>
-      <div className='form-login'>
-        {
-          (isLogin) && (
-            <>
-              <h2 style={{ display: 'block', textAlign: 'center' }}>Login</h2>
+              <div className='img'>
+              <div style={{marginLeft: '2em'}}></div>
+                <div className='left-image'></div>
+                <div className='right-image'></div>
+              </div>
+     
+
+            <div className='form-center login'>
+              <h1 style={{ display: 'block', textAlign: 'center' }}>Login</h1>
               <Form onSubmit={handleSubmit} className="login-form">
                 <Form.Item>
                   {getFieldDecorator('username', {
@@ -108,22 +119,17 @@ const Index = (props) => {
                   Or <a onClick={() => { registerClick() }}>register now!</a>
                 </Form.Item>
               </Form>
-            </>
-          )
-        }
-        {
-          (!isLogin) && (
-            <>
+              </div>
+            <div className='form-center register'>
               <h2 style={{ display: 'block', textAlign: 'center' }}>Register</h2>
-              <RegisterForm backLogin={() => setIsLogin(true)} />
-            </>
-          )
-        }
+              <RegisterForm className='form-register' backLogin={() => registerClick()} />
+            </div>
 
-        <ForgotForm onCancel={() => setForgotForm(false)} visible={forgotForm}/>
+
+        <ForgotForm onCancel={() => setForgotForm(false)} visible={forgotForm} />
 
       </div>
-    </div>
+
   )
 }
 
