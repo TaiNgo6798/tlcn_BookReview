@@ -42,3 +42,5 @@ var reviewRouter = require("./apiRouter/reviewRouter");
 app.use("/reviewbook", reviewRouter);
 var likeRouter = require("./apiRouter/likeRouter");
 app.use("/reviewbook", likeRouter);
+var commentRouter = require("./apiRouter/commentRouter");
+app.use("/reviewbook", commentRouter);

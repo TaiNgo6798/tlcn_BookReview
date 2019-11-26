@@ -36,9 +36,9 @@ reviewRouter.route("/review/post")
       });
     });
   })
-  //tra ve danh sach bai viet duoc sap xep theo thoi gian moi nhat
+  //tra ve danh sach 10 bai viet cuoi cung 
   .get((req,res)=>{
-    var dbReviews = firebase.database().ref().child("Reviews").orderByChild('numberTime');
+    var dbReviews = firebase.database().ref().child("Reviews").orderByChild('numberTime').limitToLast(10);
     dbReviews.on('value', reviews=>{
       var result = [];
       if(reviews.exists()){
@@ -50,12 +50,33 @@ reviewRouter.route("/review/post")
         res.send(result);
       }else{
         res.send({ 
-          success: true,
-          message:"Get all post review successful"
+          success: false
          });
       }
     })
   })
+
+reviewRouter.route("/review/post/:numberTime")
+//trả về 10 bài viết tiếp theo 
+.get((req,res)=>{
+  var dbReviews = firebase.database().ref().child("Reviews").orderByChild('numberTime').endAt(Number(req.params.numberTime)).limitToLast(11);
+  dbReviews.on('value', reviews=>{
+    var result = [];
+    if(reviews.exists()){
+      reviews.forEach( child=>{
+        var obj ={};
+        obj[child.key] = child.val();
+        result.unshift(obj);
+      })
+      result.shift();       
+      res.send(result);
+    }else{
+      res.send({ 
+        success: false
+       });
+    }
+  })
+})
 
 reviewRouter.route("/review/post/own")
 //tra ve danh sach bai review cua tai khoan dang dang nhap sap xep theo thoi gian moi nhat
@@ -73,8 +94,7 @@ reviewRouter.route("/review/post/own")
       res.send(result);
     }else{
       res.send({
-        success: true,
-        message:"Get all post review of currentUser successful"
+        success: false
       });
     }
   })

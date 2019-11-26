@@ -30,6 +30,8 @@ class Review{
             year: "numeric"
         })
     }
+
+    
 }
 
 module.exports = Review;

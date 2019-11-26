@@ -26,36 +26,64 @@ likeRouter.route("/review/like/:review_id")
 })
 //luu nguoi thich bai viet len db
 .post((req,res)=>{
-    var like = new Like(req.body.imageUser,req.body.nameUser);
+    var imageUser = req.body.imageUser;
+    var nameUser = req.body.nameUser;
+    var review_id = req.params.review_id;
+    var like = new Like(imageUser,nameUser);
+    console.log(review_id);
+    
     var userID = firebase.auth().currentUser.uid;
-    dblike = firebase.database().ref().child('Likes').child(req.params.review_id).child(userID);
-    dblike.set(like,error=>{
-        if(error){
-            res.send({
-                success:false,
-                message:error.message
-            })
-        }else{
-            dbReview = firebase.database().ref().child('Reviews').child(req.params.review_id).child('likes');
-            dbReview.once('value',snapshot=>{
-                var likes =[userID];
-                if(snapshot.exists()){
-                    likes = Object.values(snapshot.val());
-                    likes.unshift(userID);
+    var dblike = firebase.database().ref().child('Likes').child(review_id).child(userID);
+    dblike.once('value',snapshot=>{
+        if(snapshot.exists()){
+            // XỬ LÝ DISLIKE
+            dblike.remove().then(error=>{
+                if(error){
+                  res.send({
+                    success:false,
+                    message:error.message
+                  })
+                }else{
+                    var dbReviewLike = firebase.database().ref().child('Reviews').child(review_id).child('likes').child(userID);
+                    dbReviewLike.remove().then(error=>{
+                        if (error) {
+                            res.send({
+                                success:false,
+                                message:error.message
+                            })
+                          } else {
+                            res.send({
+                              success: true,
+                              message: "disliked successful"
+                            });
+                          }
+                    })
                 }
-                dbReview.set(likes,error=>{
-                    if(error){
-                        res.send({
-                            success:false,
-                            message:error.message
-                        })
-                    }else{
-                        res.send({      
-                            success:true,
-                            message:"liked successful"
-                        })
-                    }
-                })
+            });
+        }else{
+            //XỬ LÝ LIKE
+            dblike.set(like,error=>{
+                if(error){
+                    res.send({
+                        success:false,
+                        message:error.message
+                    })
+                }else{
+                    var dbReview = firebase.database().ref().child('Reviews').child(review_id).child('likes');
+                    dbReview.update({[userID]:true},error=>{
+                        if (error) {
+                            res.send({
+                                success:false,
+                                message:error.message
+                            })
+                          } else {
+                            res.send({
+                              success: true,
+                              message: "liked successful"
+                            });
+                          }
+                    })
+                }
             })
         }
     })
