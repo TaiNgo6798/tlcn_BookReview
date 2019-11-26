@@ -9,7 +9,8 @@ const { TextArea } = Input;
 
 const Index = (props) => {
 
-const { comments, user, likeCount, img, content } = props
+const { comments, user, likeCount, img, content, postTime, postDay } = props
+const postDay2 = new Date(`${postDay} ${postTime}`)
 const { avatar, username } = user
 
   const [commentText, setCommentText] = useState('')
@@ -125,8 +126,13 @@ const { avatar, username } = user
             <Avatar size={45} src={avatar}/>
           </div>
           <div className='username'>
-            <h3><i>{username}</i></h3>
+            <p><i>{username}</i></p>
+            <div className='time'>
+              {console.log(postDay2)}
+                <a title={postDay}>{moment([postDay2.getFullYear(), postDay2.getMonth()+1, postDay2.getDate(), postDay2.getHours(), postDay2.getMinutes()]).fromNow()}</a>
           </div>
+          </div>
+          
         </div>
         <div className='body'>
           <img src={img}></img>

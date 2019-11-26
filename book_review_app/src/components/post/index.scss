@@ -25,6 +25,18 @@
     }
     .username{
       font-weight: 800;
+      >p{
+        margin: 0
+      }
+      .time{
+        display: flex;
+        color: #B5B8BE;
+        font-size: smaller;
+        >a{
+          margin: 0 4px 0 0;
+          color: #B5B8BE
+        }
+      }
     }
     
   }
