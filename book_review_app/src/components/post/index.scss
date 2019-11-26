@@ -59,6 +59,7 @@
     display: flex;
     padding: 0 20px;
     margin-top: .75em;
+    flex-wrap:  wrap;
     :first-child{
       font-weight: bold;
       margin-right: .5em;

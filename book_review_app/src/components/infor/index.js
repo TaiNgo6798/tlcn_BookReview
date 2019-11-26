@@ -5,38 +5,11 @@ import SuggestBooks from '../suggestBooks'
 // import css
 import './index.scss'
 
-const booksData = [
-  {
-    name: 'book1',
-    author: 'author1',
-    reviewBy: 'user1',
-    img: ''
-  },
-  {
-    name: 'book2',
-    author: 'author2',
-    reviewBy: 'user2',
-    img: ''
-  },
-  {
-    name: 'book3',
-    author: 'author3',
-    reviewBy: 'user3',
-    img: ''
-  },
-  {
-    name: 'book4',
-    author: 'author4',
-    reviewBy: 'user4',
-    img: ''
-  },
-
-]
 
 
 const Index = (props) => {
 
-  const { avatar, firstName } = props.user
+  const { avatar, username } = props.user
 
   return (
     <>
@@ -46,7 +19,7 @@ const Index = (props) => {
             <Avatar size={45}  src={avatar}/>
           </div>
           <div className='username'>
-            <h3><i>{firstName}</i></h3>
+            <h3><i>{username}</i></h3>
           </div>
         </div>
         <div className='suggestBooks'>

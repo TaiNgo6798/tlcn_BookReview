@@ -9,14 +9,14 @@ const { TextArea } = Input;
 
 const Index = (props) => {
 
-const { data, postComment, user, likeCount, img } = props
-const { userContent, avatar, firstName } = user
+const { comments, user, likeCount, img, content } = props
+const { avatar, username } = user
 
   const [commentText, setCommentText] = useState('')
   const [showComment, setShowComment] = useState(false)
   const [showAllComment, setShowAllComment] = useState(false)
   const [botText, setBotText] = useState(true)
-  const [commentData, setCommentData] = useState(data ? data : [])
+  const [commentData, setCommentData] = useState(comments ? comments : [])
 
     const onChangeCommentHandler = (e) => {
       setCommentText(e.target.value)
@@ -125,7 +125,7 @@ const { userContent, avatar, firstName } = user
             <Avatar size={45} src={avatar}/>
           </div>
           <div className='username'>
-            <h3><i>{firstName}</i></h3>
+            <h3><i>{username}</i></h3>
           </div>
         </div>
         <div className='body'>
@@ -143,8 +143,8 @@ const { userContent, avatar, firstName } = user
         </div>
 
         <div className='userContent'>
-          <p>{firstName}</p>
-          <p>{userContent}</p>
+          <p>{username}</p>
+          <p>{content}</p>
         </div>
 
         {

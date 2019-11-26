@@ -46,16 +46,6 @@ const Index = () => {
       setData(dataNew)
       setList(dataNew)
       setLoading(false)
-      // this.setState(
-      //   {
-      //     data,
-      //     list: data,
-      //     loading: false,
-      //   },
-      //   () => {
-      //     window.dispatchEvent(new Event('resize'));
-      //   },
-      // )
     });
   };
 
