@@ -1,25 +1,44 @@
-import React, { useEffect, useState } from 'react'
-import { Redirect } from 'react-router-dom'
+import React, { Component } from 'react'
 import axios from 'axios'
+import { Redirect } from 'react-router-dom'
 
-function Index(WrappedComponent) {
-  return (props) => {
-    const auth = async () => {
-      let result = false
-      await axios({
+function withAuth(WrappedComponent) {
+  return class index extends Component {
+
+    constructor(props) {
+      super(props)
+      this.state = {
+         user: null
+      }
+    }
+    
+     async componentDidMount() {
+        await axios({
         method: 'get',
         url: 'http://localhost:8080/reviewbook/current',
-
-      }).then(() => {
-       result = true
+  
+      }).then((res) => {
+          this.setState({
+            user : res.data
+          })
       })
-      return result
     }
-   
-    if (auth())
-      return <WrappedComponent {...props} />
-      return <Redirect to='/'/>
+
+    componentWillUnmount() {
+      this.setState({
+        user: false
+      })
+    }
+    
+  
+    render() {
+      if(!!this.state.user)
+      return  <WrappedComponent {...this.props} currentUser = {this.state.user}/>
+      else return <Redirect to='/' />
+    }
   }
 }
 
-export default Index
+
+export default withAuth
+

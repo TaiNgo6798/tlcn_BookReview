@@ -1,4 +1,6 @@
-.postForm{
+.createPostForm{
+  position: relative !important;
+  z-index: 11;
   padding: 16px;
   border: 1px solid #EBEDF0;
   height: fit-content;
@@ -6,6 +8,20 @@
   margin-bottom: 20px;
   border-radius: 20px;
   background-color: #FFFFFF;
+
+  .top-bar{
+    display: flex;
+    width: 100%;
+    padding-right: 10px;
+    >p{
+      margin-right: auto
+    }
+    >a{
+      display: none;
+      margin-right: 0 !important;
+    }
+  }
+
   .main{
     display: flex;
     justify-content: space-between;
@@ -19,5 +35,53 @@
       }
 
     }
+
   }
+
+
+
+  .bottom-bar{
+display: none;
+  }
+
+  .tool-bar{
+    display: flex;
+    margin-top: 30px;
+    .input-form{
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      >Input{
+        margin-bottom: 8px;
+      }
+    }
+  }
+  .ant-upload-picture-card-wrapper{
+    width: fit-content;
+  }
+}
+
+.show-from-post-component{
+display: inherit !important;
+}
+
+.modal-active{
+  background-color: black;
+  opacity: 70%;
+  z-index: 10 !important;
+}
+
+.show-fake-body{
+  display: inherit !important;
+}
+
+.body-fake{
+  transition: all ease .3s;
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 1;
+  height: 200vh;
+  width: 100vw;
 }

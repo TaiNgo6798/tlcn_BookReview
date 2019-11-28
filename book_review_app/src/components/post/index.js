@@ -126,7 +126,7 @@ const { avatar, username } = user
             <Avatar size={45} src={avatar}/>
           </div>
           <div className='username'>
-            <p><i>{username}</i></p>
+            <p ><i>{username}</i></p>
             <div className='time'>
               {console.log(postDay2)}
                 <a title={postDay}>{moment([postDay2.getFullYear(), postDay2.getMonth()+1, postDay2.getDate(), postDay2.getHours(), postDay2.getMinutes()]).fromNow()}</a>
@@ -149,7 +149,7 @@ const { avatar, username } = user
         </div>
 
         <div className='userContent'>
-          <p>{username}</p>
+          <p style={{margin: 0}}>{username}</p>
           <p>{content}</p>
         </div>
 
