@@ -128,7 +128,6 @@ const { avatar, username } = user
           <div className='username'>
             <p ><i>{username}</i></p>
             <div className='time'>
-              {console.log(postDay2)}
                 <a title={postDay}>{moment([postDay2.getFullYear(), postDay2.getMonth()+1, postDay2.getDate(), postDay2.getHours(), postDay2.getMinutes()]).fromNow()}</a>
           </div>
           </div>

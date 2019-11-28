@@ -28,9 +28,9 @@ const uploadStorage = async file => {
     .ref()
     .child("Review Images");
   var reviewStorageRef = storageRef.child(fileCompleteName);
-  await reviewStorageRef.put(file).then(function() {
+  await reviewStorageRef.put(file).then(async function() {
     result.nameImage = fileCompleteName;
-    reviewStorageRef.getDownloadURL().then(function(url) {
+    await reviewStorageRef.getDownloadURL().then(function(url) {
       result.url = url;
     });
   });

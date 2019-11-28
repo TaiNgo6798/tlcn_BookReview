@@ -3,8 +3,8 @@ import { Button, Divider, Avatar, Input, Upload, Icon, message } from 'antd'
 // import css
 import './index.scss'
 //import firebase
-import uploadStorage from '../../firebase/my-firebase'
-
+import { uploadStorage } from '../../firebase/my-firebase'
+import axios from 'axios'
 
 const { TextArea } = Input
 
@@ -12,31 +12,44 @@ const Index = (props) => {
 
   const [isLoading, setIsLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState('')
+  const [url, setUrl] = useState('')
   const titleRef = useRef(null)
   const kindRef = useRef(null)
+  const [desc, setDesc] = useState('')
 
-const onSubmitPost = () => {
-  console.log(titleRef.current.state.value)
-  console.log(kindRef.current.state.value)
-  console.log(imageUrl)
-}
+
+  const onSubmitPost = () => {
+    axios({
+      method: 'post',
+      url: 'http://localhost:8080/reviewbook/review/post',
+      data: {
+        desc,
+        url,
+        title: titleRef.current.state.value,
+        kind: kindRef.current.state.value
+      }
+
+    }).then((res) => {
+      console.log(res)
+    })
+
+  }
 
   useEffect(() => {
     const postEditor = window.document.querySelector('.text')
     const closeBtn = window.document.querySelector('.close-button')
-    const body =  window.document.querySelector('.body-fake')
-    
+    const body = window.document.querySelector('.body-fake')
+
     window.document.addEventListener('scroll', () => {
-      if(window.scrollY >= 350 )
-        {
-          body.classList.remove('modal-active')
-          window.document.querySelector('.bottom-bar').classList.remove('show-from-post-component')
-          closeBtn.classList.remove('show-from-post-component')
-          window.document.activeElement.blur()
-          setTimeout(() => {
-            body.classList.remove('show-fake-body')
-          }, 300);
-        }
+      if (window.scrollY >= 350) {
+        body.classList.remove('modal-active')
+        window.document.querySelector('.bottom-bar').classList.remove('show-from-post-component')
+        closeBtn.classList.remove('show-from-post-component')
+        window.document.activeElement.blur()
+        setTimeout(() => {
+          body.classList.remove('show-fake-body')
+        }, 300);
+      }
 
     })
 
@@ -48,7 +61,7 @@ const onSubmitPost = () => {
         body.classList.add('modal-active')
       }, 0);
 
-      
+
     })
     closeBtn.addEventListener('click', () => {
       window.document.querySelector('.bottom-bar').classList.remove('show-from-post-component')
@@ -61,13 +74,17 @@ const onSubmitPost = () => {
     })
   }, [])
 
-  const handleChange = info => {
+
+  const handleChange = async info => {
     if (info.file.status === 'uploading') {
       setImageUrl('')
       setIsLoading(true)
       return
     }
     if (info.file.status === 'done') {
+      let img = await uploadStorage(info.file.originFileObj)
+      setUrl(img.url)
+
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, imageUrl => {
         setIsLoading(false)
@@ -104,11 +121,11 @@ const onSubmitPost = () => {
 
   return (
     <>
-    <div className='body-fake'></div>
+      <div className='body-fake'></div>
       <div className='createPostForm'>
         <div className='top-bar'>
-        <p style={{ marginBottom: 0 }}>Đăng bài</p>
-        <a className='close-button' style={{ marginRight: 'auto', marginBottom: 0, float: 'right' }}>x</a>
+          <p style={{ marginBottom: 0 }}>Đăng bài</p>
+          <a className='close-button' style={{ marginRight: 'auto', marginBottom: 0, float: 'right' }}>x</a>
         </div>
         <Divider style={{ margin: '10px 0 20px 0' }} />
         <div className='main'>
@@ -118,6 +135,7 @@ const onSubmitPost = () => {
             placeholder="Bạn có đang muốn chia sẻ cuốn sách nào không ?"
             autoSize={{ minRows: 1, maxRows: 50 }}
             style={{ borderColor: 'transparent', fontSize: '18px' }}
+            onChange={(e) => setDesc(e.target.value)}
           />
         </div>
         {/* <Divider style={{marginBottom: '15px'}}/> */}

@@ -20,7 +20,7 @@ import withAuth from '../../components/utils/hoc/authUser'
 function Index(props) {
   const [visibleFirstTime, setVisibleFirstTime] = useState(false)
   const [postList, setPostList] = useState([])
-  const [user, setUser] = useState({ avatar: '', username: 'Undefine' })
+  const { currentUser } = props
 
   useEffect(() => {
     axios({
@@ -28,10 +28,9 @@ function Index(props) {
       url: 'http://localhost:8080/reviewbook/review/post',
 
     }).then((res) => {
-      console.log(res.data)
       setPostList(res.data)
     })
-  }, [])
+  }, [] )
 
   const loadPosts = () => {
     return postList.map((v, k) => {
@@ -54,6 +53,9 @@ function Index(props) {
 
   return (
     <>
+    {
+      console.log(props.currentUser)
+    }
       <FirstRegister visible={visibleFirstTime} onCancel={() => setVisibleFirstTime(false)} />
       <NavBar />
       <div className='content'>
@@ -68,7 +70,7 @@ function Index(props) {
             </div>
           </div>
           <div className='infor'>
-            <Infor user={user} />
+            <Infor user={currentUser} />
           </div>
         </div>
       </div>

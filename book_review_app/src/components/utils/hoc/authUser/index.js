@@ -12,8 +12,8 @@ function withAuth(WrappedComponent) {
       }
     }
     
-     async componentDidMount() {
-        await axios({
+      componentDidMount() {
+         axios({
         method: 'get',
         url: 'http://localhost:8080/reviewbook/current',
   
@@ -23,18 +23,10 @@ function withAuth(WrappedComponent) {
           })
       })
     }
-
-    componentWillUnmount() {
-      this.setState({
-        user: false
-      })
-    }
     
   
     render() {
-      if(!!this.state.user)
       return  <WrappedComponent {...this.props} currentUser = {this.state.user}/>
-      else return <Redirect to='/' />
     }
   }
 }

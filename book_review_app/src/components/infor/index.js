@@ -9,17 +9,17 @@ import './index.scss'
 
 const Index = (props) => {
 
-  const { avatar, username } = props.user
+  const { user } = props
 
   return (
     <>
       <div className='inforForm'>
         <div className='user'>
           <div className='avatar'>
-            <Avatar size={45}  src={avatar}/>
+            <Avatar size={45}  src={user ? user.avatar ? user.avatar : '' : ''}/>
           </div>
           <div className='username'>
-            <h3><i>{username}</i></h3>
+            <h3><i>{user ? user.firstName ? user.firstName : '' : ''}</i></h3>
           </div>
         </div>
         <div className='suggestBooks'>
