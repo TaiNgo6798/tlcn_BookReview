@@ -10,9 +10,7 @@ class Comment{
             this.nameUser = nameUser,
             this.time = new Date().toLocaleString("vi", {
                 hour: "numeric",
-                minute: "numeric"
-            }),
-            this.date = new Date().toLocaleDateString("vi", {
+                minute: "numeric",
                 weekday: "long",
                 month: "long",
                 day: "2-digit",
@@ -20,3 +18,5 @@ class Comment{
             })
         }
 }
+
+module.exports = Comment;
