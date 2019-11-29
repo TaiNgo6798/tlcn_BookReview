@@ -51,12 +51,12 @@ likeRouter.route("/review/like/:review_id")
                                 success:false,
                                 message:error.message
                             })
-                          } else {
+                        } else {
                             res.send({
                               success: true,
                               message: "disliked successful"
                             });
-                          }
+                        }
                     })
                 }
             });
