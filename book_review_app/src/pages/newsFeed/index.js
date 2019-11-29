@@ -23,6 +23,7 @@ function Index(props) {
   const { currentUser } = props
 
   useEffect(() => {
+    console.log('asdasdasd')
     axios({
       method: 'get',
       url: 'http://localhost:8080/reviewbook/review/post',

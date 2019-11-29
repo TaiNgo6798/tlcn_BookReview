@@ -148,7 +148,7 @@ const { avatar, username } = user
         </div>
 
         <div className='userContent'>
-          <p style={{margin: 0}}>{username}</p>
+          <p style={{margin: '0 5px 0 0'}}>{username}</p>
           <p>{content}</p>
         </div>
 

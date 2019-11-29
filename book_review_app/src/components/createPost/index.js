@@ -13,6 +13,7 @@ const Index = (props) => {
   const [isLoading, setIsLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState('')
   const [url, setUrl] = useState('')
+  const [nameImage, setNameImage] = useState('')
   const titleRef = useRef(null)
   const kindRef = useRef(null)
   const [desc, setDesc] = useState('')
@@ -23,12 +24,12 @@ const Index = (props) => {
       method: 'post',
       url: 'http://localhost:8080/reviewbook/review/post',
       data: {
+        nameImage,
         desc,
         url,
         title: titleRef.current.state.value,
         kind: kindRef.current.state.value
       }
-
     }).then((res) => {
       console.log(res)
     })
@@ -84,7 +85,7 @@ const Index = (props) => {
     if (info.file.status === 'done') {
       let img = await uploadStorage(info.file.originFileObj)
       setUrl(img.url)
-
+      setNameImage(img.nameImage)
       // Get this url from response in real world.
       getBase64(info.file.originFileObj, imageUrl => {
         setIsLoading(false)
