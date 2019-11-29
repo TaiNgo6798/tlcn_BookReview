@@ -1,25 +1,35 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Divider, Avatar, Input, Upload, Icon, message } from 'antd'
+import { Button, Divider, Avatar, Input, Upload, Icon, message, Spin } from 'antd'
 // import css
 import './index.scss'
 //import firebase
 import { uploadStorage } from '../../firebase/my-firebase'
 import axios from 'axios'
 
+//redux
+import { useSelector, useDispatch } from 'react-redux'
+import { setPost } from '../../actions/setPost'
+
+
 const { TextArea } = Input
 
 const Index = (props) => {
-
   const [isLoading, setIsLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState('')
   const [url, setUrl] = useState('')
   const [nameImage, setNameImage] = useState('')
-  const titleRef = useRef(null)
-  const kindRef = useRef(null)
+  const [title, setTitle] = useState('')
+  const [kind, setKind] = useState('')
   const [desc, setDesc] = useState('')
+  const [posting, setPosting] = useState(false)
+
+  //redux
+  const dispatch = useDispatch()
 
 
   const onSubmitPost = () => {
+    const closeBtn = window.document.querySelector('.close-button')
+    setPosting(true)
     axios({
       method: 'post',
       url: 'http://localhost:8080/reviewbook/review/post',
@@ -27,11 +37,25 @@ const Index = (props) => {
         nameImage,
         desc,
         url,
-        title: titleRef.current.state.value,
-        kind: kindRef.current.state.value
+        title,
+        kind
       }
-    }).then((res) => {
-      console.log(res)
+    }).then(() => {
+      axios({
+        method: 'get',
+        url: 'http://localhost:8080/reviewbook/review/post',
+
+      }).then( (res) => {
+        dispatch(setPost(res.data))
+        setPosting(false)
+        setDesc('')
+        closeBtn.click()
+        setImageUrl('')
+        setUrl('')
+        setTitle('')
+        setKind('')
+      })
+
     })
 
   }
@@ -71,8 +95,8 @@ const Index = (props) => {
       setTimeout(() => {
         body.classList.remove('show-fake-body')
       }, 300);
-
-    })
+    }
+    )
   }, [])
 
 
@@ -124,44 +148,54 @@ const Index = (props) => {
     <>
       <div className='body-fake'></div>
       <div className='createPostForm'>
-        <div className='top-bar'>
-          <p style={{ marginBottom: 0 }}>Đăng bài</p>
-          <a className='close-button' style={{ marginRight: 'auto', marginBottom: 0, float: 'right' }}>x</a>
-        </div>
-        <Divider style={{ margin: '10px 0 20px 0' }} />
-        <div className='main'>
-          <Avatar size={45} src='https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-9/p720x720/60729624_1644917328985948_4362762753471938560_o.jpg?_nc_cat=100&_nc_ohc=_iULebdWibwAQmWeGhWMtAlJf4I4rF1MuehfEw2ervkmfYQl9Jj1C_8rA&_nc_ht=scontent.fsgn5-5.fna&oh=d36be4e73e04d17136dc1c843b6f0cea&oe=5E8422FD' />
-          <TextArea
-            className='text'
-            placeholder="Bạn có đang muốn chia sẻ cuốn sách nào không ?"
-            autoSize={{ minRows: 1, maxRows: 50 }}
-            style={{ borderColor: 'transparent', fontSize: '18px' }}
-            onChange={(e) => setDesc(e.target.value)}
-          />
-        </div>
-        {/* <Divider style={{marginBottom: '15px'}}/> */}
-        <div className='bottom-bar'>
-          <div className='tool-bar'>
-            <Upload
-              name="avatar"
-              listType="picture-card"
-              className="avatar-uploader"
-              showUploadList={false}
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              beforeUpload={beforeUpload}
-              onChange={handleChange}
-            >
-              {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
-            </Upload>
-            <div className='input-form'>
-              <p style={{ marginBottom: '5px', color: '#B8BCBC' }}>Dòng này được thêm vào nhìn cho đỡ trống cái khúc này vậy thôi đó ...</p>
-              <Input placeholder='Tiêu đề...' ref={titleRef} />
-              <Input placeholder='Thể loại...' ref={kindRef} />
-            </div>
+        <Spin tip="Đang đăng bài ..."
+          spinning={posting}
+        >
+          <div className='top-bar'>
+            <p style={{ marginBottom: 0 }}>Đăng bài</p>
+            <a className='close-button' style={{ marginRight: 'auto', marginBottom: 0, float: 'right' }}>x</a>
           </div>
-          <Button type='primary' style={{ display: 'block', width: '100%' }} onClick={onSubmitPost}>Đăng</Button>
-        </div>
+          <Divider style={{ margin: '10px 0 20px 0' }} />
+          <div className='main'>
+            <Avatar size={45} src='https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-9/p720x720/60729624_1644917328985948_4362762753471938560_o.jpg?_nc_cat=100&_nc_ohc=_iULebdWibwAQmWeGhWMtAlJf4I4rF1MuehfEw2ervkmfYQl9Jj1C_8rA&_nc_ht=scontent.fsgn5-5.fna&oh=d36be4e73e04d17136dc1c843b6f0cea&oe=5E8422FD' />
+            <TextArea
+              value={desc}
+              className='text'
+              placeholder="Bạn có đang muốn chia sẻ cuốn sách nào không ?"
+              autoSize={{ minRows: 1, maxRows: 50 }}
+              style={{ borderColor: 'transparent', fontSize: '18px' }}
+              onChange={(e) => setDesc(e.target.value)}
+            />
+          </div>
+          {/* <Divider style={{marginBottom: '15px'}}/> */}
+          <div className='bottom-bar'>
+            <div className='tool-bar'>
+              <Upload
+                name="avatar"
+                listType="picture-card"
+                className="avatar-uploader"
+                showUploadList={false}
+                action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                beforeUpload={beforeUpload}
+                onChange={handleChange}
+              >
+                {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+              </Upload>
+              <div className='input-form'>
+                <p style={{ marginBottom: '5px', color: '#B8BCBC' }}>Dòng này được thêm vào cho đỡ trống ...</p>
+                <Input placeholder='Tiêu đề...' onChange={(e) => setTitle(e.target.value)} value = {title} name='title' />
+                <Input placeholder='Thể loại...'  onChange={(e) => setKind(e.target.value)} value={kind} name='kind' />
+              </div>
+            </div>
+            {
+              !isLoading && (
+                <Button type='primary' style={{ display: 'block', width: '100%' }} onClick={onSubmitPost}>Đăng</Button>
+              )
+            }
+          </div>
+        </Spin>
       </div>
+
     </>
   )
 }

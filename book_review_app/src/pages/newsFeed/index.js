@@ -15,26 +15,34 @@ import './index.scss'
 //import HOC
 import withAuth from '../../components/utils/hoc/authUser'
 
+//import redux
+import { useSelector, useDispatch } from 'react-redux'
+import { setPost } from '../../actions/setPost'
+
 
 
 function Index(props) {
   const [visibleFirstTime, setVisibleFirstTime] = useState(false)
+  const { currentUser } = props  
   const [postList, setPostList] = useState([])
-  const { currentUser } = props
+  //redux
+  const posts = useSelector(state => state.postReducer)
+  const dispatch = useDispatch()
 
   useEffect(() => {
-    console.log('asdasdasd')
     axios({
       method: 'get',
       url: 'http://localhost:8080/reviewbook/review/post',
 
-    }).then((res) => {
+    }).then( (res) => {
+      dispatch(setPost(res.data))
       setPostList(res.data)
     })
   }, [] )
 
   const loadPosts = () => {
-    return postList.map((v, k) => {
+    const list = posts ? posts : postList
+    return list.map((v, k) => {
       let value = Object.values(v)[0]
       let postUser = {
         avatar: '',
@@ -48,15 +56,12 @@ function Index(props) {
         postTime={value.time}
         postDay={value.date}
       />
-    })
+    }) 
   }
 
 
   return (
     <>
-    {
-      console.log(props.currentUser)
-    }
       <FirstRegister visible={visibleFirstTime} onCancel={() => setVisibleFirstTime(false)} />
       <NavBar />
       <div className='content'>
