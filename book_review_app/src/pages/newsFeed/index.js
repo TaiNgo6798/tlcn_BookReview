@@ -22,6 +22,9 @@ import { setPost } from '../../actions/posts/setPost'
 
 import firebase from "firebase";
 import { loadMore } from '../../actions/posts/loadMore'
+import { postNew, removeNewPost } from '../../firebase/my-firebase'
+
+
 
 
 function Index(props) {
@@ -38,7 +41,11 @@ function Index(props) {
       method: 'get',
       url: `http://localhost:8080/reviewbook/review/post/${lastPost.numberTime}`,
     }).then((res) => {
+      postNew.map(v => {
+        res.data.unshift(v)
+      })
       dispatch(loadMore(res.data))
+      removeNewPost()
     })
   })
 
@@ -67,14 +74,13 @@ function Index(props) {
         likeCount='123'
         content={value.desc}
         postTime={value.time}
-        postDay={value.date}
       />
     })
   }
 
-  firebase.database().ref().child("Reviews").on('child_added', function (snapshot) {
+  // firebase.database().ref().child("Reviews").on('child_added', function (snapshot) {
 
-  })
+  // })
 
   return (
     <>

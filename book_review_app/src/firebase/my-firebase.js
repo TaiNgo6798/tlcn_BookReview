@@ -18,7 +18,11 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const dateNow = Date.now();
-const postNew = []; 
+var postNew = []; 
+
+const removeNewPost = () => {
+    postNew = []
+}
 
 firebase
   .database()
@@ -28,7 +32,7 @@ firebase
     if(dateNow < snapshot.val()['numberTime']){
       var obj = {};
       obj[snapshot.key] = snapshot.val();
-      postNew.unshift(obj);
+      postNew.push(obj);
     }
   });
 
@@ -51,4 +55,4 @@ const uploadStorage = async file => {
   return result;
 };
 
-export { uploadStorage,postNew };
+export { uploadStorage,postNew, removeNewPost };
