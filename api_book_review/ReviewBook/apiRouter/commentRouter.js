@@ -65,5 +65,74 @@ commentRouter
       }
     })
   })
+  .put((req,res)=>{
+    var review_id = req.params.review_id;
+    var id_comment = req.body.id_comment;
+    var body = req.body.body;
+    var userID = firebase.auth().currentUser.uid;
+    commentRef = firebase.database().ref().child("Comments").child(review_id).child(id_comment);
+    commentRef.once('value',snapshot=>{
+      if(snapshot.exists()){
+        var comment = new Comment(
+          snapshot.val().id_user,
+          body,
+          snapshot.val().imageUser,
+          snapshot.val().nameUser,  
+        );
+        if(userID === comment.id_user){
+          commentRef.update(comment,error=>{
+            if (error) {
+              var errorMessage = error.message;
+              res.send(errorMessage);
+            } else {
+              res.send({
+                success: true,
+                message: "edited successfully"
+              });
+            }
+          })
+        }else{
+          res.send({
+            success: true,
+            message: "can't edit"
+          });
+        }
+      }else{
+        res.send({
+          success:false,
+          message:"no exists"
+        })
+      }
+    })
+  })
+  .delete((req,res)=>{
+    var review_id = req.params.review_id;
+    var id_comment = req.body.id_comment;
+  
+    var commentRef = firebase.database().ref().child('Comments').child(review_id).child(id_comment);
+    commentRef.remove().then(error=>{
+      if (error) {
+        res.send({
+            success:false,
+            message:error.message
+        })
+    } else {
+        var reviewRef = firebase.database().ref().child('Reviews').child(review_id);
+        reviewRef.child('comments').child(id_comment).remove().then(error=>{
+          if (error) {
+            res.send({
+                success:false,
+                message:error.message
+            })
+          } else {
+            res.send({
+              success: true,
+              message: "comment deleted successfully"
+            });
+          }
+        })
+      }
+    })
+  })
 
 module.exports = commentRouter;

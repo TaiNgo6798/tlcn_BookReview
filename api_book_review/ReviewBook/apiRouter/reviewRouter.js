@@ -36,18 +36,18 @@ reviewRouter.route("/review/post")
       });
     });
   })
-  //tra ve danh sach 10 bai viet cuoi cung 
+  //tra ve danh sach 10 bai viet cuoi cung
   .get((req,res)=>{
     var dbReviews = firebase.database().ref().child("Reviews").orderByChild('numberTime').limitToLast(10);
-    dbReviews.on('value', reviews=>{
+    dbReviews.once('value', reviews=>{
       var result = [];
       if(reviews.exists()){
-        reviews.forEach( child=>{
+        reviews.forEach(child=>{
           var obj ={};
           obj[child.key] = child.val();
           result.unshift(obj);
         })       
-        res.send(result);
+        res.send(result); 
       }else{
         res.send({ 
           success: false
@@ -57,13 +57,13 @@ reviewRouter.route("/review/post")
   })
 
 reviewRouter.route("/review/post/:numberTime")
-//trả về 10 bài viết tiếp theo 
+//trả về 10 bài viết tiếp theo  
 .get((req,res)=>{
   var dbReviews = firebase.database().ref().child("Reviews").orderByChild('numberTime').endAt(Number(req.params.numberTime)).limitToLast(11);
-  dbReviews.on('value', reviews=>{
+  dbReviews.once('value', reviews=>{
     var result = [];
     if(reviews.exists()){
-      reviews.forEach( child=>{
+      reviews.forEach(child=>{
         var obj ={};
         obj[child.key] = child.val();
         result.unshift(obj);
