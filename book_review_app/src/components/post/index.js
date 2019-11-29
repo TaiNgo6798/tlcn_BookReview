@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react'
-import { Avatar, Icon, Comment, Tooltip, Input, Button } from 'antd'
+import { Avatar, Icon, Comment, Tooltip, Input, Button, Popover } from 'antd'
 import moment from 'moment'
+import htmlParser from 'react-html-parser'
 
 // import css
 import './index.scss'
@@ -9,34 +10,45 @@ const { TextArea } = Input;
 
 const Index = (props) => {
 
-const { comments, user, likeCount, img, content, postTime } = props
-const postDay2 = new Date(postTime)
-const { avatar, username } = user
+  const { comments, user, likes, img, content, postTime } = props
+  const postDay2 = new Date(postTime)
+  const { avatar, username } = user
   const [commentText, setCommentText] = useState('')
   const [showComment, setShowComment] = useState(false)
   const [showAllComment, setShowAllComment] = useState(false)
   const [botText, setBotText] = useState(true)
   const [commentData, setCommentData] = useState(comments ? comments : [])
 
-    const onChangeCommentHandler = (e) => {
-      setCommentText(e.target.value)
-    }
 
-    const postCommentHandler = () => {
-      let newComment = {
-        author: 'current user',
-        comment: commentText,
-        action: null,
-        likes: "0",
-        disLikes: "0"
-      }
-      commentData.push(newComment)
-      setCommentData([...commentData])
-      setCommentText('')
-      setShowComment(true)
-      setShowAllComment(true)
-      setBotText(false)
+  const whoLikes = () => {
+    let html = ``
+     Object.values(likes).forEach(v => {
+    html += `<p>${v}<p/>`
+    })
+    return htmlParser(html)
+  }
+  
+
+
+  const onChangeCommentHandler = (e) => {
+    setCommentText(e.target.value)
+  }
+
+  const postCommentHandler = () => {
+    let newComment = {
+      author: 'current user',
+      comment: commentText,
+      action: null,
+      likes: "0",
+      disLikes: "0"
     }
+    commentData.push(newComment)
+    setCommentData([...commentData])
+    setCommentText('')
+    setShowComment(true)
+    setShowAllComment(true)
+    setBotText(false)
+  }
 
   const renderComments = () => {
     const like = (k) => {
@@ -122,18 +134,18 @@ const { avatar, username } = user
       <div className='postForm'>
         <div className='header'>
           <div className='avatar'>
-            <Avatar size={45} src={avatar}/>
+            <Avatar size={45} src={avatar} />
           </div>
           <div className='username'>
             <p ><i>{username}</i></p>
             <div className='time'>
-                <a title={postTime}>{
+              <a title={postTime}>{
                 moment([postDay2.getFullYear(), postDay2.getMonth(), postDay2.getDate(), postDay2.getHours(), postDay2.getMinutes(), postDay2.getSeconds(), postDay2.getMilliseconds()])
-                .fromNow()
-                }</a>
+                  .fromNow()
+              }</a>
+            </div>
           </div>
-          </div>
-          
+
         </div>
         <div className='body'>
           <img src={img}></img>
@@ -146,11 +158,14 @@ const { avatar, username } = user
         </div>
 
         <div className='likeCount'>
-          {likeCount} lượt thích
+          <Popover content={whoLikes()}>
+            {Object.keys(likes).length} lượt thích
+            </Popover>
         </div>
 
+
         <div className='userContent'>
-          <p style={{margin: '0 5px 0 0'}}>{username}</p>
+          <p style={{ margin: '0 5px 0 0' }}>{username}</p>
           <p>{content}</p>
         </div>
 
@@ -199,7 +214,7 @@ const { avatar, username } = user
           )
         }
         <div className='postComment'>
-          <TextArea value={commentText} placeholder="Type comment here ..." autoSize  style={{border: 'none'}} onChange={(e) => {onChangeCommentHandler(e)}}/>
+          <TextArea value={commentText} placeholder="Type comment here ..." autoSize style={{ border: 'none' }} onChange={(e) => { onChangeCommentHandler(e) }} />
           <Button onClick={() => postCommentHandler()}>Đăng</Button>
         </div>
       </div>

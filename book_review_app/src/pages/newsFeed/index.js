@@ -71,7 +71,7 @@ function Index(props) {
       return <Post key={k}
         img={value.urlImage}
         user={postUser}
-        likeCount='123'
+        likes={value.likes ? value.likes: {}}
         content={value.desc}
         postTime={value.time}
       />

@@ -64,6 +64,12 @@
     padding: 0 20px;
     margin-top: .75em;
     font-weight: bold;
+    >:first-child{
+      &:hover{
+        cursor: pointer;
+      }
+    }
+
   }
 
   .userContent{
