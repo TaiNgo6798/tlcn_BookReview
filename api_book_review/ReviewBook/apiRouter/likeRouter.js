@@ -70,7 +70,7 @@ likeRouter.route("/review/like/:review_id")
                     })
                 }else{
                     var dbReview = firebase.database().ref().child('Reviews').child(review_id).child('likes');
-                    dbReview.update({[userID]:true},error=>{
+                    dbReview.update({[userID]:nameUser},error=>{
                         if (error) {
                             res.send({
                                 success:false,
