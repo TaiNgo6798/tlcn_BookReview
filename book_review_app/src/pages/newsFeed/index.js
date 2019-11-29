@@ -31,7 +31,6 @@ function Index(props) {
   //redux
   const posts = useSelector(state => state.postReducer)
   const dispatch = useDispatch()
-  const [data, setData] = useState([])
 
   useBottomScrollListener(() => {
     let lastPost =  Object.values(posts[posts.length-1])[0]
@@ -41,8 +40,6 @@ function Index(props) {
     }).then((res) => {
       dispatch(loadMore(res.data))
     })
-    
-    
   })
 
   useEffect(() => {
