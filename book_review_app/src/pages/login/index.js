@@ -14,7 +14,6 @@ import './index.scss'
 
 
 const Index = (props) => {
-
   const emailRef = useRef(null)
   const passwordRef = useRef(null)
   const [forgotForm, setForgotForm] = useState(false)
@@ -44,15 +43,8 @@ const Index = (props) => {
             email: emailRef.current.state.value,
             password: passwordRef.current.state.value
           }
-        }).then(function (res) {
+        }).then(async function (res) {
           if (res.data.success) {
-            // Swal.fire({
-            //   position: 'center',
-            //   type: 'success',
-            //   title: 'Đăng nhập thành công !',
-            //   showConfirmButton: false,
-            //   timer: 1500
-            // })
             props.history.push('/newsFeed')
           } else {
             Swal.fire({

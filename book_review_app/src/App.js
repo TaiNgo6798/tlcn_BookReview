@@ -7,7 +7,6 @@ import {
 } from "react-router-dom";
 import { routers } from './configs'
 import './App.css'
-// import pages
 
 
 const App = (props) => {

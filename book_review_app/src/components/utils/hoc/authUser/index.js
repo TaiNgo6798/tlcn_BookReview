@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import { Redirect } from 'react-router-dom'
 
+
 function withAuth(WrappedComponent) {
   return class index extends Component {
 
@@ -11,7 +12,7 @@ function withAuth(WrappedComponent) {
          user: null
       }
     }
-    
+
       componentDidMount() {
          axios({
         method: 'get',
@@ -23,10 +24,10 @@ function withAuth(WrappedComponent) {
           })
       })
     }
-    
   
     render() {
-      return  <WrappedComponent {...this.props} currentUser = {this.state.user}/>
+
+      return  <WrappedComponent {...this.props} currentUser={this.state.user}/>
     }
   }
 }

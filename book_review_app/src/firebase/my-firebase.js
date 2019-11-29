@@ -1,5 +1,9 @@
 import firebase from "firebase";
 import "firebase/storage";
+import { setPost } from '../actions/posts/setPost'
+import { useDispatch } from 'react-redux'
+
+
 
 var firebaseConfig = {
   apiKey: "AIzaSyAxsPNM6aufE4GYrx4Ia4C8GrzI4mAPX9g",
