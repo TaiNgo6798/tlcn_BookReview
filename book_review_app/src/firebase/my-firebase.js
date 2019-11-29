@@ -13,10 +13,20 @@ var firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-// firebase.database().ref().child("Reviews").on('child_added',function(snapshot){
-//   console.log(snapshot.key);
-// })
+const dateNow = Date.now();
+const postNew = []; 
 
+firebase
+  .database()
+  .ref()
+  .child("Reviews")
+  .on("child_added", function(snapshot) {
+    if(dateNow < snapshot.val()['numberTime']){
+      var obj = {};
+      obj[snapshot.key] = snapshot.val();
+      postNew.unshift(obj);
+    }
+  });
 
 const uploadStorage = async file => {
   var result = {};
@@ -37,4 +47,4 @@ const uploadStorage = async file => {
   return result;
 };
 
-export { uploadStorage };
+export { uploadStorage,postNew };
