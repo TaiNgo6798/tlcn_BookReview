@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../components/nav'
 import { Divider } from 'antd'
+import { useBottomScrollListener } from 'react-bottom-scroll-listener'
 //import components
 import Post from '../../components/post'
 import Infor from '../../components/infor'
@@ -17,28 +18,43 @@ import withAuth from '../../components/utils/hoc/authUser'
 
 //import redux
 import { useSelector, useDispatch } from 'react-redux'
-import { setPost } from '../../actions/setPost'
+import { setPost } from '../../actions/posts/setPost'
 
+import firebase from "firebase";
+import { loadMore } from '../../actions/posts/loadMore'
 
 
 function Index(props) {
   const [visibleFirstTime, setVisibleFirstTime] = useState(false)
-  const { currentUser } = props  
+  const { currentUser } = props
   const [postList, setPostList] = useState([])
   //redux
   const posts = useSelector(state => state.postReducer)
   const dispatch = useDispatch()
+  const [data, setData] = useState([])
+
+  useBottomScrollListener(() => {
+    let lastPost =  Object.values(posts[posts.length-1])[0]
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/reviewbook/review/post/${lastPost.numberTime}`,
+    }).then((res) => {
+      dispatch(loadMore(res.data))
+    })
+    
+    
+  })
 
   useEffect(() => {
     axios({
       method: 'get',
       url: 'http://localhost:8080/reviewbook/review/post',
 
-    }).then( (res) => {
+    }).then((res) => {
       dispatch(setPost(res.data))
       setPostList(res.data)
     })
-  }, [] )
+  }, [])
 
   const loadPosts = () => {
     const list = posts ? posts : postList
@@ -56,9 +72,12 @@ function Index(props) {
         postTime={value.time}
         postDay={value.date}
       />
-    }) 
+    })
   }
 
+  firebase.database().ref().child("Reviews").on('child_added', function (snapshot) {
+
+  })
 
   return (
     <>
@@ -70,7 +89,7 @@ function Index(props) {
         </div>
         <div className='wrapper'>
           <div className='center-content'>
-                <CreatePost />
+            <CreatePost />
             <div className='posts'>
               {loadPosts()}
             </div>

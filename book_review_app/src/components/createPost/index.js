@@ -8,7 +8,7 @@ import axios from 'axios'
 
 //redux
 import { useSelector, useDispatch } from 'react-redux'
-import { setPost } from '../../actions/setPost'
+import { setPost } from '../../actions/posts/setPost'
 
 
 const { TextArea } = Input

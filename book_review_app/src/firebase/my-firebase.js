@@ -1,5 +1,9 @@
 import firebase from "firebase";
 import "firebase/storage";
+import { setPost } from '../actions/posts/setPost'
+import { useDispatch } from 'react-redux'
+
+
 
 var firebaseConfig = {
   apiKey: "AIzaSyAxsPNM6aufE4GYrx4Ia4C8GrzI4mAPX9g",
@@ -12,10 +16,6 @@ var firebaseConfig = {
   measurementId: "G-GP50EN1R49"
 };
 firebase.initializeApp(firebaseConfig);
-
-// firebase.database().ref().child("Reviews").on('child_added',function(snapshot){
-//   console.log(snapshot.key);
-// })
 
 
 const uploadStorage = async file => {
