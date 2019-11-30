@@ -25,9 +25,17 @@ userRouter.route("/login").post((req, res) => {
     .auth()
     .signInWithEmailAndPassword(req.body.email, req.body.password)
     .then(function() {
-      res.send({
-        success: true,
-        message: "Logged in successfully"
+      var userID = firebase.auth().currentUser.uid;
+      userRef = firebase.database().ref().child('Users').child(userID);
+      userRef.once('value',snapshot=>{
+        if(snapshot.exists()){
+          res.send(snapshot.val());
+        }else{
+          res.send({
+            success: true,
+            message: "setting account"
+          })
+        }
       })
     })
     .catch(function(error) {
