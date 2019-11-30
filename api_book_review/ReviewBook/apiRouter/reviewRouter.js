@@ -14,12 +14,12 @@ reviewRouter.route("/review/post")
       var title = req.body.title;
       var kind = req.body.kind;
 
-      var user = firebase.auth().currentUser;
-      firebase.database().ref().child("Users/" + user.uid).once("value").then(function(snapshot) {
+      var userID = firebase.auth().currentUser.uid;
+      firebase.database().ref().child("Users/" + userID).once("value").then(function(snapshot) {
         var fName = snapshot.val() && snapshot.val().firstName;
         var sName = snapshot.val() && snapshot.val().secondName;
         var userName = fName + " " + sName;
-        var reviewData = new Review(title, kind, url, nameImage, desc, user.uid, userName);
+        var reviewData = new Review(title, kind, url, nameImage, desc, userID, userName);
 
         var newPostReviewRef = databaseRef.push();
         newPostReviewRef.set(reviewData, function(error) {
@@ -32,7 +32,11 @@ reviewRouter.route("/review/post")
               message: "post review successful"
             });
           }
-        });
+        }).catch(error=>{
+          res.send(error.message);
+        })
+      }).catch(error=>{
+        res.send(error.message);
       });
     });
   })

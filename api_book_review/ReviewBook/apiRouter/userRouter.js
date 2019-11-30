@@ -2,8 +2,11 @@ var firebase = require("firebase");
 var express = require("express");
 var User = require('./../model/user');
 global.XMLHttpRequest = require("xhr2");
+var jwt = require("jsonwebtoken");
+var superSecret = "datvuBookReview";
 
 const userRouter = express.Router();
+
 userRouter.route("/register").post((req, res) => {
   firebase
     .auth()
@@ -28,8 +31,12 @@ userRouter.route("/login").post((req, res) => {
       var userID = firebase.auth().currentUser.uid;
       userRef = firebase.database().ref().child('Users').child(userID);
       userRef.once('value',snapshot=>{
+        var token = createToken(snapshot.val());
         if(snapshot.exists()){
-          res.send(snapshot.val());
+          res.send({
+            [userID]:snapshot.val(),
+            token
+          });
         }else{
           res.send({
             success: true,
@@ -138,5 +145,16 @@ userRouter.route("/current")
     })
   })
 })
+
+function createToken(account) {
+  var token = jwt.sign(
+    account,
+    superSecret,
+    {
+      expiresIn: "24h" // expires in 24 hours
+    }
+  );
+  return token;
+}
 
 module.exports = userRouter;
