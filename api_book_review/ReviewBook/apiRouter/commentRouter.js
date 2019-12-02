@@ -8,8 +8,9 @@ commentRouter
   //luu 1 comment cua user vao co so du lieu
   .post((req, res) => {
     var body = req.body.body;
-    var imageUser = req.body.imageUser;
-    var nameUser = req.body.nameUser;
+    var user = req.decoded.user;
+    var imageUser = user.image;
+    var nameUser = user.firstName + ' ' + user.secondName;
     var review_id = req.params.review_id;
 
     var userID = req.decoded.userID;

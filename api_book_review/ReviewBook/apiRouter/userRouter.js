@@ -6,6 +6,14 @@ var jwt = require("jsonwebtoken");
 var superSecret = "datvuBookReview";
 
 const userRouter = express.Router();
+const noToken = {
+  "/review/post": "GET",
+  "/login": "POST",
+  "/setting": "POST",
+  "/forgot": "POST",
+};
+
+const tokenLogin ={}
 
 userRouter.route("/register").post((req, res) => {
   firebase
@@ -70,6 +78,22 @@ userRouter.route("/forgot").post((req, res) => {
       var errorMessage = error.message;
       res.send(errorMessage);
     });
+});
+
+
+userRouter.route("/logout")
+.post((req, res) => {
+  var token =
+      req.body.token || req.query.token || req.headers["x-access-token"];
+
+    // decode token
+    if (token) {
+      delete tokenLogin[token];
+      res.send({
+        success:true,
+        message:"logout successful"
+      })
+    }
 });
 
 userRouter.route("/setting").post((req, res) => {
@@ -164,25 +188,23 @@ userRouter
   });
 
 function createToken(userID,user) {
-  var token = jwt.sign({userID,user:user}, superSecret, {
+  var token = jwt.sign({
+    userID,
+    user:user
+  }, 
+  superSecret, {
     expiresIn: "24h" // expires in 24 hours
   });
+  tokenLogin[token] = true;
   return token;
 }
 
-const noToken = {
-  "/review/post": "GET",
-  "/login": "POST",
-  "/setting": "POST",
-  "/forgot": "POST"
-};
 
 userRouter.use(function(req, res, next) {
-  url = req.url;
-  method = req.method;
-  console.log(url,method);
+  var url = req.url;
+  var method = req.method;
   
-  if (noToken[url] === method) {
+  if (noToken[url] === method || method === "GET") {
     next();
   } else {
     // check header or url parameters or post parameters for token
@@ -190,7 +212,7 @@ userRouter.use(function(req, res, next) {
       req.body.token || req.query.token || req.headers["x-access-token"];
 
     // decode token
-    if (token) {
+    if (token && tokenLogin[token]) {
       // verifies secret and checks exp
       jwt.verify(token, superSecret, function(err, decoded) {
         if (err) {
@@ -205,6 +227,7 @@ userRouter.use(function(req, res, next) {
         }
       });
     } else {
+      delete tokenLogin[token];
       // ỉf there ỉs no token
       // return an HTTP response of 403 (access torbidden) and an error message
       return res
