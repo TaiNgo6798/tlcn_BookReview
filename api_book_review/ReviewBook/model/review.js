@@ -1,19 +1,20 @@
 class Review{
     constructor(
-        title,
         kind,
         urlImage,
         nameImage,
         desc,
         uid,
-        name
+        name,
+        urlUser
     ){
         this.kind = kind,
         this.urlImage = urlImage,
         this.nameImage = nameImage,
         this.desc = desc,
         this.uid = uid,
-        this.name = name,   
+        this.name = name,
+        this.urlUser = urlUser,
         this.likes = new Array();
         this.comments = new Array();
         this.shares = new Array();

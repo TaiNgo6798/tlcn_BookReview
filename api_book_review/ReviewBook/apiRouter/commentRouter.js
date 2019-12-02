@@ -12,7 +12,7 @@ commentRouter
     var nameUser = req.body.nameUser;
     var review_id = req.params.review_id;
 
-    const userID = firebase.auth().currentUser.uid;
+    var userID = req.decoded.userID;
     var comment = new Comment(userID, body, imageUser, nameUser);
     dbCommentRef = firebase
       .database()
@@ -69,7 +69,7 @@ commentRouter
     var review_id = req.params.review_id;
     var id_comment = req.body.id_comment;
     var body = req.body.body;
-    var userID = firebase.auth().currentUser.uid;
+    var userID = req.decoded.userID;
     commentRef = firebase.database().ref().child("Comments").child(review_id).child(id_comment);
     commentRef.once('value',snapshot=>{
       if(snapshot.exists()){
