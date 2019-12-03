@@ -137,6 +137,11 @@ const Index = (props) => {
     reader.readAsDataURL(img)
   }
 
+  const closeFormHandler = () => {
+    const closeBtn = window.document.querySelector('.close-button')
+    closeBtn.click()
+  }
+
   const uploadButton = (
     <div>
       <Icon type={isLoading ? 'loading' : 'plus'} />
@@ -146,7 +151,7 @@ const Index = (props) => {
 
   return (
     <>
-      <div className='body-fake'></div>
+      <div className='body-fake' onClick={() => closeFormHandler()}></div>
       <div className='createPostForm'>
         <Spin tip="Đang đăng bài ..."
           spinning={posting}

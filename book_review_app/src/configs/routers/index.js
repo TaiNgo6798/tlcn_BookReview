@@ -15,6 +15,9 @@ export const routers = [
     path: '/newsFeed',
     component: 'newsFeed'
   },
-
- 
+  {
+    exact: true,
+    path: '/profile',
+    component: 'profile'
+  },
 ]

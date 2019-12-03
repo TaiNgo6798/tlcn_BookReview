@@ -42,10 +42,11 @@ const Index = (props) => {
       <Spin spinning={loading}>
         <Modal
           visible={visible}
-          onCancel={() => { onCancel() }}
+          // onCancel={() => { onCancel() }}
           footer={null}
           width='556px'
-          className='login-form-forgot'
+          className='first-login-form'
+          
         >
           <div className='title'>Your information for first login !</div>
           <div className='text-1'>

@@ -9,9 +9,9 @@ const userRouter = express.Router();
 const noToken = {
   "/review/post": "GET",
   "/login": "OPTIONS",
-  "/setting": "POST",
-  "/forgot": "POST",
-  "/register":'OPTIONS'
+  "/setting": "OPTIONS",
+  "/forgot": "OPTIONS",
+  "/register": 'OPTIONS'
 };
 
 const tokenLogin ={}

@@ -1,16 +1,23 @@
-import React, { useState, useRef } from 'react'
-import { Avatar, Icon, Comment, Tooltip, Input, Button, Popover } from 'antd'
+import React, { useState, useRef, useEffect } from 'react'
+import { Avatar, Comment, Tooltip, Input, Button, Popover, Icon as Ico } from 'antd'
 import moment from 'moment'
 import htmlParser from 'react-html-parser'
-
+import { Icon } from 'react-icons-kit'
+import { heart } from 'react-icons-kit/fa/heart'
+import { heartO } from 'react-icons-kit/fa/heartO'
 // import css
 import './index.scss'
+import axios from 'axios'
+
+//redux
+import { useDispatch, useSelector } from 'react-redux'
+import { setPost } from '../../actions/posts/setPost'
+
 
 const { TextArea } = Input;
 
 const Index = (props) => {
-
-  const { comments, user, likes, img, content, postTime } = props
+  const { comments, user, likes, img, content, postTime, id, idCurrentUser } = props
   const postDay2 = new Date(postTime)
   const { avatar, username } = user
   const [commentText, setCommentText] = useState('')
@@ -18,17 +25,32 @@ const Index = (props) => {
   const [showAllComment, setShowAllComment] = useState(false)
   const [botText, setBotText] = useState(true)
   const [commentData, setCommentData] = useState(comments ? comments : [])
+  const [likeCount, setLikeCount] = useState(Object.keys(likes).length)
 
+  useEffect(() => {
+    const likeBtn = window.document.querySelector(`[id=${id}]`)
+    likeBtn.addEventListener('click', () => {
+      likeBtn.classList.toggle('isLiked')
+    })
+  }, [])
 
   const whoLikes = () => {
     let html = ``
-     Object.values(likes).forEach(v => {
-    html += `<p>${v}<p/>`
+    Object.values(likes).forEach(v => {
+      html += `<p>${v}<p/>`
     })
     return htmlParser(html)
   }
-  
 
+  const likeHandler = () => { 
+    axios({
+      method: 'post',
+      url: `http://localhost:8080/reviewbook/review/like/${id}?token=${localStorage.getItem('token')}`,
+      
+    }).then(() => {
+      
+    })
+  }
 
   const onChangeCommentHandler = (e) => {
     setCommentText(e.target.value)
@@ -151,15 +173,14 @@ const Index = (props) => {
           <img src={img}></img>
         </div>
         <div className='likes'>
-          <Icon style={{ fontSize: '24px' }} type="like" />
-          <Icon style={{ fontSize: '24px' }} type="heart" />
-          <Icon style={{ fontSize: '24px' }} type="message" onClick={() => { setShowComment(!showComment) }} />
-          <Icon style={{ fontSize: '24px' }} type="link" />
+          <Icon size={24} icon={heart} className={Object.keys(likes).indexOf(idCurrentUser) !== -1 ? 'isLiked': ''} id={id} onClick={() => likeHandler()}/>
+          <Ico style={{ fontSize: '24px' }} type="message" onClick={() => { setShowComment(!showComment) }} />
+          <Ico style={{ fontSize: '24px' }} type="link" />
         </div>
 
         <div className='likeCount'>
           <Popover content={whoLikes()}>
-            {Object.keys(likes).length} lượt thích
+            {likeCount} lượt thích
             </Popover>
         </div>
 

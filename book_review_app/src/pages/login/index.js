@@ -10,15 +10,16 @@ import ForgotForm from './forgot-form'
 
 // import css
 import './index.scss'
-
+//redux
+import { useDispatch } from 'react-redux'
+import { setUser } from '../../actions/user/setUser'
 
 
 const Index = (props) => {
   const emailRef = useRef(null)
   const passwordRef = useRef(null)
   const [forgotForm, setForgotForm] = useState(false)
-  const [isLogin, setIsLogin] = useState(true)
-
+  const dispatch = useDispatch()
   const registerClick = () => {
     const loginForm = window.document.querySelector('.login')
      loginForm.classList.toggle('hide')
@@ -35,7 +36,6 @@ const Index = (props) => {
     props.form.validateFields((err, values) => {
       if (!err) {
         // props.history.push('/newsFeed')
-
         axios({
           method: 'post',
           url: 'http://localhost:8080/reviewbook/login',
@@ -44,7 +44,15 @@ const Index = (props) => {
             password: passwordRef.current.state.value
           }
         }).then(async function (res) {
-          if (res.data.success) {
+          console.log(res)
+          if (res.data.token || res.data.success === true) {
+            // let user = {
+            //   id: Object.keys(res.data)[0],
+            //   infor: Object.values(res.data)[0]
+            // }
+            //luu token 
+            localStorage.setItem('token', Object.values(res.data)[1])
+            localStorage.setItem('user', Object.values(res.data)[0])
             props.history.push('/newsFeed')
           } else {
             Swal.fire({
@@ -69,8 +77,6 @@ const Index = (props) => {
                 <div className='left-image'></div>
                 <div className='right-image'></div>
               </div>
-     
-
             <div className='form-center login'>
               <h1 style={{ display: 'block', textAlign: 'center' }}>Login</h1>
               <Form onSubmit={handleSubmit} className="login-form">
@@ -116,8 +122,6 @@ const Index = (props) => {
               <h2 style={{ display: 'block', textAlign: 'center' }}>Register</h2>
               <RegisterForm className='form-register' backLogin={() => registerClick()} />
             </div>
-
-
         <ForgotForm onCancel={() => setForgotForm(false)} visible={forgotForm} />
 
       </div>

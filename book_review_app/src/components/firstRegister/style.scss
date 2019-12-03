@@ -1,12 +1,9 @@
-
-
-
-.after-Regis-Form{
+.first-login-form {
 	.ant-modal-content {
 		top: 50px;
-		width: 556px;
+		width: 500px;
 		.ant-modal-body {
-			padding: 46px 53px 65px 53px;
+			padding: 45px;
 			.title {
 				color: cornflowerblue;
 				font-size: 24px;
@@ -15,24 +12,10 @@
 				margin-bottom: 40px;
 				text-align: center;
 			}
-			.text-1 {
-				color: #666666;
-				font-size: 16px;
-				font-weight: 600;
-				letter-spacing: 0.01em;
-				text-align: center;
-			}
-			.text-2 {
-				color: #999999;
-				font-size: 14px;
-				letter-spacing: 0.01em;
-				margin-bottom: 19px;
-				text-align: center;
-			}
 			
 			.ant-btn,
 			.ant-input-lg {
-				height: 50px;
+				height: 45px;
 			}
 
 			.ant-input-lg {
@@ -41,8 +24,8 @@
 			}
 
 			.btn-innos{
-				height: 50px;
-				width: 450px;
+				height: 40px;
+				width: 100%;
 			}
 
 		}

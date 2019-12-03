@@ -28,8 +28,9 @@ import { postNew, removeNewPost } from '../../firebase/my-firebase'
 
 
 function Index(props) {
-  const [visibleFirstTime, setVisibleFirstTime] = useState(false)
+  const [visibleFirstTime, setVisibleFirstTime] = useState(true)
   const { currentUser } = props
+  const idCurrent = currentUser ? Object.keys(currentUser)[0] : ''
   const [postList, setPostList] = useState([])
   //redux
   const posts = useSelector(state => state.postReducer)
@@ -41,9 +42,11 @@ function Index(props) {
       method: 'get',
       url: `http://localhost:8080/reviewbook/review/post/${lastPost.numberTime}`,
     }).then((res) => {
+      console.log(res.data)
       postNew.map(v => {
         res.data.unshift(v)
       })
+      //console.log(res.data)
       dispatch(loadMore(res.data))
       removeNewPost()
     })
@@ -61,21 +64,30 @@ function Index(props) {
   }, [])
 
   const loadPosts = () => {
-    const list = posts ? posts : postList
-    return list.map((v, k) => {
-      let value = Object.values(v)[0]
-      let postUser = {
-        avatar: '',
-        username: value.name
-      }
-      return <Post key={k}
-        img={value.urlImage}
-        user={postUser}
-        likes={value.likes ? value.likes: {}}
-        content={value.desc}
-        postTime={value.time}
-      />
-    })
+    const list = (posts ? posts : postList) 
+    try{
+      return list.map((v, k) => {
+        let value = Object.values(v)[0]
+        let id = Object.keys(v)[0] //id bai viet
+        let postUser = {
+          avatar: '',
+          username: value.name
+        }
+        return <Post key={k}
+          img={value.urlImage}
+          user={postUser} // nguoi dang
+          likes={value.likes ? value.likes: {}}
+          content={value.desc}
+          postTime={value.time}
+          id={id}
+          idCurrentUser={idCurrent}
+        />
+      })
+    }
+    catch{
+      return ''
+    }
+     
   }
 
   // firebase.database().ref().child("Reviews").on('child_added', function (snapshot) {
@@ -98,7 +110,7 @@ function Index(props) {
             </div>
           </div>
           <div className='infor'>
-            <Infor user={currentUser} />
+            <Infor user={currentUser ? Object.values(currentUser)[0] : {avatar: '', firstName: 'anonymous'}} />
           </div>
         </div>
       </div>
