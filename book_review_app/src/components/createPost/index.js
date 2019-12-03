@@ -14,6 +14,8 @@ import { setPost } from '../../actions/posts/setPost'
 const { TextArea } = Input
 
 const Index = (props) => {
+  const { user } = props
+  const { image } = user
   const [isLoading, setIsLoading] = useState(false)
   const [imageUrl, setImageUrl] = useState('')
   const [url, setUrl] = useState('')
@@ -32,7 +34,7 @@ const Index = (props) => {
     setPosting(true)
     axios({
       method: 'post',
-      url: 'http://localhost:8080/reviewbook/review/post',
+      url: `http://localhost:8080/reviewbook/review/post?token=${localStorage.getItem('token')}`,
       data: {
         nameImage,
         desc,
@@ -43,7 +45,7 @@ const Index = (props) => {
     }).then(() => {
       axios({
         method: 'get',
-        url: 'http://localhost:8080/reviewbook/review/post',
+        url: `http://localhost:8080/reviewbook/review/post`,
 
       }).then( (res) => {
         dispatch(setPost(res.data))
@@ -162,9 +164,9 @@ const Index = (props) => {
           </div>
           <Divider style={{ margin: '10px 0 20px 0' }} />
           <div className='main'>
-            <Avatar size={45} src='https://scontent.fsgn5-5.fna.fbcdn.net/v/t1.0-9/p720x720/60729624_1644917328985948_4362762753471938560_o.jpg?_nc_cat=100&_nc_ohc=_iULebdWibwAQmWeGhWMtAlJf4I4rF1MuehfEw2ervkmfYQl9Jj1C_8rA&_nc_ht=scontent.fsgn5-5.fna&oh=d36be4e73e04d17136dc1c843b6f0cea&oe=5E8422FD' />
+            <Avatar size={45} src={image ? image : ''} />
             <TextArea
-              value={desc}
+              setfieldvalue={desc}
               className='text'
               placeholder="Bạn có đang muốn chia sẻ cuốn sách nào không ?"
               autoSize={{ minRows: 1, maxRows: 50 }}
@@ -188,8 +190,8 @@ const Index = (props) => {
               </Upload>
               <div className='input-form'>
                 <p style={{ marginBottom: '5px', color: '#B8BCBC' }}>Dòng này được thêm vào cho đỡ trống ...</p>
-                <Input placeholder='Tiêu đề...' onChange={(e) => setTitle(e.target.value)} value = {title} name='title' />
-                <Input placeholder='Thể loại...'  onChange={(e) => setKind(e.target.value)} value={kind} name='kind' />
+                <Input placeholder='Tiêu đề...' onChange={(e) => setTitle(e.target.value)} setfieldvalue = {title} name='title' />
+                <Input placeholder='Thể loại...'  onChange={(e) => setKind(e.target.value)} setfieldvalue={kind} name='kind' />
               </div>
             </div>
             {

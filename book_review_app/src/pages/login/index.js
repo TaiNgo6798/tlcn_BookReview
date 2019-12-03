@@ -44,7 +44,6 @@ const Index = (props) => {
             password: passwordRef.current.state.value
           }
         }).then(async function (res) {
-          console.log(res)
           if (res.data.token || res.data.success === true) {
             // let user = {
             //   id: Object.keys(res.data)[0],
@@ -52,7 +51,18 @@ const Index = (props) => {
             // }
             //luu token 
             localStorage.setItem('token', Object.values(res.data)[1])
-            localStorage.setItem('user', Object.values(res.data)[0])
+            let { firstName, secondName, gender, birthday, email, image, phone } = Object.values(res.data)[0]
+            let user = {
+              id: Object.keys(res.data)[0],
+              firstName,
+              lastName: secondName,
+              gender,
+              birthday,
+              email,
+              image,
+              phone
+            }
+            localStorage.setItem('user', JSON.stringify(user))
             props.history.push('/newsFeed')
           } else {
             Swal.fire({

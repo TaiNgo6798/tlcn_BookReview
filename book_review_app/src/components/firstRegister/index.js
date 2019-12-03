@@ -1,35 +1,55 @@
 import React, { useRef, useState } from 'react'
-import { Modal, Form, Input, Button, Spin } from 'antd'
+import { Modal, Form, Input, Button, Spin, DatePicker, Select } from 'antd'
 import axios from 'axios'
+import moment from 'moment'
 // import css
 import '../firstRegister/style.scss'
 
 const Index = (props) => {
-
+  const { setCurrentUser } = props
   const { getFieldDecorator } = props.form
-
-  const { visible, onCancel } = props
-
-
+  const { Option } = Select
+  const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
   const [loading, setLoading] = useState(false)
+  const [visible, setVisible] = useState(true)
 
+  const onCancel = () => {
+    setVisible(false)
+  }
+ 
   const settingHandler = (e) => {
     e.preventDefault()
     props.form.validateFields((err, values) => {
       if (!err) {
-        const { firstName, lastName, gender, phone } = values
+        const { firstname, lastname, gender, phone, birthday } = values
         setLoading(true)
+        let birthdayGood = new Date(birthday)
         axios({
           method: 'post',
           url: 'http://localhost:8080/reviewbook/setting',
           data: {
-            firstName,
-            secondName: lastName,
+            fName: firstname,
+            sName: lastname,
             gender,
+            phone,
+            birthday: birthdayGood
+          }
+        }).then((res) => {
+          setLoading(false)
+          localStorage.setItem('token', res.data.token)
+          let { firstName, secondName, gender, birthday, email, image, phone } = Object.values(res.data)[0]
+          let user = {
+            id: Object.keys(res.data)[0],
+            firstName,
+            lastName: secondName,
+            gender,
+            birthday,
+            email,
+            image,
             phone
           }
-        }).then(() => {
-          setLoading(true)
+          localStorage.setItem('user', JSON.stringify(user))
+          setCurrentUser(user)
           onCancel()
         })
       }
@@ -39,42 +59,35 @@ const Index = (props) => {
 
   return (
     <>
-      <Spin spinning={loading}>
-        <Modal
-          visible={visible}
-          // onCancel={() => { onCancel() }}
-          footer={null}
-          width='556px'
-          className='first-login-form'
-          
-        >
+      <Modal
+        visible={visible}
+        onCancel={() => { onCancel() }}
+        footer={null}
+        width='556px'
+        className='first-login-form'
+      >
+        <Spin spinning={loading}>
           <div className='title'>Your information for first login !</div>
-          <div className='text-1'>
-
-          </div>
-          <div className='text-2'>
-
-          </div>
           <Form >
             <Form.Item>
               {getFieldDecorator('firstname', {
                 rules: [
-                  { required: true, message: 'Vui lòng nhập địa chỉ email' }
+                  { required: true, message: 'Vui lòng nhập tên của bạn' }
                 ]
               })(<Input
-                placeholder='First Name'
-                
+                placeholder='Tên và chữ lót'
+
                 size='large'
               />)}
             </Form.Item>
             <Form.Item>
               {getFieldDecorator('lastname', {
                 rules: [
-                  { required: true, message: 'Vui lòng nhập địa chỉ email' }
+                  { required: true, message: 'Vui lòng nhập họ của bạn' }
                 ]
               })(<Input
-                placeholder='Last Name'
-                
+                placeholder='Họ'
+
                 size='large'
               />)}
             </Form.Item>
@@ -83,11 +96,17 @@ const Index = (props) => {
                 rules: [
                   { required: true, message: 'Vui lòng nhập địa chỉ email' }
                 ]
-              })(<Input
-                placeholder='Gender'
-                
-                size='large'
-              />)}
+              })(
+                <Select
+                  placeholder='Giới tính'
+                  setfieldvalue="Nam"
+                  style={{ width: '100%', fontSize: '18px' }}
+                  size={"large"}
+                >
+                  <Option setfieldvalue="male" key='male'>Nam</Option>
+                  <Option setfieldvalue="female" key='female'>Nữ</Option>
+                </Select>
+              )}
             </Form.Item>
             <Form.Item>
               {getFieldDecorator('phone', {
@@ -95,9 +114,20 @@ const Index = (props) => {
                   { required: true, message: 'Vui lòng nhập địa chỉ email' }
                 ]
               })(<Input
-                placeholder='Phone'
-               
+                placeholder='Số điện thoại'
                 size='large'
+              />)}
+            </Form.Item>
+
+            <Form.Item>
+              {getFieldDecorator('birthday', {
+                rules: [
+                  { required: true, message: 'Vui lòng nhập ngày sinh của bạn' }
+                ]
+              })(<DatePicker
+                style={{ width: '100%' }}
+                format={dateFormatList}
+                placeholder='Ngày sinh'
               />)}
             </Form.Item>
 
@@ -114,8 +144,9 @@ const Index = (props) => {
             </Button>
             </Form.Item>
           </Form>
-        </Modal>
-      </Spin>
+        </Spin>
+      </Modal>
+
     </>
   )
 }

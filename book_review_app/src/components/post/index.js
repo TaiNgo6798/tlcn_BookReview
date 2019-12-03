@@ -25,9 +25,18 @@ const Index = (props) => {
   const [showAllComment, setShowAllComment] = useState(false)
   const [botText, setBotText] = useState(true)
   const [commentData, setCommentData] = useState(comments ? comments : [])
-  const [likeCount, setLikeCount] = useState(Object.keys(likes).length)
+  const [likeLocal, setLikeLocal] = useState([])
 
   useEffect(() => {
+    let likeList = []
+    Object.keys(likes).forEach((v, k) => {
+      likeList.push({
+        id: v,
+        name: Object.values(likes)[k]
+      })
+    })
+    setLikeLocal(likeList)
+    
     const likeBtn = window.document.querySelector(`[id=${id}]`)
     likeBtn.addEventListener('click', () => {
       likeBtn.classList.toggle('isLiked')
@@ -36,21 +45,36 @@ const Index = (props) => {
 
   const whoLikes = () => {
     let html = ``
-    Object.values(likes).forEach(v => {
-      html += `<p>${v}<p/>`
+    likeLocal.forEach(v => {
+      html += `<p>${v.name}<p/>`
     })
     return htmlParser(html)
   }
 
-  const likeHandler = () => { 
+  const likeHandler = () => {
+    const likeBtn = window.document.querySelector(`[id=${id}]`)
+    if(likeBtn.classList.contains('isLiked')){
+      console.log('liked !')
+      likeLocal.push({
+        id: idCurrentUser,
+        name: `${JSON.parse(localStorage.getItem('user')).firstName}  ${JSON.parse(localStorage.getItem('user')).lastName}`
+      })
+      setLikeLocal([...likeLocal])
+    }
+    else {
+      console.log('disliked !')
+      setLikeLocal([...likeLocal.filter(v => v.id !== idCurrentUser)])
+    }
+
     axios({
       method: 'post',
       url: `http://localhost:8080/reviewbook/review/like/${id}?token=${localStorage.getItem('token')}`,
-      
+
     }).then(() => {
-      
+     
     })
   }
+
 
   const onChangeCommentHandler = (e) => {
     setCommentText(e.target.value)
@@ -173,14 +197,14 @@ const Index = (props) => {
           <img src={img}></img>
         </div>
         <div className='likes'>
-          <Icon size={24} icon={heart} className={Object.keys(likes).indexOf(idCurrentUser) !== -1 ? 'isLiked': ''} id={id} onClick={() => likeHandler()}/>
+          <Icon size={24} icon={heart} className={Object.keys(likes).indexOf(idCurrentUser) !== -1 ? 'isLiked' : ''} id={id} onClick={() => likeHandler()} />
           <Ico style={{ fontSize: '24px' }} type="message" onClick={() => { setShowComment(!showComment) }} />
           <Ico style={{ fontSize: '24px' }} type="link" />
         </div>
 
         <div className='likeCount'>
           <Popover content={whoLikes()}>
-            {likeCount} lượt thích
+            {likeLocal.length} lượt thích
             </Popover>
         </div>
 
@@ -235,7 +259,7 @@ const Index = (props) => {
           )
         }
         <div className='postComment'>
-          <TextArea value={commentText} placeholder="Type comment here ..." autoSize style={{ border: 'none' }} onChange={(e) => { onChangeCommentHandler(e) }} />
+          <TextArea setfieldvalue={commentText} placeholder="Type comment here ..." autoSize style={{ border: 'none' }} onChange={(e) => { onChangeCommentHandler(e) }} />
           <Button onClick={() => postCommentHandler()}>Đăng</Button>
         </div>
       </div>

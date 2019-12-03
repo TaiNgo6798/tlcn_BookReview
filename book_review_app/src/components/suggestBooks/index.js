@@ -66,7 +66,7 @@ const Index = () => {
 
   return (
     <>
-<List
+      <List
         className="demo-loadmore-list"
         loading={initLoading}
         itemLayout="horizontal"
@@ -77,10 +77,10 @@ const Index = () => {
             <Skeleton avatar title={false} loading={item.loading} active>
               <List.Item.Meta
                 avatar={
-                  <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
+                  <Avatar src="http://thuvien.hitu.edu.vn/image/catalog/sachhay/tuoi-tre-dang-gia-bao-nhieu-600x878.jpg" />
                 }
                 title={<a href="https://ant.design">{item.name.last}</a>}
-                description="Ant Design"
+                description="Nhà xuất bản trẻ"
               />
             </Skeleton>
           </List.Item>
