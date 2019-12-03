@@ -126,9 +126,25 @@ userRouter.route("/setting").post((req, res) => {
           var errorMessage = err.message;
           res.send(errorMessage);
         } else {
-          res.send({
-            success: true,
-            message: "account settings successfully"
+          var userID = firebase.auth().currentUser.uid;
+          userRef = firebase
+            .database()
+            .ref()
+            .child("Users")
+            .child(userID);
+          userRef.once("value", snapshot => {
+            var token = createToken(userID,snapshot.val());
+            if (snapshot.exists()) {
+              res.send({
+                [userID]: snapshot.val(),
+                token
+              });
+            } else {
+              res.send({
+                success: false,
+                message: "setting account"
+              });
+            }
           });
         }
       });
