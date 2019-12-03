@@ -8,9 +8,10 @@ var superSecret = "datvuBookReview";
 const userRouter = express.Router();
 const noToken = {
   "/review/post": "GET",
-  "/login": "POST",
+  "/login": "OPTIONS",
   "/setting": "POST",
   "/forgot": "POST",
+  "/register":'OPTIONS'
 };
 
 const tokenLogin ={}
@@ -203,6 +204,8 @@ function createToken(userID,user) {
 userRouter.use(function(req, res, next) {
   var url = req.url;
   var method = req.method;
+  console.log(method);
+  
   
   if (noToken[url] === method || method === "GET") {
     next();
