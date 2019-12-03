@@ -77,6 +77,7 @@ function Index(props) {
           img={value.urlImage}
           user={postUser} // nguoi dang
           likes={value.likes ? value.likes : {}}
+          commentCount={Object.keys(value.comments).length}
           content={value.desc}
           postTime={value.time}
           id={id}

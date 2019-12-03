@@ -62,18 +62,27 @@
     }
   }
 
+  .commentsCount{
+    >a{
+      color: #9a9a9a  !important
+    }
+  }
+
   .likeCount{
-    width: 100%;
-    display: flex;
-    padding: 0 20px;
-    margin-top: .75em;
     font-weight: bold;
     >:first-child{
       &:hover{
         cursor: pointer;
       }
     }
+  }
 
+  .likes-and-comments{
+    width: 100%;
+    display: flex;
+    padding: 0 20px;
+    margin-top: .75em;
+    justify-content: space-between;
   }
 
   .userContent{
@@ -110,6 +119,8 @@
     :last-child{
       border: none;
       box-shadow: none;
+      padding: 0;
+      margin-left: 4px;
     }
   }
 }
