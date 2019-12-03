@@ -28,7 +28,7 @@ import { postNew, removeNewPost } from '../../firebase/my-firebase'
 
 
 function Index(props) {
-  const [visibleFirstTime, setVisibleFirstTime] = useState(false)
+  const [visibleFirstTime, setVisibleFirstTime] = useState(true)
   const { currentUser } = props
   const idCurrent = currentUser ? Object.keys(currentUser)[0] : ''
   const [postList, setPostList] = useState([])
@@ -75,7 +75,7 @@ function Index(props) {
         }
         return <Post key={k}
           img={value.urlImage}
-          user={postUser}
+          user={postUser} // nguoi dang
           likes={value.likes ? value.likes: {}}
           content={value.desc}
           postTime={value.time}

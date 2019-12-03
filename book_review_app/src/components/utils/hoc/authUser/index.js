@@ -11,17 +11,6 @@ function withAuth(WrappedComponent) {
          user: null
       }
     }
-      componentDidMount() {
-         axios({
-        method: 'get',
-        url: 'http://localhost:8080/reviewbook/current',
-  
-      }).then((res) => {
-          this.setState({
-            user : res.data
-          })
-      })
-    }
   
     render() {
       return  <WrappedComponent {...this.props} currentUser={this.state.user}/>

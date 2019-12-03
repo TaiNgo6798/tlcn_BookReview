@@ -8,9 +8,10 @@ var superSecret = "datvuBookReview";
 const userRouter = express.Router();
 const noToken = {
   "/review/post": "GET",
-  "/login": "POST",
-  "/setting": "POST",
-  "/forgot": "POST",
+  "/login": "OPTIONS",
+  "/setting": "OPTIONS",
+  "/forgot": "OPTIONS",
+  "/register": 'OPTIONS'
 };
 
 const tokenLogin ={}

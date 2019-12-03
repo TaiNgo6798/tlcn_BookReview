@@ -45,12 +45,8 @@ const Index = (props) => {
   const likeHandler = () => { 
     axios({
       method: 'post',
-      url: `http://localhost:8080/reviewbook/review/like/${id}`,
-      data: {
-        imageUser: avatar,
-        nameUser: username,
-        review_id: id
-      }
+      url: `http://localhost:8080/reviewbook/review/like/${id}?token=${localStorage.getItem('token')}`,
+      
     }).then(() => {
       
     })

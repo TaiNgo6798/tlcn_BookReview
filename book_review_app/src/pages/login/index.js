@@ -44,14 +44,15 @@ const Index = (props) => {
             password: passwordRef.current.state.value
           }
         }).then(async function (res) {
-          if (res.data.token) {
-            let user = {
-              id: Object.keys(res.data)[0],
-              infor: Object.values(res.data)[0]
-            }
-            dispatch(setUser(user))
+          console.log(res)
+          if (res.data.token || res.data.success === true) {
+            // let user = {
+            //   id: Object.keys(res.data)[0],
+            //   infor: Object.values(res.data)[0]
+            // }
             //luu token 
             localStorage.setItem('token', Object.values(res.data)[1])
+            localStorage.setItem('user', Object.values(res.data)[0])
             props.history.push('/newsFeed')
           } else {
             Swal.fire({
