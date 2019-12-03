@@ -26,13 +26,14 @@ likeRouter.route("/review/like/:review_id")
 })
 //luu nguoi thich bai viet len db
 .post((req,res)=>{
-    var imageUser = req.body.imageUser;
-    var nameUser = req.body.nameUser;
+    var user = req.decoded.user;
+    var imageUser = user.image;
+    var nameUser = user.firstName + ' ' + user.secondName;
     var review_id = req.params.review_id;
     var like = new Like(imageUser,nameUser);
     console.log(review_id);
     
-    var userID = firebase.auth().currentUser.uid;
+    var userID = req.decoded.userID;
     var dblike = firebase.database().ref().child('Likes').child(review_id).child(userID);
     dblike.once('value',snapshot=>{
         if(snapshot.exists()){
