@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Input, Badge, Icon } from 'antd';
-
+import { withRouter } from 'react-router-dom'
 
 import './index.scss'
 
 const { Search } = Input;
 
-function Index() {
+function Index(props) {
 
   const [ messageCount, setMessageCount ] = useState(0)
   let heightChange = true
@@ -45,14 +45,14 @@ function Index() {
           />
         </div>
         <div className='notify'>
-          <Badge count={0}>
-          <Icon type="usergroup-delete" className='icon'/>
-          </Badge>
           <Badge count={messageCount}>
           <Icon type="mail"  className='icon'/>
           </Badge>
           <Badge count={5}>
           <Icon type="bell" className='icon'/>
+          </Badge>
+          <Badge count={0}>
+          <Icon type="user" className='icon' onClick={() => props.history.push('/profile')}/>
           </Badge>
         </div>
       </div>
@@ -60,4 +60,4 @@ function Index() {
   )
 }
 
-export default Index
+export default withRouter(Index)

@@ -107,7 +107,7 @@ userRouter.route("/current")
   userID = firebase.auth().currentUser.uid;
   dbUser = firebase.database().ref().child("Users").child(userID);
   dbUser.once('value').then((snapshot)=>{
-    res.send(snapshot.val());
+    res.send({[userID] : snapshot.val()});
   })
 })
 .put((req,res)=>{

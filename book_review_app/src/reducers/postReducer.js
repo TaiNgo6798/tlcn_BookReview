@@ -2,13 +2,14 @@
 export default (state = [], action) => {
   switch (action.type) {
     case 'setPost':
-      state = action.payload
-      return state
+      return state = action.payload
+      
     case 'loadMore':
       action.payload.map(v => {
         state.push(v)
       })
-      state = [...state]
+      return state = [...state]
+      
     default:
       return state
   }

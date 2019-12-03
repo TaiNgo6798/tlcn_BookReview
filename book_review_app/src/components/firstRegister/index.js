@@ -45,7 +45,7 @@ const Index = (props) => {
           onCancel={() => { onCancel() }}
           footer={null}
           width='556px'
-          className='login-form-forgot'
+          className='first-login-form'
         >
           <div className='title'>Your information for first login !</div>
           <div className='text-1'>
