@@ -16,6 +16,45 @@ const noToken = {
 
 const tokenLogin ={}
 
+userRouter.use(function(req, res, next) {
+  var url = req.url;
+  var method = req.method;
+  console.log(url,method);
+  
+  
+  if (noToken[url] === method || method === "GET") {
+    next();
+  } else {
+    // check header or url parameters or post parameters for token
+    var token =
+      req.body.token || req.query.token || req.headers["x-access-token"];
+
+    // decode token
+    if (token && tokenLogin[token]) {
+      // verifies secret and checks exp
+      jwt.verify(token, superSecret, function(err, decoded) {
+        if (err) {
+          return res.json({
+            success: false,
+            message: "Failed to authenticate token."
+          });
+        } else {
+          // if everythỉng is good, save to request for use in other routes
+          req.decoded = decoded;
+          next(); // make sure we go to the next routes and don't stop here
+        }
+      });
+    } else {
+      delete tokenLogin[token];
+      // ỉf there ỉs no token
+      // return an HTTP response of 403 (access torbidden) and an error message
+      return res
+        .status(403)
+        .send({ success: false, message: "No token provided." });
+    }
+  }
+});
+
 userRouter.route("/register").post((req, res) => {
   firebase
     .auth()
@@ -215,45 +254,5 @@ function createToken(userID,user) {
   tokenLogin[token] = true;
   return token;
 }
-
-
-userRouter.use(function(req, res, next) {
-  var url = req.url;
-  var method = req.method;
-  console.log(method);
-  
-  
-  if (noToken[url] === method || method === "GET") {
-    next();
-  } else {
-    // check header or url parameters or post parameters for token
-    var token =
-      req.body.token || req.query.token || req.headers["x-access-token"];
-
-    // decode token
-    if (token && tokenLogin[token]) {
-      // verifies secret and checks exp
-      jwt.verify(token, superSecret, function(err, decoded) {
-        if (err) {
-          return res.json({
-            success: false,
-            message: "Failed to authenticate token."
-          });
-        } else {
-          // if everythỉng is good, save to request for use in other routes
-          req.decoded = decoded;
-          next(); // make sure we go to the next routes and don't stop here
-        }
-      });
-    } else {
-      delete tokenLogin[token];
-      // ỉf there ỉs no token
-      // return an HTTP response of 403 (access torbidden) and an error message
-      return res
-        .status(403)
-        .send({ success: false, message: "No token provided." });
-    }
-  }
-});
 
 module.exports = userRouter;
