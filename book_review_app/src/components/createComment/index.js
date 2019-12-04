@@ -7,25 +7,13 @@ const { TextArea } = Input
 
 function Index(props) {
   const [commentText, setCommentText] = useState('')
-  const { idPost, idCurrentUser, setShowAllComment, setCommentData, commentData } = props
-  const currentUser = JSON.parse(localStorage.getItem('user'))
+  const { idPost, setShowAllComment } = props
 
   const onChangeCommentHandler = (e) => {
     setCommentText(e.target.value)
   }
 
   const postCommentHandler = () => {
-    let newComment = {
-      body: commentText,
-      id_user: idCurrentUser,
-      imageUser: currentUser.image,
-      nameUser: `${currentUser.firstName} ${currentUser.lastName}`,
-      time: moment().format()
-    }
-    let data = [...commentData]
-    data.unshift(newComment)
-    setCommentData([...data])
-
     axios({
       method: 'post',
       url: `http://localhost:8080/reviewbook/review/comment/${idPost}?token=${localStorage.getItem('token')}`,
@@ -35,7 +23,6 @@ function Index(props) {
     }).then(() => {
 
     })
-
     setShowAllComment(true)
     window.document.querySelector('#cmtText').value = ''
   }

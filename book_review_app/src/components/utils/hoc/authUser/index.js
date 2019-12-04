@@ -15,14 +15,16 @@ function withAuth(WrappedComponent) {
       axios({
         method: 'POST',
         url: `http://localhost:8080/reviewbook/current?token=${token}`
-      }).then(() => {
-        this.setState({
-          logged: true
-        })
-      }).catch(() => {
-        this.setState({
-          logged: false
-        })
+      }).then((res) => {
+        if(res.data.success === false){
+          this.setState({
+            logged: false
+          })
+        } else {
+          this.setState({
+            logged: true
+          })
+        }
       })
     }
     render() {

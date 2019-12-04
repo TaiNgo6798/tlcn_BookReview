@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import { Avatar, Comment, Tooltip, Input, Button, Popover, Icon as Ico, Spin, Menu, Dropdown } from 'antd'
 import moment from 'moment'
+import Swal from 'sweetalert2'
 import htmlParser from 'react-html-parser'
 import { Icon } from 'react-icons-kit'
 import { heart } from 'react-icons-kit/fa/heart'
@@ -9,6 +10,9 @@ import { heartO } from 'react-icons-kit/fa/heartO'
 import './index.scss'
 import axios from 'axios'
 import CreateComment from '../createComment'
+import { withRouter } from 'react-router-dom'
+import firebase from "firebase"
+
 
 
 const Index = (props) => {
@@ -21,6 +25,41 @@ const Index = (props) => {
   const [iconType, setIconType] = useState(Object.keys(likes).indexOf(idCurrentUser) !== -1 ? heart : heartO)
   const currentUser = JSON.parse(localStorage.getItem('user'))
   const [loadingCmt, setLoadingCmt] = useState(false)
+
+const dateNow = Date.now()
+const commentRef = firebase.database().ref().child("Comments").child(id)
+commentRef.on("child_added", function(snapshot) {
+  if(snapshot.val()['numberTime'] > dateNow){
+    var result = {
+      key:snapshot.key, 
+      value:snapshot.val()
+    }
+    let newCmt = {
+      id: result.key,
+      body: result.value.body,
+      id_user: result.value.id_user,
+      imageUser: result.value.imageUser,
+      nameUser: result.value.nameUser,
+      time: result.value.time
+    }
+    commentData.unshift(newCmt)
+    setCommentData([...commentData])
+    }
+})
+
+commentRef.on("child_changed", function(snapshot) {
+  var result = {
+    key:snapshot.key,
+    value:snapshot.val()
+  }
+  console.log(result)
+})
+
+commentRef.on("child_removed", function(snapshot) {
+  var result = snapshot.key
+  console.log(result)
+})
+  
 
   const menu = (
     <Menu>
@@ -88,8 +127,18 @@ const Index = (props) => {
   }
 
   const likeHandler = () => {
-    if (!currentUser) {
-      
+    if (!currentUser || !localStorage.getItem('token')) {
+      Swal.fire({
+        title: 'Đăng nhập để bắt đầu like nha !',
+        icon: 'warning',
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'OK'
+      }).then((result) => {
+        if (result.value) {
+          props.history.push('/')
+        }
+      })
     }
     else {
       const likeBtn = window.document.querySelector(`[id=${id}]`)
@@ -236,4 +285,4 @@ const Index = (props) => {
   )
 }
 
-export default Index
+export default withRouter(Index)
