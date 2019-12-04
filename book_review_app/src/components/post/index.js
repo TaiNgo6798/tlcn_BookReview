@@ -46,19 +46,22 @@ const Index = (props) => {
       url: `http://localhost:8080/reviewbook/review/comment/${id}`,
 
     }).then((res) => {
-      let arr = []
-      Object.keys(res.data).forEach((k, i) => {
-        let value = Object.values(res.data)[i]
-        arr.push({
-          id: k,
-          body: value.body,
-          id_user: value.id_user,
-          imageUser: value.imageUser,
-          nameUser: value.nameUser,
-          time: value.time
+      if (res.data.success !== false) {
+        let arr = []
+        Object.keys(res.data).forEach((k, i) => {
+          let value = Object.values(res.data)[i]
+          arr.push({
+            id: k,
+            body: value.body,
+            id_user: value.id_user,
+            imageUser: value.imageUser,
+            nameUser: value.nameUser,
+            time: value.time
+          })
         })
-      })
-      setCommentData(arr)
+        setCommentData(arr)
+      }
+
     })
   }, [])
 
@@ -96,36 +99,35 @@ const Index = (props) => {
 
 
   const onChangeCommentHandler = (e) => {
-    
+
 
     setCommentText(e.target.value)
   }
 
   const postCommentHandler = () => {
     let newComment = {
-        body: commentText,
-        id_user: idCurrentUser,
-        imageUser: currentUser.image,
-        nameUser: `${currentUser.firstName} ${currentUser.lastName}`,
-        time: moment().format()
+      body: commentText,
+      id_user: idCurrentUser,
+      imageUser: currentUser.image,
+      nameUser: `${currentUser.firstName} ${currentUser.lastName}`,
+      time: moment().format()
     }
     let data = [...commentData]
     data.unshift(newComment)
     setCommentData(data)
 
-    // axios({
-    //   method: 'post',
-    //   url: `http://localhost:8080/reviewbook/review/comment/${id}?token=${localStorage.getItem('token')}`,
-    //   data: {
-    //     body: commentText
-    //   }
-    // }).then(() => {
+    axios({
+      method: 'post',
+      url: `http://localhost:8080/reviewbook/review/comment/${id}?token=${localStorage.getItem('token')}`,
+      data: {
+        body: commentText
+      }
+    }).then(() => {
 
-    // })
+    })
 
     setShowAllComment(true)
     window.document.querySelector('#cmtText').value = ''
-
   }
 
   const renderComments = () => {
@@ -184,7 +186,7 @@ const Index = (props) => {
         </div>
         <div className='likes'>
           <Icon size={24} icon={iconType} className={Object.keys(likes).indexOf(idCurrentUser) !== -1 ? 'isLiked' : ''} id={id} onClick={() => likeHandler()} />
-          <Ico style={{ fontSize: '24px' }} type="message" onClick={() => { setShowComment(!showComment) }} onClick={() => setShowAllComment(true)}/>
+          <Ico style={{ fontSize: '24px' }} type="message" onClick={() => { setShowComment(!showComment) }} onClick={() => setShowAllComment(true)} />
           <Ico style={{ fontSize: '24px' }} type="link" />
         </div>
 
