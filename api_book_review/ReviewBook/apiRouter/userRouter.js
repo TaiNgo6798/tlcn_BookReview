@@ -8,10 +8,10 @@ var superSecret = "datvuBookReview";
 const userRouter = express.Router();
 const noToken = {
   "/review/post": "GET",
-  "/login": "OPTIONS",
-  "/setting": "OPTIONS",
-  "/forgot": "OPTIONS",
-  "/register": 'OPTIONS'
+  "/login": "POST",
+  "/setting": "POST",
+  "/forgot": "POST",
+  "/register": 'POST'
 };
 
 const tokenLogin ={}
@@ -22,7 +22,7 @@ userRouter.use(function(req, res, next) {
   console.log(url,method);
   
   
-  if (noToken[url] === method || method === "GET") {
+  if (noToken[url] === method || method === "GET" || method === "OPTIONS") {
     next();
   } else {
     // check header or url parameters or post parameters for token
