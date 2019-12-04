@@ -7,7 +7,7 @@ import './index.scss'
 const { Search } = Input;
 
 function Index(props) {
-
+  const currentUser = JSON.parse(localStorage.getItem('user'))
   const [ messageCount, setMessageCount ] = useState(0)
   let heightChange = true
   const loadNotify = () => {
@@ -52,7 +52,7 @@ function Index(props) {
           <Icon type="bell" className='icon'/>
           </Badge>
           <Badge count={0}>
-          <Icon type="user" className='icon' onClick={() => props.history.push('/profile')}/>
+          <Icon type="user" className='icon' onClick={() => props.history.push(`/profile/${currentUser.id}`)}/>
           </Badge>
         </div>
       </div>
