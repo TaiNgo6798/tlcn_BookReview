@@ -87,3 +87,19 @@ display: inherit !important;
   height: 200vh;
   width: 100vw;
 }
+
+.postComment{
+  width: 100%;
+  padding: 0 20px;
+  display: flex;
+  :first-child{
+    width: 90%;
+    margin-right: 2px;
+  }
+  :last-child{
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    margin-left: 4px;
+  }
+}

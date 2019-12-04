@@ -28,7 +28,7 @@
     "sweetalert2": "^8.19.0"
   },
   "scripts": {
-    "dev": "concurrently \"node ../api_book_review/ReviewBook/server\" \"npm start\" ",
+    "dev": "concurrently \"nodemon ../api_book_review/ReviewBook/server\" \"npm start\" ",
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",

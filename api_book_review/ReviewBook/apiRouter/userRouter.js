@@ -153,7 +153,7 @@ userRouter.route("/setting").post((req, res) => {
 
 userRouter
   .route("/current")
-  .get((req, res) => {
+  .post((req, res) => {
     userID = firebase.auth().currentUser.uid;
     dbUser = firebase
       .database()

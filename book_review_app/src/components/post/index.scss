@@ -18,10 +18,17 @@
   .header{
     display: flex;
     width: 100%;
-    padding: 20px;
+    padding: 18px 10px;
     align-items: center;
     >div{
       margin: 0 8px 0 0
+    }
+    .top-right{
+      margin-left: auto;
+      &:hover{
+        cursor: pointer;
+      }
+      color: #47A8FF;
     }
     .username{
       font-weight: 800;
@@ -108,19 +115,4 @@
     }
   }
 
-  .postComment{
-    width: 100%;
-    padding: 0 20px;
-    display: flex;
-    :first-child{
-      width: 90%;
-      margin-right: 2px;
-    }
-    :last-child{
-      border: none;
-      box-shadow: none;
-      padding: 0;
-      margin-left: 4px;
-    }
-  }
 }

@@ -7,8 +7,11 @@ import { uploadStorage } from '../../firebase/my-firebase'
 import axios from 'axios'
 
 //redux
-import { useSelector, useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { setPost } from '../../actions/posts/setPost'
+
+//import HOC
+import withAuth from '../../components/utils/hoc/authUser'
 
 
 const { TextArea } = Input
@@ -159,7 +162,7 @@ const Index = (props) => {
           spinning={posting}
         >
           <div className='top-bar'>
-            <p style={{ marginBottom: 0 }}>Đăng bài</p>
+            <h3 style={{ marginBottom: 0 }}>Đăng bài</h3>
             <a className='close-button' style={{ marginRight: 'auto', marginBottom: 0, float: 'right' }}>x</a>
           </div>
           <Divider style={{ margin: '10px 0 20px 0' }} />
@@ -207,4 +210,4 @@ const Index = (props) => {
   )
 }
 
-export default Index
+export default withAuth(Index)

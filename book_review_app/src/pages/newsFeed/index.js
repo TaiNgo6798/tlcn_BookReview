@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../components/nav'
-import { Skeleton } from 'antd'
+import { Skeleton, Empty  } from 'antd'
 import { useBottomScrollListener } from 'react-bottom-scroll-listener'
 //import components
 import Post from '../../components/post'
@@ -12,9 +12,6 @@ import axios from 'axios'
 
 // import css
 import './index.scss'
-
-//import HOC
-import withAuth from '../../components/utils/hoc/authUser'
 
 //import redux
 import { useSelector, useDispatch } from 'react-redux'
@@ -64,13 +61,13 @@ function Index(props) {
   }, [])
 
   const loadPosts = () => {
-
     const list = (posts ? posts : postList)
     try {
       return list.map((v, k) => {
         let value = Object.values(v)[0]
         let id = Object.keys(v)[0] //id bai viet
         let postUser = {
+          id: value.uid,
           avatar: value.urlUser,
           username: value.name
         }
@@ -82,14 +79,14 @@ function Index(props) {
           content={value.desc}
           postTime={value.time}
           id={id}
-          idCurrentUser={currentUser.id}
+          idCurrentUser={currentUser ? currentUser.id : null}
         />
       })
     }
-    catch{
-      
+    catch(err){
+      console.log(err)
+      return <Empty />
     }
-
   }
 
   // firebase.database().ref().child("Reviews").on('child_added', function (snapshot) {
@@ -125,4 +122,4 @@ function Index(props) {
   )
 }
 
-export default withAuth(Index)
+export default Index

@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Avatar, Comment, Tooltip, Input, Button, Popover, Icon as Ico } from 'antd'
+import { Avatar, Comment, Tooltip, Input, Button, Popover, Icon as Ico, Spin, Menu, Dropdown } from 'antd'
 import moment from 'moment'
 import htmlParser from 'react-html-parser'
 import { Icon } from 'react-icons-kit'
@@ -8,21 +8,30 @@ import { heartO } from 'react-icons-kit/fa/heartO'
 // import css
 import './index.scss'
 import axios from 'axios'
+import CreateComment from '../createComment'
 
-
-const { TextArea } = Input;
 
 const Index = (props) => {
   const { commentCount, user, likes, img, content, postTime, id, idCurrentUser } = props
   const postDay2 = new Date(postTime)
   const { avatar, username } = user
-  const [commentText, setCommentText] = useState('')
-  const [showComment, setShowComment] = useState(false)
   const [showAllComment, setShowAllComment] = useState(false)
   const [commentData, setCommentData] = useState([])
   const [likeLocal, setLikeLocal] = useState([])
   const [iconType, setIconType] = useState(Object.keys(likes).indexOf(idCurrentUser) !== -1 ? heart : heartO)
   const currentUser = JSON.parse(localStorage.getItem('user'))
+  const [loadingCmt, setLoadingCmt] = useState(false)
+
+  const menu = (
+    <Menu>
+      <Menu.Item>
+        <Ico type="edit" /> Edit this post
+      </Menu.Item>
+      <Menu.Item>
+        <Ico type="delete" /> Delete this post
+      </Menu.Item>
+    </Menu>
+  )
 
   useEffect(() => {
     let likeList = []
@@ -40,7 +49,11 @@ const Index = (props) => {
       likeBtn.classList.contains('isLiked') ?
         setIconType(heart) : setIconType(heartO)
     })
+  }, [])
 
+  const loadComments = () => {
+    setLoadingCmt(true)
+    setShowAllComment(true)
     axios({
       method: 'get',
       url: `http://localhost:8080/reviewbook/review/comment/${id}`,
@@ -59,11 +72,12 @@ const Index = (props) => {
             time: value.time
           })
         })
-        setCommentData(arr)
-      }
+        setCommentData([...arr.reverse()])
 
+      }
+      setLoadingCmt(false)
     })
-  }, [])
+  }
 
   const whoLikes = () => {
     let html = ``
@@ -74,61 +88,36 @@ const Index = (props) => {
   }
 
   const likeHandler = () => {
-    const likeBtn = window.document.querySelector(`[id=${id}]`)
-    if (likeBtn.classList.contains('isLiked')) {
-      console.log('liked !')
-      likeLocal.push({
-        id: idCurrentUser,
-        name: `${currentUser.firstName}  ${currentUser.lastName}`
-      })
-      setLikeLocal([...likeLocal])
+    if (!currentUser) {
+      
     }
     else {
-      console.log('disliked !')
-      setLikeLocal([...likeLocal.filter(v => v.id !== idCurrentUser)])
-    }
-
-    axios({
-      method: 'post',
-      url: `http://localhost:8080/reviewbook/review/like/${id}?token=${localStorage.getItem('token')}`,
-
-    }).then(() => {
-
-    })
-  }
-
-
-  const onChangeCommentHandler = (e) => {
-
-
-    setCommentText(e.target.value)
-  }
-
-  const postCommentHandler = () => {
-    let newComment = {
-      body: commentText,
-      id_user: idCurrentUser,
-      imageUser: currentUser.image,
-      nameUser: `${currentUser.firstName} ${currentUser.lastName}`,
-      time: moment().format()
-    }
-    let data = [...commentData]
-    data.unshift(newComment)
-    setCommentData(data)
-
-    axios({
-      method: 'post',
-      url: `http://localhost:8080/reviewbook/review/comment/${id}?token=${localStorage.getItem('token')}`,
-      data: {
-        body: commentText
+      const likeBtn = window.document.querySelector(`[id=${id}]`)
+      if (likeBtn.classList.contains('isLiked')) {
+        console.log('liked !')
+        likeLocal.push({
+          id: idCurrentUser,
+          name: `${currentUser.firstName}  ${currentUser.lastName}`
+        })
+        setLikeLocal([...likeLocal])
       }
-    }).then(() => {
+      else {
+        console.log('disliked !')
+        setLikeLocal([...likeLocal.filter(v => v.id !== idCurrentUser)])
+      }
 
-    })
+      axios({
+        method: 'post',
+        url: `http://localhost:8080/reviewbook/review/like/${id}?token=${localStorage.getItem('token')}`,
 
-    setShowAllComment(true)
-    window.document.querySelector('#cmtText').value = ''
+      }).then(() => {
+
+      })
+    }
   }
+
+
+
 
   const renderComments = () => {
     return (
@@ -179,14 +168,23 @@ const Index = (props) => {
               }</a>
             </div>
           </div>
-
+          <div className='top-right'>
+            {
+              user.id.indexOf(idCurrentUser) !== -1 &&
+              (
+                <Dropdown overlay={menu} trigger={['click']}>
+                  <Ico style={{ fontSize: '18px' }} type="ellipsis" className="ant-dropdown-link" />
+                </Dropdown>
+              )
+            }
+          </div>
         </div>
         <div className='body'>
           <img src={img}></img>
         </div>
         <div className='likes'>
           <Icon size={24} icon={iconType} className={Object.keys(likes).indexOf(idCurrentUser) !== -1 ? 'isLiked' : ''} id={id} onClick={() => likeHandler()} />
-          <Ico style={{ fontSize: '24px' }} type="message" onClick={() => { setShowComment(!showComment) }} onClick={() => setShowAllComment(true)} />
+          <Ico style={{ fontSize: '24px' }} type="message" onClick={() => { loadComments() }} />
           <Ico style={{ fontSize: '24px' }} type="link" />
         </div>
 
@@ -198,32 +196,34 @@ const Index = (props) => {
           </div>
           <div className='commentsCount'>
             <a onClick={() => {
-              setShowAllComment(true)
+              loadComments()
             }}
-            >{commentCount} bình luận</a>
+            >{commentData.length > 0 ? commentData.length : commentCount} bình luận</a>
           </div>
         </div>
         <div className='userContent'>
           <p style={{ margin: '0 5px 0 0' }}>{username}</p>
           <p>{content}</p>
         </div>
-        <div className='postComment'>
-          <TextArea id='cmtText' placeholder="Type comment here ..." autoSize style={{ border: 'none' }}
-            onPressEnter={(e) => postCommentHandler(e)}
-            onChange={(e) => { onChangeCommentHandler(e) }}
-          />
-          <Button onClick={() => postCommentHandler()}>Đăng</Button>
-        </div>
+        <CreateComment
+          idPost={id}
+          idCurrentUser={idCurrentUser}
+          setShowAllComment={(e) => setShowAllComment(e)}
+          setCommentData={(e) => setCommentData(e)}
+          commentData={commentData}
+        />
         <div className='comments'>
-          {
-            (showAllComment) && (
-              renderComments()
-            )
-          }
+          <Spin spinning={loadingCmt}>
+            {
+              (showAllComment) && (
+                renderComments()
+              )
+            }
+          </Spin>
           {showAllComment && (
             <div className='seeAll'>
               <a onClick={() => {
-                setShowAllComment(!showAllComment)
+                setShowAllComment(false)
               }
               }>Hide comments</a>
             </div>
