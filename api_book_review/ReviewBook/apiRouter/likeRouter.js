@@ -7,7 +7,7 @@ likeRouter.route("/review/like/:review_id")
 //tra ve danh sach nguoi thich bai review
 .get((req,res)=>{
     dbLike = firebase.database().ref().child('Likes').child(req.params.review_id);
-    dbLike.on('value',likes=>{
+    dbLike.once('value',likes=>{
         if(likes.exists()){
          var result = [];
          likes.forEach(like => {

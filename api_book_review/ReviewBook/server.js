@@ -36,11 +36,13 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.auth.Auth.Persistence.LOCAL;
 
-var userRouter = require("./apiRouter/userRouter");
-app.use("/reviewbook", userRouter);
+var loginRouter = require("./apiRouter/loginRouter");
+app.use("/reviewbook", loginRouter);
 var reviewRouter = require("./apiRouter/reviewRouter");
 app.use("/reviewbook", reviewRouter);
 var likeRouter = require("./apiRouter/likeRouter");
 app.use("/reviewbook", likeRouter);
 var commentRouter = require("./apiRouter/commentRouter");
 app.use("/reviewbook", commentRouter);
+var userRouter = require("./apiRouter/userRouter");
+app.use("/reviewbook", userRouter);

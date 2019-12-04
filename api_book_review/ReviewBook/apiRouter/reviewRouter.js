@@ -97,17 +97,17 @@ reviewRouter
   });
 
 reviewRouter
-  .route("/review/post/own")
+  .route("/review/post/own/:id_user")
   //tra ve danh sach bai review cua tai khoan dang dang nhap sap xep theo thoi gian moi nhat
   .get((req, res) => {
-    var userID = req.decoded.userID;
+    var userID = req.params.id_user;
     var dbReviews = firebase
       .database()
       .ref()
       .child("Reviews")
       .orderByChild("uid")
       .equalTo(userID);
-    dbReviews.on("value", function(reviews) {
+    dbReviews.once("value", function(reviews) {
       var result = [];
       if (reviews.exists) {
         reviews.forEach(child => {
@@ -125,10 +125,10 @@ reviewRouter
   });
 
 reviewRouter
-  .route("/review/post/own/:review_id")
+  .route("/review/post/own/:id_user/:review_id")
   //tra ve bai viet theo id
   .get((req, res) => {
-    var userID = req.decoded.userID;
+    var userID = req.params.id_user;
     var dbReviews = firebase
       .database()
       .ref()
@@ -147,7 +147,7 @@ reviewRouter
   })
   //update bai viet theo id
   .put((req, res) => {
-    var userID = req.decoded.userID;
+    var userID = req.params.id_user;
     var dbReviews = firebase
       .database()
       .ref()
@@ -215,7 +215,7 @@ reviewRouter
     });
   })
   .delete((req, res) => {
-    var userID = req.decoded.userID;
+    var userID = req.params.id_user;
     var dbReviews = firebase
       .database()
       .ref()
