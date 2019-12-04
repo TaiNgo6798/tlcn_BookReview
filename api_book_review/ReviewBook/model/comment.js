@@ -8,6 +8,7 @@ class Comment{
             this.body = body,
             this.imageUser = imageUser,
             this.nameUser = nameUser,
+            this.numberTime = Date.now(),
             this.time = new Date().toLocaleString("vi", {
                 hour: "numeric",
                 minute: "numeric",

@@ -55,7 +55,7 @@ commentRouter
     .ref()
     .child("Comments")
     .child(review_id);
-    dbCommentRef.on('value',snapshot=>{
+    dbCommentRef.once('value',snapshot=>{
       if(snapshot.exists()){
         res.send(snapshot.val());
       }else{
