@@ -14,13 +14,9 @@ const noToken = {
   "/register": 'POST'
 };
 
-const tokenLogin ={}
-
 userRouter.use(function(req, res, next) {
   var url = req.url;
   var method = req.method;
-  console.log(url,method);
-  
   
   if (noToken[url] === method || method === "GET" || method === "OPTIONS") {
     next();
@@ -30,7 +26,7 @@ userRouter.use(function(req, res, next) {
       req.body.token || req.query.token || req.headers["x-access-token"];
 
     // decode token
-    if (token && tokenLogin[token]) {
+    if (token) {
       // verifies secret and checks exp
       jwt.verify(token, superSecret, function(err, decoded) {
         if (err) {
@@ -45,7 +41,6 @@ userRouter.use(function(req, res, next) {
         }
       });
     } else {
-      delete tokenLogin[token];
       // ỉf there ỉs no token
       // return an HTTP response of 403 (access torbidden) and an error message
       return res
@@ -120,21 +115,6 @@ userRouter.route("/forgot").post((req, res) => {
     });
 });
 
-
-userRouter.route("/logout")
-.post((req, res) => {
-  var token =
-      req.body.token || req.query.token || req.headers["x-access-token"];
-
-    // decode token
-    if (token) {
-      delete tokenLogin[token];
-      res.send({
-        success:true,
-        message:"logout successful"
-      })
-    }
-});
 
 userRouter.route("/setting").post((req, res) => {
   var rootRef = firebase
@@ -251,7 +231,6 @@ function createToken(userID,user) {
   superSecret, {
     expiresIn: "24h" // expires in 24 hours
   });
-  tokenLogin[token] = true;
   return token;
 }
 
