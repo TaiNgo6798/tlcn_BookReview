@@ -17,7 +17,7 @@ export const routers = [
   },
   {
     exact: true,
-    path: '/profile',
+    path: '/profile/:userID',
     component: 'profile'
   },
 ]

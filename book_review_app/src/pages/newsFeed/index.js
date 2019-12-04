@@ -90,10 +90,6 @@ function Index(props) {
     }
   }
 
-  // firebase.database().ref().child("Reviews").on('child_added', function (snapshot) {
-
-  // })
-
   return (
     <>
     {

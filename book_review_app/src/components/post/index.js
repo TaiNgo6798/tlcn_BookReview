@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { Avatar, Comment, Tooltip, Input, Button, Popover, Icon as Ico, Spin, Menu, Dropdown } from 'antd'
+import { Avatar, Comment, Tooltip, Modal, Button, Popover, Icon as Ico, Spin, Menu, Dropdown } from 'antd'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import htmlParser from 'react-html-parser'
@@ -12,7 +12,10 @@ import axios from 'axios'
 import CreateComment from '../createComment'
 import { withRouter } from 'react-router-dom'
 import firebase from "firebase"
-
+//redux
+import { useDispatch } from 'react-redux'
+import { setPost } from '../../actions/posts/setPost'
+import { FacebookShareButton } from 'react-share'
 
 const Index = (props) => {
   const { commentCount, user, likes, img, content, postTime, id, idCurrentUser } = props
@@ -26,6 +29,8 @@ const Index = (props) => {
   const [loadingCmt, setLoadingCmt] = useState(false)
   const dateNow = Date.now()
   const commentRef = firebase.database().ref().child("Comments").child(id)
+  const { confirm } = Modal
+  const dispatch = useDispatch()
 
   commentRef.on("child_added", function (snapshot) {
     if (snapshot.val()['numberTime'] > dateNow) {
@@ -34,8 +39,7 @@ const Index = (props) => {
         value: snapshot.val()
       }
 
-      if(!commentData.some(v => v.id === result.key))
-      {
+      if (!commentData.some(v => v.id === result.key)) {
         let newCmt = {
           id: result.key,
           body: result.value.body,
@@ -63,17 +67,6 @@ const Index = (props) => {
     console.log(result)
   })
 
-  const menu = (
-    <Menu>
-      <Menu.Item>
-        <Ico type="edit" /> Edit this post
-      </Menu.Item>
-      <Menu.Item>
-        <Ico type="delete" /> Delete this post
-      </Menu.Item>
-    </Menu>
-  )
-
   useEffect(() => {
     let likeList = []
     Object.keys(likes).forEach((v, k) => {
@@ -91,6 +84,41 @@ const Index = (props) => {
         setIconType(heart) : setIconType(heartO)
     })
   }, [])
+
+  const deleteHandler = () => {
+    confirm({
+      title: 'Do you want to delete these items?',
+      content: 'When clicked the OK button, this dialog will be closed after 1 second',
+      onOk() {
+        axios({
+          method: 'delete',
+          url: `http://localhost:8080/reviewbook/review/post/own/${id}?token=${localStorage.getItem('token')}`,
+        }).then((res) => {
+          axios({
+            method: 'get',
+            url: `http://localhost:8080/reviewbook/review/post`,
+    
+          }).then( (res) => {
+            dispatch(setPost(res.data))
+          })
+    
+        })
+      },
+      onCancel() { },
+    });
+    
+
+  }
+  const menu = (
+    <Menu>
+      <Menu.Item>
+        <Ico type="edit" /> Edit this post
+      </Menu.Item>
+      <Menu.Item onClick={() => deleteHandler()}>
+        <Ico type="delete" /> Delete this post
+      </Menu.Item>
+    </Menu>
+  )
 
   const loadComments = () => {
     setLoadingCmt(true)
@@ -236,7 +264,12 @@ const Index = (props) => {
         <div className='likes'>
           <Icon size={24} icon={iconType} className={Object.keys(likes).indexOf(idCurrentUser) !== -1 ? 'isLiked' : ''} id={id} onClick={() => likeHandler()} />
           <Ico style={{ fontSize: '24px' }} type="message" onClick={() => { loadComments() }} />
-          <Ico style={{ fontSize: '24px' }} type="link" />
+          {/* <Ico style={{ fontSize: '24px' }} type="link" /> */}
+          <FacebookShareButton 
+          children={<Ico style={{ fontSize: '24px' }} type="link" />}
+          url='https://taingo6798.github.io/'
+          className='share-btn'
+          />
         </div>
 
         <div className='likes-and-comments'>
@@ -249,7 +282,7 @@ const Index = (props) => {
             <a onClick={() => {
               loadComments()
             }}
-            >{commentData.length > 0 ? commentData.length : commentCount} bình luận</a>
+            >{commentData.length > 1 ? commentData.length : commentCount} bình luận</a>
           </div>
         </div>
         <div className='userContent'>

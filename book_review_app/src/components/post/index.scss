@@ -48,6 +48,12 @@
     
   }
 
+.share-btn{
+      &:hover{
+        cursor: pointer;
+      }
+  }
+
   .isLiked{
     color: red
   }
