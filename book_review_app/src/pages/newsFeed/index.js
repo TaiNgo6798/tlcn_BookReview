@@ -21,6 +21,7 @@ import firebase from "firebase";
 import { loadMore } from '../../actions/posts/loadMore'
 import { postNew, removeNewPost } from '../../firebase/my-firebase'
 
+import withRealTime from '../../components/utils/hoc/withRealTime'
 
 
 

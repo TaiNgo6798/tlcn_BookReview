@@ -14,7 +14,6 @@ import { withRouter } from 'react-router-dom'
 import firebase from "firebase"
 
 
-
 const Index = (props) => {
   const { commentCount, user, likes, img, content, postTime, id, idCurrentUser } = props
   const postDay2 = new Date(postTime)
@@ -25,41 +24,44 @@ const Index = (props) => {
   const [iconType, setIconType] = useState(Object.keys(likes).indexOf(idCurrentUser) !== -1 ? heart : heartO)
   const currentUser = JSON.parse(localStorage.getItem('user'))
   const [loadingCmt, setLoadingCmt] = useState(false)
+  const dateNow = Date.now()
+  const commentRef = firebase.database().ref().child("Comments").child(id)
 
-const dateNow = Date.now()
-const commentRef = firebase.database().ref().child("Comments").child(id)
-commentRef.on("child_added", function(snapshot) {
-  if(snapshot.val()['numberTime'] > dateNow){
+  commentRef.on("child_added", function (snapshot) {
+    if (snapshot.val()['numberTime'] > dateNow) {
+      var result = {
+        key: snapshot.key,
+        value: snapshot.val()
+      }
+
+      if(!commentData.some(v => v.id === result.key))
+      {
+        let newCmt = {
+          id: result.key,
+          body: result.value.body,
+          id_user: result.value.id_user,
+          imageUser: result.value.imageUser,
+          nameUser: result.value.nameUser,
+          time: result.value.time
+        }
+        commentData.unshift(newCmt)
+        setCommentData([...commentData])
+      }
+    }
+  })
+
+  commentRef.on("child_changed", function (snapshot) {
     var result = {
-      key:snapshot.key, 
-      value:snapshot.val()
+      key: snapshot.key,
+      value: snapshot.val()
     }
-    let newCmt = {
-      id: result.key,
-      body: result.value.body,
-      id_user: result.value.id_user,
-      imageUser: result.value.imageUser,
-      nameUser: result.value.nameUser,
-      time: result.value.time
-    }
-    commentData.unshift(newCmt)
-    setCommentData([...commentData])
-    }
-})
+    console.log(result)
+  })
 
-commentRef.on("child_changed", function(snapshot) {
-  var result = {
-    key:snapshot.key,
-    value:snapshot.val()
-  }
-  console.log(result)
-})
-
-commentRef.on("child_removed", function(snapshot) {
-  var result = snapshot.key
-  console.log(result)
-})
-  
+  commentRef.on("child_removed", function (snapshot) {
+    var result = snapshot.key
+    console.log(result)
+  })
 
   const menu = (
     <Menu>
@@ -257,8 +259,9 @@ commentRef.on("child_removed", function(snapshot) {
         <CreateComment
           idPost={id}
           idCurrentUser={idCurrentUser}
-          setShowAllComment={(e) => setShowAllComment(e)}
-          setCommentData={(e) => setCommentData(e)}
+          setShowAllComment={(e) => {
+            setShowAllComment(e)
+          }}
           commentData={commentData}
         />
         <div className='comments'>

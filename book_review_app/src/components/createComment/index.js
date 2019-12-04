@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import withAuth from '../utils/hoc/authUser'
 import {  Input, Button} from 'antd'
-import moment from 'moment'
 import axios from 'axios'
 const { TextArea } = Input
 
