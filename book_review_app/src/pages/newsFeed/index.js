@@ -64,6 +64,7 @@ function Index(props) {
   }, [])
 
   const loadPosts = () => {
+
     const list = (posts ? posts : postList)
     try {
       return list.map((v, k) => {
