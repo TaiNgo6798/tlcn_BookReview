@@ -9,10 +9,6 @@ import { heartO } from 'react-icons-kit/fa/heartO'
 import './index.scss'
 import axios from 'axios'
 
-//redux
-import { useDispatch, useSelector } from 'react-redux'
-import { setPost } from '../../actions/posts/setPost'
-
 
 const { TextArea } = Input;
 
@@ -50,11 +46,20 @@ const Index = (props) => {
       url: `http://localhost:8080/reviewbook/review/comment/${id}`,
 
     }).then((res) => {
-      console.log(res.data)
       let arr = []
-      setCommentData(res.data)
+      Object.keys(res.data).forEach((k, i) => {
+        let value = Object.values(res.data)[i]
+        arr.push({
+          id: k,
+          body: value.body,
+          id_user: value.id_user,
+          imageUser: value.imageUser,
+          nameUser: value.nameUser,
+          time: value.time
+        })
+      })
+      setCommentData(arr)
     })
-
   }, [])
 
   const whoLikes = () => {
@@ -91,20 +96,41 @@ const Index = (props) => {
 
 
   const onChangeCommentHandler = (e) => {
+    
+
     setCommentText(e.target.value)
   }
 
-  const postCommentHandler = (e) => {
-    e.preventDefault()
-    setCommentData([...commentData])
+  const postCommentHandler = () => {
+    let newComment = {
+        body: commentText,
+        id_user: idCurrentUser,
+        imageUser: currentUser.image,
+        nameUser: `${currentUser.firstName} ${currentUser.lastName}`,
+        time: moment().format()
+    }
+    let data = [...commentData]
+    data.unshift(newComment)
+    setCommentData(data)
+
+    // axios({
+    //   method: 'post',
+    //   url: `http://localhost:8080/reviewbook/review/comment/${id}?token=${localStorage.getItem('token')}`,
+    //   data: {
+    //     body: commentText
+    //   }
+    // }).then(() => {
+
+    // })
+
     setShowAllComment(true)
     window.document.querySelector('#cmtText').value = ''
+
   }
 
   const renderComments = () => {
     return (
       Object.values(commentData).map((v, k) => {
-        console.log(v)
         let time2 = new Date(v.time)
         return (
           <Comment
@@ -122,7 +148,7 @@ const Index = (props) => {
               </p>
             }
             datetime={
-              <Tooltip title={v.time}>
+              <Tooltip title={time2.toLocaleString()}>
                 <span>{
                   moment([time2.getFullYear(), time2.getMonth(), time2.getDate(), time2.getHours(), time2.getMinutes(), time2.getSeconds(), time2.getMilliseconds()])
                     .fromNow()
@@ -158,7 +184,7 @@ const Index = (props) => {
         </div>
         <div className='likes'>
           <Icon size={24} icon={iconType} className={Object.keys(likes).indexOf(idCurrentUser) !== -1 ? 'isLiked' : ''} id={id} onClick={() => likeHandler()} />
-          <Ico style={{ fontSize: '24px' }} type="message" onClick={() => { setShowComment(!showComment) }} />
+          <Ico style={{ fontSize: '24px' }} type="message" onClick={() => { setShowComment(!showComment) }} onClick={() => setShowAllComment(true)}/>
           <Ico style={{ fontSize: '24px' }} type="link" />
         </div>
 
@@ -170,7 +196,7 @@ const Index = (props) => {
           </div>
           <div className='commentsCount'>
             <a onClick={() => {
-              setShowAllComment(!showAllComment)
+              setShowAllComment(true)
             }}
             >{commentCount} bình luận</a>
           </div>
