@@ -50,9 +50,14 @@ function Index(props) {
           <Badge count={5}>
           <Icon type="bell" className='icon'/>
           </Badge>
-          <Badge count={0}>
-          <Icon type="user" className='icon' onClick={() => props.history.push(`/profile/${currentUser.id}`)}/>
-          </Badge>
+          {
+            currentUser && (
+              <Badge count={0}>
+              <Icon type="user" className='icon' onClick={() => props.history.push(`/profile/${currentUser.id}`)}/>
+              </Badge>
+            )
+          }
+
         </div>
       </div>
     </div>

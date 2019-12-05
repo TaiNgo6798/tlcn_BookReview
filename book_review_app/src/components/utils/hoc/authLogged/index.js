@@ -11,12 +11,7 @@ function withAuthLogged(WrappedComponent) {
       }
     }
     componentDidMount() {
-      let token = localStorage.getItem('token') ? localStorage.getItem('token') : 'shittoken'
-      axios({
-        method: 'POST',
-        url: `http://localhost:8080/reviewbook/current?token=${token}`
-      }).then((res) => {
-        if(res.data.success === false){
+        if(!JSON.parse(localStorage.getItem('user')) || !localStorage.getItem('token')){
           this.setState({
             logged: false
           })
@@ -25,7 +20,6 @@ function withAuthLogged(WrappedComponent) {
             logged: true
           })
         }
-      })
     }
     render() {
       return this.state.logged && <WrappedComponent {...this.props} />

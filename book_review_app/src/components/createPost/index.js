@@ -35,7 +35,11 @@ const Index = (props) => {
 
 
   const onSubmitPost = () => {
+    window.document.querySelector('.text').value = ''
+    window.document.querySelector('[name="title"]').value = ''
+    window.document.querySelector('[name="kind"]').value = ''
     const closeBtn = window.document.querySelector('.close-button')
+
     setPosting(true)
     axios({
       method: 'post',
@@ -89,7 +93,7 @@ const Index = (props) => {
     window.document.addEventListener('scroll', () => {
       if (window.scrollY >= 350) {
         body.classList.remove('modal-active')
-        window.document.querySelector('.bottom-bar').classList.remove('show-from-post-component')
+        window.document.querySelector('.bottom-bar') && window.document.querySelector('.bottom-bar').classList.remove('show-from-post-component')
         closeBtn.classList.remove('show-from-post-component')
         window.document.activeElement.blur()
         setTimeout(() => {
@@ -145,7 +149,7 @@ const Index = (props) => {
     if (!isJpgOrPng) {
       message.error('You can only upload JPG/PNG file!')
     }
-    const isLt2M = file.size / 1024 / 1024 < 2
+    const isLt2M = file.size / 1024 / 1024 < 4
     if (!isLt2M) {
       message.error('Image must smaller than 2MB!')
     }

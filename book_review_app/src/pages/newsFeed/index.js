@@ -84,7 +84,6 @@ function Index(props) {
       })
     }
     catch(err){
-      console.log(err)
       return <Empty />
     }
   }
