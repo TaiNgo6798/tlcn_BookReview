@@ -8,10 +8,12 @@ import axios from 'axios'
 
 //redux
 import { useDispatch } from 'react-redux'
+import { setUserPost } from '../../actions/userPost/setUserPost'
 import { setPost } from '../../actions/posts/setPost'
 
 //import HOC
-import withAuth from '../../components/utils/hoc/authUser'
+import withAuthLogged from '../../components/utils/hoc/authLogged'
+import withAuthUser from '../../components/utils/hoc/authUser'
 
 
 const { TextArea } = Input
@@ -46,21 +48,35 @@ const Index = (props) => {
         kind
       }
     }).then(() => {
-      axios({
-        method: 'get',
-        url: `http://localhost:8080/reviewbook/review/post`,
-
-      }).then( (res) => {
-        dispatch(setPost(res.data))
-        setPosting(false)
-        setDesc('')
-        closeBtn.click()
-        setImageUrl('')
-        setUrl('')
-        setTitle('')
-        setKind('')
-      })
-
+      if (props.params) {
+        axios({
+          method: 'get',
+          url: `http://localhost:8080/reviewbook/review/post/own/${props.params.userID}`,
+        }).then((res) => {
+          dispatch(setUserPost(res.data))
+          setPosting(false)
+          setDesc('')
+          closeBtn.click()
+          setImageUrl('')
+          setUrl('')
+          setTitle('')
+          setKind('')
+        })
+      } else {
+        axios({
+          method: 'get',
+          url: `http://localhost:8080/reviewbook/review/post`,
+        }).then((res) => {
+          dispatch(setPost(res.data))
+          setPosting(false)
+          setDesc('')
+          closeBtn.click()
+          setImageUrl('')
+          setUrl('')
+          setTitle('')
+          setKind('')
+        })
+      }
     })
 
   }
@@ -193,8 +209,8 @@ const Index = (props) => {
               </Upload>
               <div className='input-form'>
                 <p style={{ marginBottom: '5px', color: '#B8BCBC' }}>Dòng này được thêm vào cho đỡ trống ...</p>
-                <Input placeholder='Tiêu đề...' onChange={(e) => setTitle(e.target.value)} setfieldvalue = {title} name='title' />
-                <Input placeholder='Thể loại...'  onChange={(e) => setKind(e.target.value)} setfieldvalue={kind} name='kind' />
+                <Input placeholder='Tiêu đề...' onChange={(e) => setTitle(e.target.value)} setfieldvalue={title} name='title' />
+                <Input placeholder='Thể loại...' onChange={(e) => setKind(e.target.value)} setfieldvalue={kind} name='kind' />
               </div>
             </div>
             {
@@ -210,4 +226,4 @@ const Index = (props) => {
   )
 }
 
-export default withAuth(Index)
+export default withAuthLogged(withAuthUser(Index))

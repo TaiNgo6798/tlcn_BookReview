@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import withAuth from '../utils/hoc/authUser'
+import withAuthLogged from '../utils/hoc/authLogged'
 import {  Input, Button} from 'antd'
 import axios from 'axios'
 const { TextArea } = Input
@@ -37,4 +37,4 @@ function Index(props) {
   )
 }
 
-export default withAuth(Index)
+export default withAuthLogged(Index)

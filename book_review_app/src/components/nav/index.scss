@@ -30,6 +30,9 @@ body{
       content: url('../../assets/logo.png');
       height: 100%;
       max-width: 200px;
+      &:hover{
+        cursor: pointer;
+      }
     }
     .notify{
       margin-right: 80px;

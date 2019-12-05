@@ -12,10 +12,12 @@ import axios from 'axios'
 import CreateComment from '../createComment'
 import { withRouter } from 'react-router-dom'
 import firebase from "firebase"
+import { FacebookShareButton } from 'react-share'
 //redux
 import { useDispatch } from 'react-redux'
 import { setPost } from '../../actions/posts/setPost'
-import { FacebookShareButton } from 'react-share'
+import { setUserPost } from '../../actions/userPost/setUserPost'
+
 
 const Index = (props) => {
   const { commentCount, user, likes, img, content, postTime, id, idCurrentUser } = props
@@ -87,26 +89,33 @@ const Index = (props) => {
 
   const deleteHandler = () => {
     confirm({
-      title: 'Do you want to delete these items?',
-      content: 'When clicked the OK button, this dialog will be closed after 1 second',
+      title: 'Bạn có chắc chắn muốn xoá bài viết này ?',
       onOk() {
         axios({
           method: 'delete',
-          url: `http://localhost:8080/reviewbook/review/post/own/${id}?token=${localStorage.getItem('token')}`,
+          url: `http://localhost:8080/reviewbook/review/post/own/${currentUser.id}/${id}?token=${localStorage.getItem('token')}`,
         }).then((res) => {
-          axios({
-            method: 'get',
-            url: `http://localhost:8080/reviewbook/review/post`,
-    
-          }).then( (res) => {
-            dispatch(setPost(res.data))
-          })
-    
+          if (props.params) {
+            axios({
+              method: 'get',
+              url: `http://localhost:8080/reviewbook/review/post/own/${props.params.userID}`,
+            }).then((res) => {
+              dispatch(setUserPost(res.data))
+              console.log(res.data)
+            })
+          } else {
+            axios({
+              method: 'get',
+              url: `http://localhost:8080/reviewbook/review/post`,
+            }).then((res) => {
+              dispatch(setPost(res.data))
+            })
+          }
         })
       },
       onCancel() { },
     });
-    
+
 
   }
   const menu = (
@@ -236,10 +245,10 @@ const Index = (props) => {
       <div className='postForm'>
         <div className='header'>
           <div className='avatar'>
-            <Avatar size={45} src={avatar} />
+            <Avatar size={45} src={avatar} onClick={() => props.history.push(`/profile/${user.id}`)} />
           </div>
           <div className='username'>
-            <p ><i>{username}</i></p>
+            <p onClick={() => props.history.push(`/profile/${user.id}`)}><i>{username}</i></p>
             <div className='time'>
               <a title={postTime}>{
                 moment([postDay2.getFullYear(), postDay2.getMonth(), postDay2.getDate(), postDay2.getHours(), postDay2.getMinutes(), postDay2.getSeconds(), postDay2.getMilliseconds()])
@@ -252,7 +261,7 @@ const Index = (props) => {
               user.id.indexOf(idCurrentUser) !== -1 &&
               (
                 <Dropdown overlay={menu} trigger={['click']}>
-                  <Ico style={{ fontSize: '18px' }} type="ellipsis" className="ant-dropdown-link" />
+                  <Ico style={{ fontSize: '28px' }} type="ellipsis" className="ant-dropdown-link" />
                 </Dropdown>
               )
             }
@@ -265,10 +274,10 @@ const Index = (props) => {
           <Icon size={24} icon={iconType} className={Object.keys(likes).indexOf(idCurrentUser) !== -1 ? 'isLiked' : ''} id={id} onClick={() => likeHandler()} />
           <Ico style={{ fontSize: '24px' }} type="message" onClick={() => { loadComments() }} />
           {/* <Ico style={{ fontSize: '24px' }} type="link" /> */}
-          <FacebookShareButton 
-          children={<Ico style={{ fontSize: '24px' }} type="link" />}
-          url='https://taingo6798.github.io/'
-          className='share-btn'
+          <FacebookShareButton
+            children={<Ico style={{ fontSize: '24px' }} type="link" />}
+            url='https://taingo6798.github.io/'
+            className='share-btn'
           />
         </div>
 

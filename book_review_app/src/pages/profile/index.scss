@@ -23,9 +23,7 @@
       width: 100%;
       object-fit: cover;
       background-image: url('https://image.freepik.com/free-vector/jumping-young-happy-people-casual-winter-clothes_23-2148336349.jpg');
-
       .avatar_profile{
-        
         height: 100%;
         width: 100%;
         display: flex;
@@ -47,6 +45,7 @@
         border-radius: 3px;
         background-color: #FFFFFF;
         padding: 20px;
+        padding-bottom: 0;
         .name_profile{
           >h1{
             margin: 0
@@ -55,9 +54,43 @@
           justify-content: center;
           padding-top: 10px;
         }
+        .ant-tabs{
+          height: 44.5px
+        }
       }
 
     }
+    .body_timeline_profile{
+      display: flex;
+      margin-top: 150px;
+      .leftBar_profile{
+        width: 40%;
+        height: fit-content;
+
+        .infor_profile{
+          padding: 18px;
+          box-shadow: 0 2px 4px rgba(108,111,115,.1);
+          border: 1px #EBEDF0 solid;
+          border-radius: 5px;
+          background-color: #FFFFFF;
+          
+        }
+      }
+      .posts_profile{
+        width: 58%;
+        margin-left: 2%;
+        height: fit-content;
+        display: flex;
+        flex-direction: column;
+      }
+    }
   }
 
+}
+
+.fixedPos_profile{
+  width: 25.74em;
+  position: fixed;
+  top: 0;
+  margin-top: 90px
 }

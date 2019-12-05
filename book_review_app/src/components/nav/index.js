@@ -17,7 +17,6 @@ function Index(props) {
   }
   useEffect(() => {
     loadNotify()
-
     window.addEventListener('scroll', () => {
         if(window.scrollY >= 50 && heightChange === true)
         {
@@ -27,7 +26,7 @@ function Index(props) {
         }
         if(window.scrollY <= 50 && heightChange === false) {
           window.document.querySelector('.nav') && window.document.querySelector('.nav').classList.remove('minimize')
-          window.document.querySelector('.inforForm') && window.document.querySelector('.nav').classList.remove('fixedPos')
+          window.document.querySelector('.inforForm') && window.document.querySelector('.inforForm').classList.remove('fixedPos')
           heightChange = true
         }
     })
@@ -36,7 +35,7 @@ function Index(props) {
   return (
     <div className='nav'>
       <div className='container'>
-        <div className='logo'></div>
+        <div className='logo' onClick={() => props.history.push(`/newsFeed`)}></div>
         <div className='searchBar'>
           <Search
             placeholder="input search text"
