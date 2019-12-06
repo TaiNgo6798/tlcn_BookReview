@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../components/nav'
-import { Skeleton, Empty, Avatar, Tabs, Tag } from 'antd'
+import { Skeleton, Empty, Avatar, Tabs, Tag, Button } from 'antd'
 import { books } from 'react-icons-kit/icomoon/books'
 import { Icon } from 'react-icons-kit'
 import { useBottomScrollListener } from 'react-bottom-scroll-listener'
 //import components
+import DetailProfile from './inforTab'
 import Post from '../../components/post'
 import CreatePost from '../../components/createPost'
 import axios from 'axios'
@@ -23,6 +24,7 @@ function Index(props) {
   const [loading, setLoading] = useState(true)
   const [postList, setPostList] = useState([])
   const [user, setUser] = useState({})
+  const [profileKey, setProfileKey] = useState('1')
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user')))
   //redux
   const posts = useSelector(state => state.userPostReducer)
@@ -62,6 +64,7 @@ function Index(props) {
     })
   }, [])
 
+
   const loadPosts = () => {
     const list = (posts ? posts : postList)
     try {
@@ -83,6 +86,8 @@ function Index(props) {
           postTime={value.time}
           id={id}
           idCurrentUser={currentUser ? currentUser.id : null}
+          title={value.title}
+          kind={value.kind}
         />
       })
     }
@@ -90,6 +95,11 @@ function Index(props) {
       console.log(err)
       return <Empty />
     }
+  }
+
+  const loggoutHandler = () => {
+    localStorage.clear()
+    props.history.push('/')
   }
 
   return (
@@ -107,36 +117,49 @@ function Index(props) {
                   <h1 style={{ zIndex: 2 }}>{`${user.firstName || ''} ${user.secondName || ''}`}</h1>
                 </div>
                 <div className='tabs_profile'>
-                  <Tabs defaultActiveKey="1">
+                  <Tabs defaultActiveKey="1" onChange={(key) => setProfileKey(key)}>
                     <TabPane tab="Dòng thời gian" key="1">
                     </TabPane>
                     <TabPane tab="Giới thiệu" key="2">
                     </TabPane>
                   </Tabs>
+                  {
+                    (currentUser && currentUser.id) === props.match.params.userID && (
+                      <Button type="danger" className='logout_profile' onClick={() => loggoutHandler()}>Logout</Button>
+                    )
+                  }
                 </div>
               </div>
             </div>
             <div className='body_timeline_profile'>
-              <div className='leftBar_profile'>
-                <div className='infor_profile'>
-                  <h2>Giới thiệu</h2>
-                  {
-                    user.gender ? (user.gender  === 'male' ?
-                      <p><Tag color="geekblue">♂ Nam</Tag></p> : <p><Tag color="magenta">♀ Nữ</Tag></p>)
-                      :''
-                  }
-                  <div style={{ display: 'flex' }}>
-                    <Icon size={18} icon={books} style={{ marginTop: '4px' }} />
-                    <p style={{ margin: '6px 0 0 4px' }}>Đã review <b>328</b> cuốn sách</p>
+              {
+                profileKey === '1' ? (
+                  <>
+                  <div className='leftBar_profile'>
+                    <div className='infor_profile'>
+                      <h2>Giới thiệu</h2>
+                      {
+                        user.gender ? (user.gender === 'male' ?
+                          <p><Tag color="geekblue">♂ Nam</Tag></p> : <p><Tag color="magenta">♀ Nữ</Tag></p>)
+                          : ''
+                      }
+                      <div style={{ display: 'flex' }}>
+                        <Icon size={18} icon={books} style={{ marginTop: '4px' }} />
+                        <p style={{ margin: '6px 0 0 4px' }}>Đã review <b>328</b> cuốn sách</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className='posts_profile'>
-                <CreatePost user={currentUser ? currentUser : { image: '', firstName: 'anonymous' }} params={props.match.params}/>
-                <Skeleton loading={loading} active >
-                  {loadPosts()}
-                </Skeleton>
-              </div>
+                  <div className='posts_profile'>
+                    <CreatePost user={currentUser ? currentUser : { image: '', firstName: 'anonymous' }} params={props.match.params} />
+                    <Skeleton loading={loading} active >
+                      {loadPosts()}
+                    </Skeleton>
+                  </div>
+                  </>
+                )
+                  :
+                  <DetailProfile />
+              }
             </div>
           </div>
         </div>

@@ -41,8 +41,8 @@ function Index(props) {
       postNew.map(v => {
         res.data.unshift(v)
       })
-      //console.log(res.data)
-      dispatch(loadMore(res.data))
+      console.log(res.data)
+      dispatch(loadMore(res.data.success === false ? [] : res.data))
       removeNewPost()
     })
   })
@@ -80,6 +80,8 @@ function Index(props) {
           postTime={value.time}
           id={id}
           idCurrentUser={currentUser ? currentUser.id : null}
+          title={value.title}
+          kind={value.kind}
         />
       })
     }

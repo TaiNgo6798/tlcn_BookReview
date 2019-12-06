@@ -1,37 +1,61 @@
-.edit-form {
-	.ant-modal-content {
-		top: 50px;
-		width: 500px;
-		.ant-modal-body {
-			padding: 45px;
-			.title {
-				color: cornflowerblue;
-				font-size: 24px;
-				font-weight: 600;
-				letter-spacing: 0.01em;
-				margin-bottom: 40px;
-				text-align: center;
-			}
+.ant-modal-body{
+	padding: 0
+}
 
-			.ant-calendar-picker-input{
-				font-size: 18px;
-				height: 45px;
-			}
-			.ant-btn,
-			.ant-input-lg {
-				height: 45px;
-			}
 
-			.ant-input-lg {
-				border-radius: 3px;
-				font-size: 18px;
-			}
+.editForm{
+  position: relative !important;
+  z-index: 11;
+  padding: 16px;
+  border: 1px solid #EBEDF0;
+  height: fit-content;
+  width: 100%;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  background-color: #FFFFFF;
 
-			.btn-innos{
-				height: 40px;
-				width: 100%;
-			}
+  .top-bar{
+    display: flex;
+    width: 100%;
+    padding-right: 10px;
+    >h3{
+      margin-right: auto
+    }
+    >a{
+      display: none;
+      margin-right: 0 !important;
+    }
+  }
 
-		}
-	}
+  .main{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    >:first-child{
+      margin-right: 12px;
+    }
+    .text{
+      &:focus{
+        box-shadow: none;
+      }
+
+    }
+
+  }
+
+  .tool-bar{
+    display: flex;
+    margin-top: 30px;
+    .input-form{
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      >Input{
+        margin-bottom: 8px;
+      }
+    }
+  }
+  .ant-upload-picture-card-wrapper{
+    width: fit-content;
+  }
 }

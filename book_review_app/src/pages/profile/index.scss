@@ -57,6 +57,12 @@
         .ant-tabs{
           height: 44.5px
         }
+        .tabs_profile{
+          display: flex;
+          .logout_profile{
+            margin-left: auto;
+          }
+        }
       }
 
     }

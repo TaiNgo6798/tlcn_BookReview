@@ -1,148 +1,179 @@
-import React, { useRef, useState } from 'react'
-import { Modal, Form, Input, Button, Spin, DatePicker, Select } from 'antd'
-import axios from 'axios'
+import React, { useEffect, useState, useRef } from 'react'
+import { Button, Divider, Avatar, Input, Upload, Icon, message, Spin, Modal, Form } from 'antd'
 // import css
-import '../firstRegister/style.scss'
+import './index.scss'
+//import firebase
+import { uploadStorage } from '../../../firebase/my-firebase'
+import axios from 'axios'
+
+//redux
+import { useDispatch } from 'react-redux'
+import { setUserPost } from '../../../actions/userPost/setUserPost'
+import { setPost } from '../../../actions/posts/setPost'
+
+//import HOC
+// import withAuthLogged from '../../components/utils/hoc/authLogged'
+// import withAuthUser from '../../components/utils/hoc/authUser'
+
+const {TextArea} = Input
 
 const Index = (props) => {
-  const { setCurrentUser } = props
-  const { getFieldDecorator } = props.form
-  const { Option } = Select
-  const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
-  const [loading, setLoading] = useState(false)
-  const [visible, setVisible] = useState(true)
-
-  const onCancel = () => {
-    setVisible(false)
+  const { visible, onCancel, currentUser, idPost } = props
+  const [isLoading, setIsLoading] = useState(false)
+  const [url, setUrl] = useState(props.url)
+  const [nameImage, setNameImage] = useState(props.nameImage)
+  const [title, setTitle] = useState(props.title)
+  const [kind, setKind] = useState(props.kind)
+  const [desc, setDesc] = useState(props.desc)
+  const [imageUrl, setImageUrl] = useState(props.url)
+  const [posting, setPosting] = useState(false)
+  const dispatch = useDispatch()
+  const beforeUpload = (file) => {
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!')
+    }
+    const isLt2M = file.size / 1024 / 1024 < 4
+    if (!isLt2M) {
+      message.error('Image must smaller than 2MB!')
+    }
+    return isJpgOrPng && isLt2M
   }
- 
-  const settingHandler = (e) => {
-    e.preventDefault()
-    props.form.validateFields((err, values) => {
-      if (!err) {
-        const { firstname, lastname, gender, phone, birthday } = values
-        setLoading(true)
-        let birthdayGood = new Date(birthday)
-        axios({
-          method: 'post',
-          url: 'http://localhost:8080/reviewbook/setting',
-          data: {
-            fName: firstname,
-            sName: lastname,
-            gender,
-            phone,
-            birthday: birthdayGood
-          }
-        }).then((res) => {
-          setLoading(false)
-          localStorage.setItem('token', res.data.token)
-          let { firstName, secondName, gender, birthday, email, image, phone } = Object.values(res.data)[0]
-          let user = {
-            id: Object.keys(res.data)[0],
-            firstName,
-            lastName: secondName,
-            gender,
-            birthday,
-            email,
-            image,
-            phone
-          }
-          localStorage.setItem('user', JSON.stringify(user))
-          setCurrentUser(user)
-          onCancel()
-        })
+
+  const getBase64 = (img, callback) => {
+    const reader = new FileReader()
+    reader.addEventListener('load', () => callback(reader.result))
+    reader.readAsDataURL(img)
+  }
+  const handleChange = async info => {
+    if (info.file.status === 'uploading') {
+      setImageUrl('')
+      setIsLoading(true)
+      return
+    }
+    if (info.file.status === 'done') {
+      let img = await uploadStorage(info.file.originFileObj)
+      setUrl(img.url)
+      setNameImage(img.nameImage)
+      // Get this url from response in real world.
+      getBase64(info.file.originFileObj, imageUrl => {
+        setIsLoading(false)
+        setImageUrl(imageUrl)
       }
-    })
+      )
+    }
   }
 
+  const uploadButton = (
+    <div>
+      <Icon type={isLoading ? 'loading' : 'plus'} />
+      <div className="ant-upload-text">Upload</div>
+    </div>
+  )
+
+  const savePostHandler = () => {
+      window.document.querySelector('.text').value = ''
+      window.document.querySelector('[name="title"]').value = ''
+      window.document.querySelector('[name="kind"]').value = ''
+      setPosting(true)
+      axios({
+        method: 'put',
+        url: `http://localhost:8080/reviewbook/review/post/own/${currentUser.id}/${idPost}?token=${localStorage.getItem('token')}`,
+        data: {
+          nameImage,
+          desc,
+          url,
+          title,
+          kind
+        }
+      }).then(() => {
+        if (props.params) {
+          console.log('coparam')
+          axios({
+            method: 'get',
+            url: `http://localhost:8080/reviewbook/review/post/own/${props.params.userID}`,
+          }).then((res) => {
+            dispatch(setUserPost(res.data))
+            setPosting(false)
+          })
+        } else {
+          console.log('khong co params')
+          axios({
+            method: 'get',
+            url: `http://localhost:8080/reviewbook/review/post`,
+          }).then((res) => {
+            dispatch(setPost(res.data))
+            setPosting(false)
+          })
+        }
+        onCancel()
+      })
+  
+  }
 
   return (
     <>
       <Modal
         visible={visible}
-        onCancel={() => { onCancel() }}
+        onCancel={() => onCancel()}
         footer={null}
         width='556px'
         className='edit-form'
+        
       >
-        <Spin spinning={loading}>
-          <div className='title'>Your information for first login !</div>
-          <Form >
-            <Form.Item>
-              {getFieldDecorator('firstname', {
-                rules: [
-                  { required: true, message: 'Vui lòng nhập tên của bạn' }
-                ]
-              })(<Input
-                placeholder='Tên và chữ lót'
-
-                size='large'
-              />)}
-            </Form.Item>
-            <Form.Item>
-              {getFieldDecorator('lastname', {
-                rules: [
-                  { required: true, message: 'Vui lòng nhập họ của bạn' }
-                ]
-              })(<Input
-                placeholder='Họ'
-
-                size='large'
-              />)}
-            </Form.Item>
-            <Form.Item>
-              {getFieldDecorator('gender', {
-                rules: [
-                  { required: true, message: 'Vui lòng nhập địa chỉ email' }
-                ]
-              })(
-                <Select
-                  placeholder='Giới tính'
-                  setfieldvalue="Nam"
-                  style={{ width: '100%', fontSize: '18px' }}
-                  size={"large"}
-                >
-                  <Option setfieldvalue="male" key='male'>Nam</Option>
-                  <Option setfieldvalue="female" key='female'>Nữ</Option>
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item>
-              {getFieldDecorator('phone', {
-                rules: [
-                  { required: true, message: 'Vui lòng nhập địa chỉ email' }
-                ]
-              })(<Input
-                placeholder='Số điện thoại'
-                size='large'
-              />)}
-            </Form.Item>
-
-            <Form.Item>
-              {getFieldDecorator('birthday', {
-                rules: [
-                  { required: true, message: 'Vui lòng nhập ngày sinh của bạn' }
-                ]
-              })(<DatePicker
-                style={{ width: '100%' }}
-                format={dateFormatList}
-                placeholder='Ngày sinh'
-              />)}
-            </Form.Item>
-
-            <Form.Item>
-              <Button
-                name='btn-send-request'
-                type='primary'
-                size='large'
-                block
-                className='btn-innos'
-                onClick={(e) => settingHandler(e)}
-              >
-                Done
-            </Button>
-            </Form.Item>
-          </Form>
+        <Spin spinning={posting}>
+          <div className='editForm'>
+            <Spin tip="Đang lưu ..."
+              spinning={false}
+            >
+              <div className='top-bar'>
+                <h3 style={{ marginBottom: 0 }}>Sửa bài viết</h3>
+                <a className='close-button' style={{ marginRight: 'auto', marginBottom: 0, float: 'right' }}>x</a>
+              </div>
+              <Divider style={{ margin: '10px 0 20px 0' }} />
+              <div className='main'>
+                <TextArea
+                  setfieldvalue={'desc'}
+                  className='text'
+                  placeholder={desc}
+                  autoSize={{ minRows: 1, maxRows: 50 }}
+                  style={{ borderColor: 'transparent', fontSize: '18px' }}
+                  onChange={(e) => setDesc(e.target.value)}
+                />
+              </div>
+              <div className='bottom-bar'>
+                <div className='tool-bar'>
+                  <Upload
+                    name="avatar"
+                    listType="picture-card"
+                    className="avatar-uploader"
+                    showUploadList={false}
+                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    beforeUpload={beforeUpload}
+                    onChange={handleChange}
+                  >
+                    {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
+                  </Upload>
+                  <div className='input-form'>
+                  <p style={{ marginBottom: '5px', color: '#B8BCBC' }}>Dòng này được thêm vào cho đỡ trống ...</p>
+                    <Input placeholder='Tiêu đề...' 
+                    onChange={(e) => setTitle(e.target.value)} 
+                    setfieldvalue={title} 
+                    name='title' />
+                    <Input placeholder={kind}
+                    onChange={(e) => setKind(e.target.value)} 
+                    setfieldvalue={kind} 
+                    name='kind' />
+                  </div>
+                </div>
+                {
+                  !isLoading && (
+                    <Button type='primary' style={{ display: 'block', width: '100%' }} onClick={() => savePostHandler()}>Lưu</Button>
+                  )
+                }
+              </div>
+            </Spin>
+          </div>
         </Spin>
       </Modal>
 
@@ -150,5 +181,4 @@ const Index = (props) => {
   )
 }
 
-const WrappedNormalForm = Form.create({ name: 'form' })(Index)
-export default WrappedNormalForm
+export default Index

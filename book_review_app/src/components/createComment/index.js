@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import withAuthLogged from '../utils/hoc/authLogged'
 import {  Input, Button} from 'antd'
 import axios from 'axios'
+
+import './index.scss'
+
 const { TextArea } = Input
 
 function Index(props) {

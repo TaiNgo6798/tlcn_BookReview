@@ -39,7 +39,6 @@ const Index = (props) => {
     window.document.querySelector('[name="title"]').value = ''
     window.document.querySelector('[name="kind"]').value = ''
     const closeBtn = window.document.querySelector('.close-button')
-
     setPosting(true)
     axios({
       method: 'post',

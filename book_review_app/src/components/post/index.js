@@ -10,6 +10,7 @@ import { heartO } from 'react-icons-kit/fa/heartO'
 import './index.scss'
 import axios from 'axios'
 import CreateComment from '../createComment'
+import EditPostModal from './editPostModal'
 import { withRouter } from 'react-router-dom'
 import firebase from "firebase"
 import { FacebookShareButton } from 'react-share'
@@ -20,7 +21,7 @@ import { setUserPost } from '../../actions/userPost/setUserPost'
 
 
 const Index = (props) => {
-  const { commentCount, user, likes, img, content, postTime, id, idCurrentUser } = props
+  const { commentCount, user, likes, img, nameImage, content, postTime, id, idCurrentUser, title, kind } = props
   const postDay2 = new Date(postTime)
   const { avatar, username } = user
   const [showAllComment, setShowAllComment] = useState(false)
@@ -29,6 +30,7 @@ const Index = (props) => {
   const [iconType, setIconType] = useState(Object.keys(likes).indexOf(idCurrentUser) !== -1 ? heart : heartO)
   const currentUser = JSON.parse(localStorage.getItem('user'))
   const [loadingCmt, setLoadingCmt] = useState(false)
+  const [editModalVisible, setEditModalVisible] = useState(false)
   const dateNow = Date.now()
   const commentRef = firebase.database().ref().child("Comments").child(id)
   const { confirm } = Modal
@@ -115,12 +117,16 @@ const Index = (props) => {
       },
       onCancel() { },
     });
-
-
   }
+
+
+  const editHandler = () => {
+      setEditModalVisible(true)
+  }
+
   const menu = (
     <Menu>
-      <Menu.Item>
+      <Menu.Item onClick={() => editHandler()}>
         <Ico type="edit" /> Edit this post
       </Menu.Item>
       <Menu.Item onClick={() => deleteHandler()}>
@@ -219,6 +225,7 @@ const Index = (props) => {
               <Avatar
                 src={v.imageUser}
                 alt={v.time}
+               
               />
             }
             content={
@@ -324,8 +331,20 @@ const Index = (props) => {
           )
           }
         </div>
-
+            <EditPostModal 
+            visible={editModalVisible} 
+            onCancel={() => setEditModalVisible(false)}
+            idPost={id}
+            title={title}
+            kind={kind}
+            desc={content}
+            url={img}
+            nameImage={nameImage}
+            currentUser={currentUser}
+            params={props.params}
+            /> 
       </div>
+     
     </>
   )
 }
