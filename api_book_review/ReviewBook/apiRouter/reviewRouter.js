@@ -231,6 +231,8 @@ reviewRouter
         reviewStorageRef.delete().then(() => {
           dbReviews.remove().then(error => {
             if (error) {
+              firebase.database().ref().child("Likes").child(userID).remove();
+              firebase.database().ref().child('Comments').child(userID).remove();
               res.send({
                 success: false,
                 message: error.message
