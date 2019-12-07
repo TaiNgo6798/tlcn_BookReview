@@ -1,6 +1,9 @@
+.ant-modal-body{
+	padding: 0
+}
 
 
-.createPostForm{
+.editForm{
   position: relative !important;
   z-index: 11;
   padding: 16px;
@@ -40,12 +43,6 @@
 
   }
 
-
-
-  .bottom-bar{
-display: none;
-  }
-
   .tool-bar{
     display: flex;
     margin-top: 30px;
@@ -62,29 +59,3 @@ display: none;
     width: fit-content;
   }
 }
-
-.show-from-post-component{
-display: inherit !important;
-}
-
-.modal-active{
-  background-color: black;
-  opacity: 70%;
-  z-index: 10 !important;
-}
-
-.show-fake-body{
-  display: inherit !important;
-}
-
-.body-fake{
-  transition: all ease .3s;
-  display: none;
-  position: absolute;
-  left: 0;
-  top: 0;
-  z-index: 1;
-  height: 200vh;
-  width: 100vw;
-}
-

@@ -156,15 +156,14 @@ reviewRouter
     dbReviews.once("value", function(reviews) {
       if (reviews.val().uid === userID) {
         var review = new Review(
-          reviews.val().title,
           reviews.val().kind,
-          reviews.val().url,
+          reviews.val().urlImage,
           reviews.val().nameImage,
-          reviews.val().desc
+          reviews.val().desc,
+          reviews.val().uid,
+          reviews.val().name,
+          reviews.val().urlUser,
         );
-        if (req.body.title) {
-          review.title = req.body.title;
-        }
         if (req.body.kind) {
           review.kind = req.body.kind;
         }
@@ -175,6 +174,8 @@ reviewRouter
           review.desc = req.body.desc;
         }
         if (req.body.nameImage) {
+        
+          
           //delete file upload
           var reviewStorageRef = firebase
             .storage()
@@ -205,6 +206,20 @@ reviewRouter
                 message: error.message
               });
             });
+        }
+        else{
+          dbReviews.update(review, error => {
+            if (error) {
+              var errorMessage = error.message;
+              res.send(errorMessage);
+            } else {
+              res.send({
+                success: true,
+                review: review,
+                message: "Update review successful"
+              });
+            }
+          });
         }
       } else {
         res.send({

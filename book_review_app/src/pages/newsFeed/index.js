@@ -21,7 +21,6 @@ import firebase from "firebase";
 import { loadMore } from '../../actions/posts/loadMore'
 import { postNew, removeNewPost } from '../../firebase/my-firebase'
 
-import withRealTime from '../../components/utils/hoc/withRealTime'
 
 
 
@@ -42,8 +41,8 @@ function Index(props) {
       postNew.map(v => {
         res.data.unshift(v)
       })
-      //console.log(res.data)
-      dispatch(loadMore(res.data))
+      console.log(res.data)
+      dispatch(loadMore(res.data.success === false ? [] : res.data))
       removeNewPost()
     })
   })
@@ -81,11 +80,12 @@ function Index(props) {
           postTime={value.time}
           id={id}
           idCurrentUser={currentUser ? currentUser.id : null}
+          title={value.title}
+          kind={value.kind}
         />
       })
     }
     catch(err){
-      console.log(err)
       return <Empty />
     }
   }

@@ -30,6 +30,9 @@ body{
       content: url('../../assets/logo.png');
       height: 100%;
       max-width: 200px;
+      &:hover{
+        cursor: pointer;
+      }
     }
     .notify{
       margin-right: 80px;
@@ -37,7 +40,9 @@ body{
       width: 132px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
+      >span{
+        margin-left: 26px
+      }
       .icon{
         font-size: 25px;
         :hover{

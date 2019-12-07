@@ -8,10 +8,12 @@ import axios from 'axios'
 
 //redux
 import { useDispatch } from 'react-redux'
+import { setUserPost } from '../../actions/userPost/setUserPost'
 import { setPost } from '../../actions/posts/setPost'
 
 //import HOC
-import withAuth from '../../components/utils/hoc/authUser'
+import withAuthLogged from '../../components/utils/hoc/authLogged'
+import withAuthUser from '../../components/utils/hoc/authUser'
 
 
 const { TextArea } = Input
@@ -33,6 +35,9 @@ const Index = (props) => {
 
 
   const onSubmitPost = () => {
+    window.document.querySelector('.text').value = ''
+    window.document.querySelector('[name="title"]').value = ''
+    window.document.querySelector('[name="kind"]').value = ''
     const closeBtn = window.document.querySelector('.close-button')
     setPosting(true)
     axios({
@@ -46,21 +51,35 @@ const Index = (props) => {
         kind
       }
     }).then(() => {
-      axios({
-        method: 'get',
-        url: `http://localhost:8080/reviewbook/review/post`,
-
-      }).then( (res) => {
-        dispatch(setPost(res.data))
-        setPosting(false)
-        setDesc('')
-        closeBtn.click()
-        setImageUrl('')
-        setUrl('')
-        setTitle('')
-        setKind('')
-      })
-
+      if (props.params) {
+        axios({
+          method: 'get',
+          url: `http://localhost:8080/reviewbook/review/post/own/${props.params.userID}`,
+        }).then((res) => {
+          dispatch(setUserPost(res.data))
+          setPosting(false)
+          setDesc('')
+          closeBtn.click()
+          setImageUrl('')
+          setUrl('')
+          setTitle('')
+          setKind('')
+        })
+      } else {
+        axios({
+          method: 'get',
+          url: `http://localhost:8080/reviewbook/review/post`,
+        }).then((res) => {
+          dispatch(setPost(res.data))
+          setPosting(false)
+          setDesc('')
+          closeBtn.click()
+          setImageUrl('')
+          setUrl('')
+          setTitle('')
+          setKind('')
+        })
+      }
     })
 
   }
@@ -73,7 +92,7 @@ const Index = (props) => {
     window.document.addEventListener('scroll', () => {
       if (window.scrollY >= 350) {
         body.classList.remove('modal-active')
-        window.document.querySelector('.bottom-bar').classList.remove('show-from-post-component')
+        window.document.querySelector('.bottom-bar') && window.document.querySelector('.bottom-bar').classList.remove('show-from-post-component')
         closeBtn.classList.remove('show-from-post-component')
         window.document.activeElement.blur()
         setTimeout(() => {
@@ -129,7 +148,7 @@ const Index = (props) => {
     if (!isJpgOrPng) {
       message.error('You can only upload JPG/PNG file!')
     }
-    const isLt2M = file.size / 1024 / 1024 < 2
+    const isLt2M = file.size / 1024 / 1024 < 4
     if (!isLt2M) {
       message.error('Image must smaller than 2MB!')
     }
@@ -193,8 +212,8 @@ const Index = (props) => {
               </Upload>
               <div className='input-form'>
                 <p style={{ marginBottom: '5px', color: '#B8BCBC' }}>Dòng này được thêm vào cho đỡ trống ...</p>
-                <Input placeholder='Tiêu đề...' onChange={(e) => setTitle(e.target.value)} setfieldvalue = {title} name='title' />
-                <Input placeholder='Thể loại...'  onChange={(e) => setKind(e.target.value)} setfieldvalue={kind} name='kind' />
+                <Input placeholder='Tiêu đề...' onChange={(e) => setTitle(e.target.value)} setfieldvalue={title} name='title' />
+                <Input placeholder='Thể loại...' onChange={(e) => setKind(e.target.value)} setfieldvalue={kind} name='kind' />
               </div>
             </div>
             {
@@ -210,4 +229,4 @@ const Index = (props) => {
   )
 }
 
-export default withAuth(Index)
+export default withAuthLogged(withAuthUser(Index))

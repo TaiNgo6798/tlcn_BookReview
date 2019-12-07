@@ -180,7 +180,7 @@ loginRouter
       .child("Users")
       .child(userID);
     dbUser.once("value").then(snapshot => {
-      res.send(snapshot.val());
+      res.send({[userID]:snapshot.val()});
     });
   })
   .put((req, res) => {

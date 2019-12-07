@@ -6,8 +6,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-bottom: 30px;
-  margin-bottom: 50px;
+  padding-bottom: 20px;
+  margin-bottom: 30px;
   .body{
     >img{
       object-fit: cover;
@@ -20,6 +20,11 @@
     width: 100%;
     padding: 18px 10px;
     align-items: center;
+    .avatar{
+      &:hover{
+        cursor: pointer;
+      }
+    }
     >div{
       margin: 0 8px 0 0
     }
@@ -33,7 +38,10 @@
     .username{
       font-weight: 800;
       >p{
-        margin: 0
+        margin: 0;
+        &:hover{
+          cursor: pointer;
+        }
       }
       .time{
         display: flex;
