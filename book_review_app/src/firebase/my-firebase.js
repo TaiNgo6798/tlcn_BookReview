@@ -18,7 +18,9 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const dateNow = Date.now();
-var postNew = []; 
+const user = JSON.parse(localStorage.getItem('user'));
+var postNew = [];
+const postDelete = {};
 
 const removeNewPost = () => {
     postNew = []
@@ -31,9 +33,18 @@ firebase
   .on("child_added", function(snapshot) {
     if(dateNow < snapshot.val()['numberTime']){
       var obj = {};
-      obj[snapshot.key] = snapshot.val();
-      postNew.push(obj);
+      obj[snapshot.key] = snapshot.val();     
+      if(user && user.id !== snapshot.val().uid){
+        postNew.push(obj);
+      }
     }
+  });
+firebase
+  .database()
+  .ref()
+  .child("Reviews")
+  .on("child_removed", function(snapshot) {
+      postDelete[snapshot.key] = true;
   });
 
 const uploadStorage = async file => {
@@ -55,4 +66,4 @@ const uploadStorage = async file => {
   return result;
 };
 
-export { uploadStorage,postNew, removeNewPost };
+export { uploadStorage,postNew, removeNewPost,postDelete };

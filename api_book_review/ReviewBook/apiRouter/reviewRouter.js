@@ -22,7 +22,15 @@ reviewRouter
       var fName = user.firstName;
       var sName = user.secondName;
       var userName = fName + " " + sName;
-      var reviewData = new Review(kind, url, nameImage, desc, userID, userName, user.image);
+      var reviewData = new Review(
+        kind,
+        url,
+        nameImage,
+        desc,
+        userID,
+        userName,
+        user.image
+      );
 
       var newPostReviewRef = databaseRef.push();
       newPostReviewRef
@@ -162,7 +170,7 @@ reviewRouter
           reviews.val().desc,
           reviews.val().uid,
           reviews.val().name,
-          reviews.val().urlUser,
+          reviews.val().urlUser
         );
         if (req.body.kind) {
           review.kind = req.body.kind;
@@ -174,8 +182,6 @@ reviewRouter
           review.desc = req.body.desc;
         }
         if (req.body.nameImage) {
-        
-          
           //delete file upload
           var reviewStorageRef = firebase
             .storage()
@@ -186,7 +192,6 @@ reviewRouter
             .delete()
             .then(() => {
               review.nameImage = req.body.nameImage;
-              //update database reiview
               dbReviews.update(review, error => {
                 if (error) {
                   var errorMessage = error.message;
@@ -207,20 +212,6 @@ reviewRouter
               });
             });
         }
-        else{
-          dbReviews.update(review, error => {
-            if (error) {
-              var errorMessage = error.message;
-              res.send(errorMessage);
-            } else {
-              res.send({
-                success: true,
-                review: review,
-                message: "Update review successful"
-              });
-            }
-          });
-        }
       } else {
         res.send({
           success: false,
@@ -238,19 +229,37 @@ reviewRouter
       .child(req.params.review_id);
     dbReviews.once("value", function(reviews) {
       if (reviews.val().uid === userID) {
-        var reviewStorageRef = firebase
-          .storage()
-          .ref()
-          .child("Review Images")
-          .child(reviews.val().nameImage);
-        reviewStorageRef.delete().then(() => {
-          dbReviews.remove().then(error => {
-            if (error) {
-              firebase.database().ref().child("Likes").child(userID).remove();
-              firebase.database().ref().child('Comments').child(userID).remove();
-              res.send({
-                success: false,
-                message: error.message
+        dbReviews.remove().then(error => {
+          if (error) {
+            res.send({
+              success: false,
+              message: error.message
+            });
+          } else {
+            firebase
+              .database()
+              .ref()
+              .child("Likes")
+              .child(req.params.review_id)
+              .remove();
+            firebase
+              .database()
+              .ref()
+              .child("Comments")
+              .child(req.params.review_id)
+              .remove();
+
+            if (reviews.val().nameImage) {
+              var reviewStorageRef = firebase
+                .storage()
+                .ref()
+                .child("Review Images")
+                .child(reviews.val().nameImage);
+              reviewStorageRef.delete().then(() => {
+                res.send({
+                  success: true,
+                  message: "Delete review successful"
+                });
               });
             } else {
               res.send({
@@ -258,7 +267,7 @@ reviewRouter
                 message: "Delete review successful"
               });
             }
-          });
+          }
         });
       } else {
         res.send({
