@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import NavBar from '../../components/nav'
-import { Skeleton, Empty  } from 'antd'
+import { Skeleton, Empty } from 'antd'
 import { useBottomScrollListener } from 'react-bottom-scroll-listener'
+import axios from 'axios'
 //import components
 import Post from '../../components/post'
 import Infor from '../../components/infor'
 import FirstRegister from '../../components/firstRegister'
 import LeftBar from '../../components/leftBar'
 import CreatePost from '../../components/createPost'
-import axios from 'axios'
+import Chatbar from '../../components/chatBar'
 
 // import css
 import './index.scss'
@@ -85,29 +86,30 @@ function Index(props) {
         />
       })
     }
-    catch(err){
+    catch (err) {
       return <Empty />
     }
   }
 
   return (
     <>
-    {
-      localStorage.getItem('token') === 'setting account' &&
-       <FirstRegister setCurrentUser={(u) => setCurrentUser(u)}/>
-    }
+      {
+        localStorage.getItem('token') === 'setting account' &&
+        <FirstRegister setCurrentUser={(u) => setCurrentUser(u)} />
+      }
       <NavBar />
       <div className='content'>
+        <Chatbar />
         <div className='leftBar'>
           <LeftBar />
         </div>
         <div className='wrapper'>
           <div className='center-content'>
-            <CreatePost user={currentUser ? currentUser : { image: '', firstName: 'anonymous' }}/>
-            <Skeleton loading = {loading} active >
-            <div className='posts'>
-              {loadPosts()}
-            </div>
+            <CreatePost user={currentUser ? currentUser : { image: '', firstName: 'anonymous' }} />
+            <Skeleton loading={loading} active >
+              <div className='posts'>
+                {loadPosts()}
+              </div>
             </Skeleton>
           </div>
           <div className='infor'>
