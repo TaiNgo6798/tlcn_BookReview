@@ -3,6 +3,14 @@ var express = require("express");
 var User = require('./../model/user');
 
 const userRouter = express.Router();
+
+userRouter.route("/users")
+.get((req,res)=>{
+    firebase.database().ref().child('Users').once('value',snapshot=>{
+        res.send(snapshot.val());
+    })
+})
+
 userRouter.route("/user/:id_user")
 .get((req,res)=>{
     var userID = req.params.id_user;

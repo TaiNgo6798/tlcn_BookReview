@@ -46,3 +46,5 @@ var commentRouter = require("./apiRouter/commentRouter");
 app.use("/reviewbook", commentRouter);
 var userRouter = require("./apiRouter/userRouter");
 app.use("/reviewbook", userRouter);
+var searchRouter = require("./apiRouter/searchRouter");
+app.use("/reviewbook", searchRouter);
