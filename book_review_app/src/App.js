@@ -7,7 +7,8 @@ import {
 } from "react-router-dom";
 import { routers } from './configs'
 import './App.css'
-
+import NavBar from './components/nav'
+import Chatbar from './components/chatBar'
 
 const App = (props) => {
   return (

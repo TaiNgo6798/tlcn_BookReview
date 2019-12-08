@@ -8,14 +8,18 @@ import { createStore } from 'redux'
 //import reducer
 import allReducer from './reducers'
 import { Provider } from 'react-redux'
+import Chatbar from './components/chatBar'
+import Navbar from './components/nav'
 
 const store = createStore(allReducer)
 
 ReactDOM.render(
   <Provider store={store}>
+
+    <Chatbar />
     <App />
   </Provider>
-, document.getElementById('root'));
+  , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react'
 import { Avatar, Badge, Icon, Input } from 'antd'
 import axios from "axios";
-import ChatWindow from '../chatWindow'
+import ChatWindow from './chatWindow'
 
 import './index.scss'
 
