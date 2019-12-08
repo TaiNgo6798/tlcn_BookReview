@@ -44,7 +44,6 @@ userRouter.route("/user/:id_user")
         if(req.body.image){
             user.image = req.body.image;
         }
-        console.log(user);
         
         userRef.update(user,error=>{
             if(error){

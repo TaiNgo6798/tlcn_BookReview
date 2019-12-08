@@ -6,8 +6,9 @@ const chatRouter = express.Router();
 chatRouter.route('/chat')
 .post((req,res)=>{
     var body = req.body.body;
-    var nameUser = req.body.nameUser;
-    var imageUser = req.body.imageUser;
+    var user = req.decoded.user;
+    var nameUser = user.firstName + " " + user.secondName;
+    var imageUser = user.image;
     var userIDSend = req.body.userIDSend;
     var userIDRReceive = req.body.userIDRReceive;
     var key;
@@ -28,9 +29,10 @@ chatRouter.route('/chat')
         }
     })
 })
+chatRouter.route('/chat/:userIDSend/:userIDRReceive')
 .get((req,res)=>{
-    var userIDSend = req.body.userIDSend;
-    var userIDRReceive = req.body.userIDRReceive;
+    var userIDSend = req.params.userIDSend;
+    var userIDRReceive = req.params.userIDRReceive;
     var key;
     userIDSend > userIDRReceive? (key = userIDSend + userIDRReceive) : ( key = userIDRReceive + userIDSend);
     firebase.database().ref().child('Chats').child(key).once("value",snapshot=>{

@@ -16,7 +16,7 @@
   
   .header_window_chatBar{
     
-    padding: .6em 0.4em .6em 0.4em;
+    padding: .4em;
     box-shadow: 0 2px 1px rgba(0, 0, 0, .1);
     border-top-left-radius: 12px;
     border-top-right-radius: 12px;
@@ -40,6 +40,8 @@
     }
   }
   .content_window_chatBar{
+    display: flex;
+    flex-direction: column-reverse;
     overflow: scroll;
     overflow-x: hidden;
     border-bottom: #E5E5E5 solid 1px;
@@ -75,7 +77,12 @@
     height: 4em;
     padding: .2em;
     >input{
-      box-shadow: none !important;
+    padding: 4px ;
+     width: 100%;
+     border: none;
+     &:focus{
+       outline: none;
+     }
     }
   }
   .window_width{

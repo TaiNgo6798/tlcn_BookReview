@@ -31,7 +31,6 @@ likeRouter.route("/review/like/:review_id")
     var nameUser = user.firstName + ' ' + user.secondName;
     var review_id = req.params.review_id;
     var like = new Like(imageUser,nameUser);
-    console.log(review_id);
     
     var userID = req.decoded.userID;
     var dblike = firebase.database().ref().child('Likes').child(review_id).child(userID);

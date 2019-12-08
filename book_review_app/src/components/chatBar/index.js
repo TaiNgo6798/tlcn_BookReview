@@ -10,20 +10,23 @@ function Index() {
 
   const [listUser, setListUser] = useState([])
   const [listActiveChat, setListActiveChat] = useState([])
+  const currentUser = JSON.parse(localStorage.getItem('user'))
 
   useEffect(() => {
     axios({
       method: "get",
       url: `http://localhost:8080/reviewbook/users`,
     }).then((res) => {
+      console.log(res.data)
       let list = []
       Object.keys(res.data).map((k) => {
+        k !== currentUser.id &&
         list.push({
           id: k,
           infor: (res.data)[k]
         })
       })
-      console.log(list)
+
       setListUser([...list])
     })
   }, [])
@@ -41,7 +44,6 @@ function Index() {
   }
   
   const closeActiveChatHandler = (id) => {
-    console.log(listActiveChat.filter(v => v.id !== id))
     setListActiveChat([...listActiveChat.filter(v => v.id !== id)])
   }
 
