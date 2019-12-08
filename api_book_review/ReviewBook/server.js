@@ -48,3 +48,5 @@ var userRouter = require("./apiRouter/userRouter");
 app.use("/reviewbook", userRouter);
 var searchRouter = require("./apiRouter/searchRouter");
 app.use("/reviewbook", searchRouter);
+var chatRouter = require("./apiRouter/chatRouter");
+app.use("/reviewbook", chatRouter);
