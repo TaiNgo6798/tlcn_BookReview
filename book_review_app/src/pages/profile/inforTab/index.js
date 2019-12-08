@@ -40,6 +40,7 @@ function Index() {
           <p>Số điện thoại</p>
           <p>0123456789</p>
         </div>
+        <hr className='hr_profile' />
         <div className='row_detail_profile'>
           <p>Địa chỉ hiện tại</p>
           <p>38 Cây Keo</p>

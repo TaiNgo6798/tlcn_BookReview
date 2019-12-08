@@ -22,11 +22,14 @@ function Index(props) {
         {
           window.document.querySelector('.nav') && window.document.querySelector('.nav').classList.add('minimize')
           window.document.querySelector('.inforForm') && window.document.querySelector('.inforForm').classList.add('fixedPos')
+          window.document.querySelector('.container_chatBar') && window.document.querySelector('.container_chatBar').classList.add('moveUP')
+          
           heightChange = false
         }
         if(window.scrollY <= 50 && heightChange === false) {
           window.document.querySelector('.nav') && window.document.querySelector('.nav').classList.remove('minimize')
           window.document.querySelector('.inforForm') && window.document.querySelector('.inforForm').classList.remove('fixedPos')
+          window.document.querySelector('.container_chatBar') && window.document.querySelector('.container_chatBar').classList.remove('moveUP')
           heightChange = true
         }
     })
