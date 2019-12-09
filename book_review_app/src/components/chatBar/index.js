@@ -20,7 +20,7 @@ function Index() {
       console.log(res.data)
       let list = []
       Object.keys(res.data).map((k) => {
-        k !== currentUser.id &&
+        k !== (currentUser ? currentUser.id : '') &&
         list.push({
           id: k,
           infor: (res.data)[k]
