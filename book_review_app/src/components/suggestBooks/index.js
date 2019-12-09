@@ -4,9 +4,6 @@ import reqwest from 'reqwest'
 // import css
 import './index.scss'
 
-
-
-
 const Index = () => {
   const count = 8
   const [initLoading, setInitLoading] = useState(true)

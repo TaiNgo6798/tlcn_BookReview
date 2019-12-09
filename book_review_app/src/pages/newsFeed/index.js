@@ -98,8 +98,6 @@ function Index(props) {
         <FirstRegister setCurrentUser={(u) => setCurrentUser(u)} />
       }
       
-    <Chatbar />
-    <NavBar />
       <div className='content'>
         <div className='leftBar'>
           <LeftBar />

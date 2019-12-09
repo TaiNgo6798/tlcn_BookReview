@@ -2,6 +2,8 @@ import React, {useState, useEffect} from 'react'
 import { Avatar, Badge, Icon, Input } from 'antd'
 import axios from "axios";
 import ChatWindow from './chatWindow'
+import { withRouter } from 'react-router-dom'
+
 
 import './index.scss'
 
@@ -71,7 +73,10 @@ function Index() {
     })
   }
 
-  return <>
+  return (
+    window.location.pathname !== '/' ? (
+      window.location.pathname !== '/login' ? (
+        <>
     <div className='container_chatBar'>
       {loadUsers()}
     </div>
@@ -79,6 +84,8 @@ function Index() {
       {loadActiveChat()}
     </div>
   </>
+      ) : '' ) : ''
+  )
 }
 
-export default Index
+export default withRouter(Index)

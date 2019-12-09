@@ -104,9 +104,6 @@ function Index(props) {
 
   return (
     <>
-    
-    <Chatbar />
-        <NavBar />
       <div className='content_profile'>
         <div className='wrapper_profile'>
           <div className='center-content_profile'>
