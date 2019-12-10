@@ -97,7 +97,7 @@ function Index(props) {
         localStorage.getItem('token') === 'setting account' &&
         <FirstRegister setCurrentUser={(u) => setCurrentUser(u)} />
       }
-    <NavBar />
+      
       <div className='content'>
         <div className='leftBar'>
           <LeftBar />

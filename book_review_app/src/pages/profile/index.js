@@ -10,7 +10,7 @@ import Post from '../../components/post'
 import CreatePost from '../../components/createPost'
 import axios from 'axios'
 import { withRouter } from 'react-router-dom'
-import ChatBar from '../../components/chatBar'
+import Chatbar from '../../components/chatBar'
 // import css
 import './index.scss'
 
@@ -104,7 +104,6 @@ function Index(props) {
 
   return (
     <>
-        <NavBar />
       <div className='content_profile'>
         <div className='wrapper_profile'>
           <div className='center-content_profile'>

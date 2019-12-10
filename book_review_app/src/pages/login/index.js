@@ -1,5 +1,5 @@
 
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Form, Icon, Input, Button, Checkbox, Modal } from 'antd'
 import Swal from 'sweetalert2'
 import { withRouter } from 'react-router-dom'
@@ -30,6 +30,7 @@ const Index = (props) => {
     const imgLeft = window.document.querySelector('.left-image')
     imgLeft.classList.toggle('change-image')
   }
+
 
   const handleSubmit = e => {
     e.preventDefault()

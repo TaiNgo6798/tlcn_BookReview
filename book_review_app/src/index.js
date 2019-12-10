@@ -15,8 +15,6 @@ const store = createStore(allReducer)
 
 ReactDOM.render(
   <Provider store={store}>
-
-    <Chatbar />
     <App />
   </Provider>
   , document.getElementById('root'));
