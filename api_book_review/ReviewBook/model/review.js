@@ -19,7 +19,6 @@ class Review{
         this.comments = new Array();
         this.shares = new Array();
         this.numberTime = Date.now();
-        this.lock = true;
         this.time = new Date().toLocaleString("vi", {
             hour: "numeric",
             minute: "numeric",
