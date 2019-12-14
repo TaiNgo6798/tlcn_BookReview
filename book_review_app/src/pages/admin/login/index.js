@@ -3,7 +3,8 @@ import { Form, Icon, Input, Button } from 'antd'
 
 import './index.scss'
 
-
+import axios from 'axios'
+import Swal from 'sweetalert2'
 
 function Index(props) {
   const { checkAccount } = props
@@ -20,22 +21,42 @@ function Index(props) {
     props.form.validateFields()
   }, [])
 
+
   const handleSubmit = e => {
     e.preventDefault()
-
     props.form.validateFields((err, values) => {
       if (!err) {
-        if(values.username === 'admin' && values.password === 'admin')
-        {
-          checkAccount()
-        }
+        axios({
+          method: 'post',
+          url: 'http://localhost:8080/reviewbook/login',
+          data: {
+            email: values.username,
+            password: values.password
+          }
+        }).then(async function (res) {
+          if (res.data.token || res.data.success === true) {
+            console.log(res)
+            localStorage.setItem('tokenAdmin', Object.values(res.data)[1])
+            checkAccount()
+          } else {
+            Swal.fire({
+              position: 'center',
+              type: 'error',
+              title: res.data,
+              showConfirmButton: false,
+              timer: 1500
+            })
+          }
+        })
       }
     })
   }
 
+
   return (
     <>
       <div className='form_login_admin'>
+        <h1>Login to Admin's page</h1>
         <Form  onSubmit={(e) => handleSubmit(e)}>
           <Form.Item validateStatus={usernameError ? 'error' : ''} help={usernameError || ''}>
             {getFieldDecorator('username', {

@@ -17,13 +17,15 @@ const noToken = {
 loginRouter.use(function(req, res, next) {
   var url = req.url;
   var method = req.method;
-  
-  if (noToken[url] === method || method === "GET" || method === "OPTIONS") {
+
+      // check header or url parameters or post parameters for token
+      var token =
+      req.body.token || req.query.token || req.headers["x-access-token"];
+
+  if ((noToken[url] === method || method === "GET" || method === "OPTIONS") && !token) {
     next();
   } else {
-    // check header or url parameters or post parameters for token
-    var token =
-      req.body.token || req.query.token || req.headers["x-access-token"];
+
 
     // decode token
     if (token) {
