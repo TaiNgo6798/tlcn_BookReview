@@ -33,6 +33,12 @@ reviewRouter
       );
 
       var newPostReviewRef = databaseRef.push();
+      
+      
+      if(user.role && user.role === "admin"){
+        reviewData.approve = true;
+      }
+
       newPostReviewRef
         .set(reviewData, function(error) {
           if (error) {
@@ -277,5 +283,5 @@ reviewRouter
       }
     });
   });
-
+  
 module.exports = reviewRouter;
