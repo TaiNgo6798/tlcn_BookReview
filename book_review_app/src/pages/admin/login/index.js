@@ -28,7 +28,6 @@ function Index(props) {
         if(values.username === 'admin' && values.password === 'admin')
         {
           checkAccount()
-          console.log('alow')
         }
       }
     })

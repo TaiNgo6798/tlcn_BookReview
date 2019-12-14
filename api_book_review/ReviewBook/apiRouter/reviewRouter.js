@@ -161,6 +161,7 @@ reviewRouter
   })
   //update bai viet theo id
   .put((req, res) => {
+    console.log('aloalo')
     var userID = req.params.id_user;
     var dbReviews = firebase
       .database()
@@ -189,6 +190,7 @@ reviewRouter
         }
         if (req.body.nameImage) {
           //delete file upload
+
           var reviewStorageRef = firebase
             .storage()
             .ref()
@@ -217,6 +219,19 @@ reviewRouter
                 message: error.message
               });
             });
+        } else{
+          dbReviews.update(review, error => {
+            if (error) {
+              var errorMessage = error.message;
+              res.send(errorMessage);
+            } else {
+              res.send({
+                success: true,
+                review: review,
+                message: "Update review successful"
+              });
+            }
+          });
         }
       } else {
         res.send({

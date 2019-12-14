@@ -25,13 +25,15 @@ function Index() {
               mode="inline"
               defaultSelectedKeys={['1']}
               onSelect={(e) => setActiveMenu(e.key)}
-              style={{ height: '100%', borderRight: 0, display: 'flex', flexDirection: 'column', paddingTop: '4em'}}
+              style={{ borderRight: 0, display: 'flex', flexDirection: 'column', paddingTop: '4em'}}
             >
                 <Menu.Item key="1"><Icon type="home" />Dashboard</Menu.Item>
                 <Menu.Item key="2"><Icon type="carry-out" />Duyệt bài</Menu.Item>
                 <Menu.Item key="3"><Icon type="inbox" />Quản lý bài viết</Menu.Item>
                 <Menu.Item key="4"><Icon type="team" />Quản lý tài khoản</Menu.Item>
-                <Menu.Item key="5" style={{position: "fixed", bottom: 0}}><Icon type="logout" />Đăng xuất</Menu.Item>
+                <Menu.Item key="5" style={{position: "absolute", bottom: 0}} 
+                onSelect={console.log('log out !')}
+                ><Icon type="logout" />Đăng xuất</Menu.Item>
 
             </Menu>
           </Sider>
