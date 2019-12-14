@@ -1,9 +1,7 @@
 import firebase from "firebase";
 import "firebase/storage";
-import { setPost } from '../actions/posts/setPost'
-import { useDispatch } from 'react-redux'
-
-
+import { setPost } from "../actions/posts/setPost";
+import { useDispatch } from "react-redux";
 
 var firebaseConfig = {
   apiKey: "AIzaSyAxsPNM6aufE4GYrx4Ia4C8GrzI4mAPX9g",
@@ -18,25 +16,22 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const dateNow = Date.now();
-const user = JSON.parse(localStorage.getItem('user'));
 var postNew = [];
 const postDelete = {};
 
 const removeNewPost = () => {
-    postNew = []
-}
+  postNew = [];
+};
 
 firebase
   .database()
   .ref()
   .child("Reviews")
   .on("child_added", function(snapshot) {
-    if(dateNow < snapshot.val()['numberTime']){
+    if (dateNow < snapshot.val()["numberTime"]) {
       var obj = {};
-      obj[snapshot.key] = snapshot.val();     
-      if(user && user.id !== snapshot.val().uid){
-        postNew.push(obj);
-      }
+      obj[snapshot.key] = snapshot.val();
+      postNew.push(obj);
     }
   });
 firebase
@@ -44,7 +39,7 @@ firebase
   .ref()
   .child("Reviews")
   .on("child_removed", function(snapshot) {
-      postDelete[snapshot.key] = true;
+    postDelete[snapshot.key] = true;
   });
 
 const uploadStorage = async file => {
@@ -66,4 +61,4 @@ const uploadStorage = async file => {
   return result;
 };
 
-export { uploadStorage,postNew, removeNewPost,postDelete };
+export { uploadStorage, postNew, removeNewPost, postDelete };

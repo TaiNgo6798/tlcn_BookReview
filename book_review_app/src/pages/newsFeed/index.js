@@ -32,7 +32,9 @@ function Index(props) {
   const dispatch = useDispatch()
 
   useBottomScrollListener(() => {
-    let lastPost = Object.values(posts[posts.length - 1])[0]
+    console.log(posts);
+    
+    let lastPost = posts.length > 0 && Object.values(posts[posts.length - 1])[0]
     axios({
       method: 'get',
       url: `http://localhost:8080/reviewbook/review/post/${lastPost.numberTime}`,
