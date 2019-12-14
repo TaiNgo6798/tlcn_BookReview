@@ -71,15 +71,15 @@ function Index() {
           </Row>
         </div>
         <div className='bottom_dashboard'>
-          <Row>
-            <Col xs={24} sm={24} md={18} lg={24} xl={12}>
+          <Row gutter={8}>
+            <Col className="gutter-row" xs={24} sm={24} md={24} lg={16} xl={16}>
               <div className='chart_dashboard'>
                 <canvas id="myChart" className='content_chart'>
                 </canvas>
                 <h3><i>Số bài đăng 4 tháng gần đây</i></h3>
               </div>
             </Col>
-            <Col xs={24} sm={24} md={24} lg={24} xl={12}>
+            {/* <Col className="gutter-row" xs={8} sm={12} md={18} lg={24} xl={12}>
               <div className='calendar_dashboard'>
                 <Calendar
                   fullscreen={false}
@@ -159,7 +159,7 @@ function Index() {
                   onPanelChange={onPanelChange}
                 />
               </div>
-            </Col>
+            </Col> */}
           </Row>
         </div>
       </div>

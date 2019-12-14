@@ -1,7 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { Modal, Form, Input, Button, Spin, DatePicker, Select } from 'antd'
 import axios from 'axios'
-import moment from 'moment'
 // import css
 import '../firstRegister/style.scss'
 

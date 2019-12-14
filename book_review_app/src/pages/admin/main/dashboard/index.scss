@@ -3,7 +3,7 @@
   flex-direction: column;
   height: 100%;
   padding: 2em;
-  overflow: auto;
+  overflow: hidden;
   overflow-x: hidden;
   .static_dashboard{
     margin-top: 3em;
@@ -18,7 +18,7 @@
       max-width: 32em;
     }
     .chart_dashboard{
-      max-width: 32em;
+      max-width: 200em;
       height: auto !important;
       width: auto !important;
       display: flex;
