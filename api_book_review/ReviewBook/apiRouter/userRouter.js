@@ -26,27 +26,29 @@ userRouter.route("/user/:id_user")
         var user = new User();
         user = snapshot.val();
 
-        if(req.body.fName){
+        if(req.body.fName && req.body.fName.length > 0){  
             user.firstName = req.body.fName;
         }
-        if(req.body.sName){
+        if(req.body.sName && req.body.sName.length > 0){
             user.secondName = req.body.sName;
         }
-        if(req.body.gender){
+        if(req.body.gender && req.body.gender.length > 0){
             user.gender = req.body.gender;
         }
-        if(req.body.phone){
+        if(req.body.phone && req.body.phone.length > 0){
             user.phone = req.body.phone;
         }
-        if(req.body.birthday){
+        if(req.body.birthday && req.body.birthday.length > 0){
             user.birthday = req.body.birthday;
         }
-        if(req.body.image){
+        if(req.body.image && req.body.image.length > 0){
             user.image = req.body.image;
         }
+
+        req.decoded.user = user;
         
         userRef.update(user,error=>{
-            if(error){
+            if(error){ 
                 res.send({
                     success:false,
                     message:error.message
@@ -54,7 +56,7 @@ userRouter.route("/user/:id_user")
             }else{
                 res.send({
                     success:true,
-                    message:"update user successful"
+                    user: req.decoded
                 })
             }
         })

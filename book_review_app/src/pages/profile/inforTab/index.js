@@ -1,33 +1,48 @@
-import React from 'react'
-import { Icon } from 'antd'
-import { Icon as Ico } from 'react-icons-kit'
-import {ic_phone} from 'react-icons-kit/md/ic_phone'
+import React, { useState } from 'react'
+import { Icon, Button, Row, Col } from 'antd'
+
 import './index.scss'
 
+import EditModal from './editModal'
+
 function Index() {
+
+  const currentUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : {}
+  const { firstName, lastName, gender, id, birthday, email, image, phone } = currentUser
+  const [openEdit, setOpenEdit] = useState(false)
+
   return <>
+    {openEdit && <EditModal onClose={() => setOpenEdit(false)} currentUser={currentUser}/>}
     <div className='container_detail_profile'>
       <div className='titile_detail_profile'>
         <h1>Giới thiệu</h1>
       </div>
 
-        {/* //thong tin ca nhan */}
-      <h2><Icon style={{ fontSize: '22px' }} type="user" />  Thông tin cá nhân</h2>
+      {/* //thong tin ca nhan */}
+      <Row type='flex' justify='space-between'>
+        <Col>
+          <h2><Icon style={{ fontSize: '22px' }} type="user" />  Thông tin cá nhân</h2>
+        </Col>
+        <Col>
+          <Button type="dashed" onClick={() => setOpenEdit(true)}><Icon type="edit" />Chỉnh sửa</Button>
+        </Col>
+      </Row>
+
       <div className='infor_detail_profile'>
         <hr className='hr_profile' />
         <div className='row_detail_profile'>
           <p>Tên tài khoản</p>
-          <p>Tai Ngo</p>
+          <p>{`${firstName} ${lastName}`}</p>
         </div>
         <hr className='hr_profile' />
         <div className='row_detail_profile'>
           <p>Giới tính</p>
-          <p>Nam</p>
+          <p>{gender}</p>
         </div>
         <hr className='hr_profile' />
         <div className='row_detail_profile'>
           <p>Ngày sinh</p>
-          <p>6/7/1998</p>
+          <p>{birthday}</p>
         </div>
         <hr className='hr_profile' />
       </div>
@@ -38,30 +53,21 @@ function Index() {
         <hr className='hr_profile' />
         <div className='row_detail_profile'>
           <p>Số điện thoại</p>
-          <p>0123456789</p>
+          <p>{phone}</p>
         </div>
-        <hr className='hr_profile' />
-        <div className='row_detail_profile'>
-          <p>Địa chỉ hiện tại</p>
-          <p>38 Cây Keo</p>
-        </div>
-        <hr className='hr_profile' />
-        <div className='row_detail_profile'>
-          <p>Quê quán</p>
-          <p>HCM</p>
-        </div>
+
         <hr className='hr_profile' />
       </div>
 
       {/* // moi quan he */}
-      <h2><Icon style={{ fontSize: '22px' }} type="heart" theme='filled'/>  Mối quan hệ</h2>
+      <h2><Icon style={{ fontSize: '22px' }} type="heart" theme='filled' />  Mối quan hệ</h2>
       <div className='infor_detail_profile'>
         <hr className='hr_profile' />
         <div className='row_detail_profile'>
           <p>Tình trạng</p>
           <p>chưa cập nhật</p>
         </div>
-    
+
         <hr className='hr_profile' />
       </div>
 
