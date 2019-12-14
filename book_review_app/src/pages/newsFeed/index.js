@@ -27,22 +27,22 @@ function Index(props) {
   const [loading, setLoading] = useState(true)
   const [currentUser, setCurrentUser] = useState(JSON.parse(localStorage.getItem('user')))
   const [postList, setPostList] = useState([])
+  const [lastPost, setLastPost] = useState({})
   //redux
   const posts = useSelector(state => state.postReducer)
   const dispatch = useDispatch()
 
   useBottomScrollListener(() => {
-    console.log(posts);
-    
-    let lastPost = posts.length > 0 && Object.values(posts[posts.length - 1])[0]
     axios({
       method: 'get',
       url: `http://localhost:8080/reviewbook/review/post/${lastPost.numberTime}`,
     }).then((res) => {
+      console.log(res.data)
+      res.data.length > 0 &&
+      setLastPost(Object.values(res.data[res.data.length - 1])[0])
       postNew.map(v => {
         res.data.unshift(v)
       })
-
       dispatch(loadMore(res.data.success === false ? [] : res.data))
       removeNewPost()
     })
@@ -57,6 +57,7 @@ function Index(props) {
       dispatch(setPost(res.data))
       setPostList(res.data)
       setLoading(false)
+      setLastPost(Object.values(res.data[res.data.length - 1])[0])
     })
 
   }, [])
@@ -90,6 +91,8 @@ function Index(props) {
       return <Empty />
     }
   }
+
+
 
   return (
     <>

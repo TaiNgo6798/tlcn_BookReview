@@ -5,7 +5,7 @@ import axios from 'axios'
 import './index.scss'
 
 const Index = (props) => {
-  const { onClose, currentUser } = props
+  const { onClose, currentUser, setUser } = props
   const { getFieldDecorator } = props.form
   const { Option } = Select
   const dateFormatList = ['DD/MM/YYYY', 'DD/MM/YY']
@@ -24,6 +24,7 @@ const Index = (props) => {
         const { firstname='', lastname='', gender='', phone='', birthday='' } = values
         setLoading(true)
         let birthdayGood = new Date(birthday)
+
         axios({
           method: 'put',
           url: `http://localhost:8080/reviewbook/user/${currentUser.id}?token=${localStorage.getItem('token')}`,
@@ -32,7 +33,7 @@ const Index = (props) => {
             sName: lastname,
             gender,
             phone,
-            birthday: birthdayGood
+            birthday: birthdayGood.toLocaleDateString()
           }
         }).then((res) => {
           setLoading(false)
@@ -48,6 +49,7 @@ const Index = (props) => {
             phone
           }
           localStorage.setItem('user', JSON.stringify(user))
+          setUser(user)
           onCancel()
         })
       }

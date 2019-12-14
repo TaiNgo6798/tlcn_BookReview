@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Skeleton, Empty, Avatar, Tabs, Tag, Button } from 'antd'
+import { Skeleton, Empty, Avatar, Tabs, Tag, Button, Upload, message, Spin, Tooltip } from 'antd'
 import { books } from 'react-icons-kit/icomoon/books'
 import { Icon } from 'react-icons-kit'
 import { useBottomScrollListener } from 'react-bottom-scroll-listener'
@@ -12,6 +12,9 @@ import { withRouter } from 'react-router-dom'
 // import css
 import './index.scss'
 
+//firebase
+import { uploadStorage } from '../../firebase/my-firebase'
+
 //import redux
 import { useSelector, useDispatch } from 'react-redux'
 import { setUserPost } from '../../actions/userPost/setUserPost'
@@ -20,6 +23,7 @@ const { TabPane } = Tabs
 
 function Index(props) {
   const [loading, setLoading] = useState(true)
+  const [loadingAva, setLoadingAva] = useState(false)
   const [postList, setPostList] = useState([])
   const [user, setUser] = useState({})
   const [profileKey, setProfileKey] = useState('1')
@@ -94,10 +98,58 @@ function Index(props) {
     }
   }
 
+  const refetchUser = (data) => {
+    setUser({ ...data, secondName: data.lastName })
+  }
+
   const loggoutHandler = () => {
     localStorage.clear()
     props.history.push('/')
   }
+
+  const handleChange = async info => {
+    if (info.file.status === 'uploading') {
+      setLoadingAva(true)
+      return
+    }
+    if (info.file.status === 'done') {
+      let img = await uploadStorage(info.file.originFileObj)
+      //setUrl(img.url)
+      //setNameImage(img.nameImage)
+      // Get this url from response in real world.
+      axios({
+        method: 'put',
+        url: `http://localhost:8080/reviewbook/user/${currentUser.id}?token=${localStorage.getItem('token')}`,
+        data: {
+          image: img.url
+        }
+      }).then(() => {
+        setUser({ ...user, image: img.url })
+        if (localStorage.getItem('user')) {
+          let newUser = JSON.parse(localStorage.getItem('user'))
+          localStorage.setItem('user', JSON.stringify({ ...newUser, image: img.url }))
+        }
+
+        setLoadingAva(false)
+      })
+    }
+  }
+
+  const beforeUpload = (file) => {
+    message.config({
+      top: '90%'
+    })
+    const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
+    if (!isJpgOrPng) {
+      message.error('You can only upload JPG/PNG file!')
+    }
+    const isLt2M = file.size / 1024 / 1024 < 4
+    if (!isLt2M) {
+      message.error('Image must smaller than 4MB!')
+    }
+    return isJpgOrPng && isLt2M
+  }
+
 
   return (
     <>
@@ -106,7 +158,19 @@ function Index(props) {
           <div className='center-content_profile'>
             <div className='image-top_profile'>
               <div className='avatar_profile'>
-                <Avatar size={170} src={user.image} />
+                <Upload
+                  beforeUpload={beforeUpload}
+                  onChange={handleChange}
+                  className='ant-avatar'
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                >
+                  <Spin spinning={loadingAva}>
+                    <Tooltip placement="top" title="Thay đổi ảnh đại diện">
+                      <Avatar size={170} src={user.image} />
+                    </Tooltip>
+                  </Spin>
+                </Upload>
+
               </div>
               <div className='footer_profile'>
                 <div className='name_profile'>
@@ -131,30 +195,30 @@ function Index(props) {
               {
                 profileKey === '1' ? (
                   <>
-                  <div className='leftBar_profile'>
-                    <div className='infor_profile'>
-                      <h2>Giới thiệu</h2>
-                      {
-                        user.gender ? (user.gender === 'male' ?
-                          <p><Tag color="geekblue">♂ Nam</Tag></p> : <p><Tag color="magenta">♀ Nữ</Tag></p>)
-                          : ''
-                      }
-                      <div style={{ display: 'flex' }}>
-                        <Icon size={18} icon={books} style={{ marginTop: '4px' }} />
-                        <p style={{ margin: '6px 0 0 4px' }}>Đã review <b>328</b> cuốn sách</p>
+                    <div className='leftBar_profile'>
+                      <div className='infor_profile'>
+                        <h2>Giới thiệu</h2>
+                        {
+                          user.gender ? (user.gender === 'male' ?
+                            <p><Tag color="geekblue">♂ Nam</Tag></p> : <p><Tag color="magenta">♀ Nữ</Tag></p>)
+                            : ''
+                        }
+                        <div style={{ display: 'flex' }}>
+                          <Icon size={18} icon={books} style={{ marginTop: '4px' }} />
+                          <p style={{ margin: '6px 0 0 4px' }}>Đã review <b>328</b> cuốn sách</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className='posts_profile'>
-                    <CreatePost user={currentUser ? currentUser : { image: '', firstName: 'anonymous' }} params={props.match.params} />
-                    <Skeleton loading={loading} active >
-                      {loadPosts()}
-                    </Skeleton>
-                  </div>
+                    <div className='posts_profile'>
+                      <CreatePost user={currentUser ? currentUser : { image: '', firstName: 'anonymous' }} params={props.match.params} />
+                      <Skeleton loading={loading} active >
+                        {loadPosts()}
+                      </Skeleton>
+                    </div>
                   </>
                 )
                   :
-                  <DetailProfile />
+                  <DetailProfile user={user} setUser={(data) => refetchUser(data)} />
               }
             </div>
           </div>

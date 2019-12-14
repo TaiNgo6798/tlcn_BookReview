@@ -29,14 +29,18 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        
         >.ant-avatar{
           margin-top: 20%;
           border: 4px #FFFFFF solid;
-          
           border-radius: 50%;
           height: 170px;
           width: 170px;
           z-index: 1;
+            &:hover{
+              cursor: pointer;
+            }
+
         }
       }
       .footer_profile{

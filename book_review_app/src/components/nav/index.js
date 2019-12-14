@@ -2,12 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { Input, Badge, Icon } from 'antd';
 import { withRouter } from 'react-router-dom'
 import './index.scss'
+import axios from 'axios'
+
+//import redux
+import { useSelector, useDispatch } from 'react-redux'
+import { setPost } from '../../actions/posts/setPost'
+import { setUserPost } from '../../actions/userPost/setUserPost'
 
 const { Search } = Input;
 
 function Index(props) {
   const currentUser = JSON.parse(localStorage.getItem('user'))
   const [messageCount, setMessageCount] = useState(0)
+  const dispatch = useDispatch()
+
   let heightChange = true
   const loadNotify = () => {
     setInterval(() => {
@@ -33,6 +41,18 @@ function Index(props) {
     })
   }, [])
 
+  const searchHandler = (value) => {
+    axios({
+      method: 'post',
+      url: `http://localhost:8080/reviewbook/review/search?token=${localStorage.getItem('token')}`,
+      data: {
+        query: value
+      }
+    }).then((res) => {
+      dispatch(setPost([...res.data]))
+    })
+  }
+
   return (
     window.location.pathname !== '/' ? (
       window.location.pathname !== '/login' ? (
@@ -43,7 +63,7 @@ function Index(props) {
             <div className='searchBar'>
               <Search
               placeholder="input search text"
-              onSearch={value => console.log(value)}
+              onSearch={value => searchHandler(value)}
               style={{ width: 200 }}
             />
             </div>
