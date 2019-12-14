@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import NavBar from '../../components/nav'
 import { Skeleton, Empty, Avatar, Tabs, Tag, Button } from 'antd'
 import { books } from 'react-icons-kit/icomoon/books'
 import { Icon } from 'react-icons-kit'
@@ -10,7 +9,6 @@ import Post from '../../components/post'
 import CreatePost from '../../components/createPost'
 import axios from 'axios'
 import { withRouter } from 'react-router-dom'
-import Chatbar from '../../components/chatBar'
 // import css
 import './index.scss'
 
@@ -92,7 +90,6 @@ function Index(props) {
       })
     }
     catch (err) {
-      console.log(err)
       return <Empty />
     }
   }

@@ -134,14 +134,16 @@ const Index = props => {
               method: "get",
               url: `http://localhost:8080/reviewbook/review/post/own/${props.params.userID}`
             }).then(res => {
-              dispatch(setUserPost(res.data));
+              dispatch(setUserPost({}))
+              dispatch(setUserPost(res.data))
             });
           } else {
             axios({
               method: "get",
               url: `http://localhost:8080/reviewbook/review/post`
             }).then(res => {
-              dispatch(setPost(res.data));
+              dispatch(setPost({}))
+              dispatch(setPost(res.data))
             });
           }
         });
@@ -242,9 +244,9 @@ const Index = props => {
       let time2 = new Date(v.time);
       return (
         <Comment
-          key={Object.keys(commentData)[k]}
+          key={v.id}
           author={v.nameUser}
-          avatar={<Avatar src={v.imageUser} alt={v.time} />}
+          avatar={<Avatar src={v.imageUser} alt={v.time} onClick={() => props.history.push(`profile/${v.id_user}`)}/>}
           content={<p>{v.body}</p>}
           datetime={
             <Tooltip title={time2.toLocaleString()}>

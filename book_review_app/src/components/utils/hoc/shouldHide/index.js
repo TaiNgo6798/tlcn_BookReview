@@ -19,7 +19,7 @@ function withShouldHide(WrappedComponent) {
         authed: true
       })
     }
-    console.log(window.location.pathname)
+
     }
     render() {
       return this.state.authed ? <WrappedComponent {...this.props} /> : <div></div>

@@ -56,6 +56,7 @@ const Index = (props) => {
           method: 'get',
           url: `http://localhost:8080/reviewbook/review/post/own/${props.params.userID}`,
         }).then((res) => {
+          dispatch(setUserPost({}))
           dispatch(setUserPost(res.data))
           setPosting(false)
           setDesc('')
@@ -70,6 +71,7 @@ const Index = (props) => {
           method: 'get',
           url: `http://localhost:8080/reviewbook/review/post`,
         }).then((res) => {
+          dispatch(setPost({}))
           dispatch(setPost(res.data))
           setPosting(false)
           setDesc('')
@@ -88,6 +90,7 @@ const Index = (props) => {
     const postEditor = window.document.querySelector('.text')
     const closeBtn = window.document.querySelector('.close-button')
     const body = window.document.querySelector('.body-fake')
+    const createPostForm = window.document.querySelector('.createPostForm')
 
     window.document.addEventListener('scroll', () => {
       if (window.scrollY >= 350) {
@@ -103,16 +106,18 @@ const Index = (props) => {
     })
 
     postEditor.addEventListener('focus', () => {
+      createPostForm.setAttribute('style', 'z-index: 11')
       body.classList.add('show-fake-body')
       setTimeout(() => {
         window.document.querySelector('.bottom-bar').classList.add('show-from-post-component')
         closeBtn.classList.add('show-from-post-component')
         body.classList.add('modal-active')
-      }, 0);
+      }, 1);
 
 
     })
     closeBtn.addEventListener('click', () => {
+      createPostForm.setAttribute('style', 'z-index: 8')
       window.document.querySelector('.bottom-bar').classList.remove('show-from-post-component')
       closeBtn.classList.remove('show-from-post-component')
       body.classList.remove('modal-active')
@@ -144,13 +149,16 @@ const Index = (props) => {
   }
 
   const beforeUpload = (file) => {
+    message.config({
+      top: '90%'
+    })
     const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
     if (!isJpgOrPng) {
       message.error('You can only upload JPG/PNG file!')
     }
     const isLt2M = file.size / 1024 / 1024 < 4
     if (!isLt2M) {
-      message.error('Image must smaller than 2MB!')
+      message.error('Image must smaller than 4MB!')
     }
     return isJpgOrPng && isLt2M
   }

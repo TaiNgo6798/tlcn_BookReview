@@ -49,8 +49,6 @@ function Index(props) {
   });
 
   useEffect(() => {
-
-    console.log('load')
     axios({
       method: "get",
       url: `http://localhost:8080/reviewbook/chat/${currentUser.id}/${htmlid}`

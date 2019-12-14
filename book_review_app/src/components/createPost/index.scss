@@ -2,7 +2,7 @@
 
 .createPostForm{
   position: relative !important;
-  z-index: 11;
+  z-index: 8;
   padding: 16px;
   border: 1px solid #EBEDF0;
   height: fit-content;
@@ -80,10 +80,10 @@ display: inherit !important;
 .body-fake{
   transition: all ease .3s;
   display: none;
-  position: absolute;
+  position: fixed;
   left: 0;
   top: 0;
-  z-index: 1;
+  z-index: 9;
   height: 200vh;
   width: 100vw;
 }

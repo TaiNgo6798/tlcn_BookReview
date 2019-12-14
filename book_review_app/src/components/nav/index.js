@@ -36,15 +36,16 @@ function Index(props) {
   return (
     window.location.pathname !== '/' ? (
       window.location.pathname !== '/login' ? (
+      window.location.pathname !== '/admin' ? (
         <div className='nav'>
           <div className='container'>
             <div className='logo' onClick={() => props.history.push(`/newsFeed`)}></div>
             <div className='searchBar'>
-              {/* <Search
+              <Search
               placeholder="input search text"
               onSearch={value => console.log(value)}
               style={{ width: 200 }}
-            /> */}
+            />
             </div>
             <div className='notify'>
               <Badge count={messageCount}>
@@ -64,7 +65,7 @@ function Index(props) {
             </div>
           </div>
         </div>
-      ) : '') : ''
+      ) : '') : '' ) : ''
   )
 }
 

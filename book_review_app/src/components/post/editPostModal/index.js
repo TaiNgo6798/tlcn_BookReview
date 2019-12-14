@@ -88,7 +88,6 @@ const Index = (props) => {
         }
       }).then(() => {
         if (props.params) {
-          console.log('coparam')
           axios({
             method: 'get',
             url: `http://localhost:8080/reviewbook/review/post/own/${props.params.userID}`,
@@ -97,7 +96,6 @@ const Index = (props) => {
             setPosting(false)
           })
         } else {
-          console.log('khong co params')
           axios({
             method: 'get',
             url: `http://localhost:8080/reviewbook/review/post`,

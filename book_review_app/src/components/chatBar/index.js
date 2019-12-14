@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Avatar, Badge, Icon, Input } from 'antd'
 import axios from "axios";
 import ChatWindow from './chatWindow'
@@ -19,14 +19,13 @@ function Index() {
       method: "get",
       url: `http://localhost:8080/reviewbook/users`,
     }).then((res) => {
-      console.log(res.data)
       let list = []
       Object.keys(res.data).map((k) => {
         k !== (currentUser ? currentUser.id : '') &&
-        list.push({
-          id: k,
-          infor: (res.data)[k]
-        })
+          list.push({
+            id: k,
+            infor: (res.data)[k]
+          })
       })
 
       setListUser([...list])
@@ -34,24 +33,24 @@ function Index() {
   }, [])
 
   const loadUsers = () => {
-    return listUser.map((v,k) => {
+    return listUser.map((v, k) => {
       return (
         <div className='user_chatBar' onClick={() => onUserClick(v.id)} key={k}>
-        <Avatar size={34} src={v.infor.image}/>
-        <p >{`${v.infor.firstName} ${v.infor.secondName}`}</p>
-        <Badge color={'green'}  />
-      </div>
+          <Avatar size={34} src={v.infor.image} />
+          <p >{`${v.infor.firstName} ${v.infor.secondName}`}</p>
+          <Badge color={'green'} />
+        </div>
       )
     })
   }
-  
+
   const closeActiveChatHandler = (id) => {
     setListActiveChat([...listActiveChat.filter(v => v.id !== id)])
   }
 
   const onUserClick = (id) => {
     const { image, firstName, secondName } = listUser.filter(v => v.id === id)[0].infor
-    if(!listActiveChat.some(v => v.id === id)){
+    if (!listActiveChat.some(v => v.id === id)) {
       listActiveChat.push({
         id,
         image,
@@ -62,13 +61,13 @@ function Index() {
   }
 
   const loadActiveChat = () => {
-    return listActiveChat.map((v,k) => {
-      return <ChatWindow 
-      key = {k} 
-      htmlid={v.id} 
-      onClose={(id) => closeActiveChatHandler(id)}
-      image={v.image}
-      name={v.name}
+    return listActiveChat.map((v, k) => {
+      return <ChatWindow
+        key={k}
+        htmlid={v.id}
+        onClose={(id) => closeActiveChatHandler(id)}
+        image={v.image}
+        name={v.name}
       />
     })
   }
@@ -76,15 +75,16 @@ function Index() {
   return (
     window.location.pathname !== '/' ? (
       window.location.pathname !== '/login' ? (
+      window.location.pathname !== '/admin' ? (
         <>
-    <div className='container_chatBar'>
-      {loadUsers()}
-    </div>
-    <div className='listActiveChat_chatBar'>
-      {loadActiveChat()}
-    </div>
-  </>
-      ) : '' ) : ''
+          <div className='container_chatBar'>
+            {loadUsers()}
+          </div>
+          <div className='listActiveChat_chatBar'>
+            {loadActiveChat()}
+          </div>
+        </>
+      ) : '') : '' ) : ''
   )
 }
 

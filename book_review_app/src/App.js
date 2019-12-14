@@ -6,13 +6,8 @@ import Chatbar from './components/chatBar'
 import Login from '../src/pages/login'
 
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
+  BrowserRouter as Router
 } from "react-router-dom";
-
-const path = window.location.pathname
 
 const App = (props) => {
   return (

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import NavBar from '../../components/nav'
 import { Skeleton, Empty } from 'antd'
 import { useBottomScrollListener } from 'react-bottom-scroll-listener'
 import axios from 'axios'
@@ -9,7 +8,6 @@ import Infor from '../../components/infor'
 import FirstRegister from '../../components/firstRegister'
 import LeftBar from '../../components/leftBar'
 import CreatePost from '../../components/createPost'
-import Chatbar from '../../components/chatBar'
 
 // import css
 import './index.scss'
@@ -42,7 +40,7 @@ function Index(props) {
       postNew.map(v => {
         res.data.unshift(v)
       })
-      console.log(res.data)
+
       dispatch(loadMore(res.data.success === false ? [] : res.data))
       removeNewPost()
     })

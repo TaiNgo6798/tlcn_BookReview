@@ -2,6 +2,11 @@
 export const routers = [
   {
     exact: true,
+    path: '/admin',
+    component: 'admin'
+  },
+  {
+    exact: true,
     path: '/login',
     component: 'login'
   },
