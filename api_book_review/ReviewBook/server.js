@@ -50,3 +50,5 @@ var searchRouter = require("./apiRouter/searchRouter");
 app.use("/reviewbook", searchRouter);
 var chatRouter = require("./apiRouter/chatRouter");
 app.use("/reviewbook", chatRouter);
+var approveRouter = require("./apiRouter/approveRouter");
+app.use("/reviewbook", approveRouter);

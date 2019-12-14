@@ -7,10 +7,14 @@ reviewRouter
   .route("/review/post")
   //dang 1 bai viet
   .post((req, res) => {
+    var nameDB = "ApproveReviews";
+    var user = req.decoded.user;
+    user.role === "admin" ? (nameDB = "Reviews") : nameDB;
+
     var databaseRef = firebase
       .database()
       .ref()
-      .child("Reviews");
+      .child(nameDB);
     databaseRef.once("value").then(function(snapshot) {
       var nameImage = req.body.nameImage;
       var desc = req.body.desc;
@@ -18,7 +22,6 @@ reviewRouter
       var kind = req.body.kind;
 
       var userID = req.decoded.userID;
-      var user = req.decoded.user;
       var fName = user.firstName;
       var sName = user.secondName;
       var userName = fName + " " + sName;
@@ -33,11 +36,6 @@ reviewRouter
       );
 
       var newPostReviewRef = databaseRef.push();
-      
-      
-      if(user.role && user.role === "admin"){
-        reviewData.approve = true;
-      }
 
       newPostReviewRef
         .set(reviewData, function(error) {
@@ -161,7 +159,10 @@ reviewRouter
   })
   //update bai viet theo id
   .put((req, res) => {
-    console.log('aloalo')
+    var nameDB = "ApproveReviews";
+    var user = req.decoded.user;
+    user.role === "admin" ? (nameDB = "Reviews") : nameDB;
+
     var userID = req.params.id_user;
     var dbReviews = firebase
       .database()
@@ -170,15 +171,8 @@ reviewRouter
       .child(req.params.review_id);
     dbReviews.once("value", function(reviews) {
       if (reviews.val().uid === userID) {
-        var review = new Review(
-          reviews.val().kind,
-          reviews.val().urlImage,
-          reviews.val().nameImage,
-          reviews.val().desc,
-          reviews.val().uid,
-          reviews.val().name,
-          reviews.val().urlUser
-        );
+        var review = new Review();
+        review = reviews.val();
         if (req.body.kind) {
           review.kind = req.body.kind;
         }
@@ -198,41 +192,31 @@ reviewRouter
             .child(review.nameImage);
           reviewStorageRef
             .delete()
-            .then(() => {
-              review.nameImage = req.body.nameImage;
-              dbReviews.update(review, error => {
-                if (error) {
-                  var errorMessage = error.message;
-                  res.send(errorMessage);
-                } else {
-                  res.send({
-                    success: true,
-                    review: review,
-                    message: "Update review successful"
-                  });
-                }
-              });
-            })
+            .then()
             .catch(error => {
               res.send({
                 success: false,
                 message: error.message
               });
             });
-        } else{
-          dbReviews.update(review, error => {
-            if (error) {
-              var errorMessage = error.message;
-              res.send(errorMessage);
-            } else {
-              res.send({
-                success: true,
-                review: review,
-                message: "Update review successful"
-              });
-            }
-          });
+          review.nameImage = req.body.nameImage;
         }
+
+        firebase.database().ref().child(nameDB).child(dbReviews.key).set(review, error => {
+          if (error) {
+            var errorMessage = error.message;
+            res.send(errorMessage);
+          } else {
+            if(user.role !== 'admin'){
+              dbReviews.remove();
+            }
+            res.send({
+              success: true,
+              review: review,
+              message: "Update review successful"
+            });
+          }
+        });
       } else {
         res.send({
           success: false,
@@ -298,5 +282,5 @@ reviewRouter
       }
     });
   });
-  
+
 module.exports = reviewRouter;
