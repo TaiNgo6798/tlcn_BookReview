@@ -58,4 +58,19 @@
   .ant-upload-picture-card-wrapper{
     width: fit-content;
   }
+  .ant-upload-select-picture-card{
+    display: flex !important;
+    >span{
+      display: flex !important;
+      justify-content: center;
+      >div{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      >img{
+        object-fit: contain !important;
+      }
+    }
+  }
 }
