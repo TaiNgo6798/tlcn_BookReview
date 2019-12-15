@@ -59,6 +59,8 @@ const Index = (props) => {
   return (
     <>
       <Modal
+        closable = {false}
+        maskClosable={!visible}
         visible={visible}
         onCancel={() => { onCancel() }}
         footer={null}
