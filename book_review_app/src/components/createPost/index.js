@@ -132,6 +132,7 @@ const Index = (props) => {
 
   const handleChange = async info => {
     if (info.file.status === 'uploading') {
+      setReady(false)
       setImageUrl('')
       setIsLoading(true)
       return
