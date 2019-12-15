@@ -56,7 +56,9 @@ function Index(props) {
       dispatch(setPost(res.data))
       setPostList(res.data)
       setLoading(false)
-      setLastPost(Object.values(res.data[res.data.length - 1])[0])
+      if(res.data.success){
+        setLastPost(Object.values(res.data[res.data.length - 1])[0])
+      }
     })
 
   }, [])
