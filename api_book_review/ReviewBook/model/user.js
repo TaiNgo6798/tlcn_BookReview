@@ -13,7 +13,8 @@ class User{
         this.phone = phone,
         this.birthday = new Date(birthday).toLocaleDateString('vi');
         this.email = email,
-        this.image = new String()
+        this.image = new String(),
+        this.lock = false
     }
 }
 module.exports = User;

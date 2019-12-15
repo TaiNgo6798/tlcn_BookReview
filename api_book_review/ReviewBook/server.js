@@ -2,6 +2,7 @@ var express = require("express"); //	call express
 var app = express(); //	define our app usỉng express
 var bodyParser = require("body-parser"); //	get body-parser
 var firebase = require("firebase");
+var admin = require('firebase-admin')
 require('firebase/storage');
 var morgan = require("morgan"); //	used to see requests
 var port = process.env.PORT || 8080; // set the port for our app
@@ -34,6 +35,11 @@ var firebaseConfig = {
   measurementId: "G-GP50EN1R49"
 };
 firebase.initializeApp(firebaseConfig);
+var serviceAccount = require('./serviceAccountKey.json')
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://reviewbook-1af0f.firebaseio.com"
+});
 firebase.auth.Auth.Persistence.LOCAL;
 
 var loginRouter = require("./apiRouter/loginRouter");
