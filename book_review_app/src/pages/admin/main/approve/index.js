@@ -1,38 +1,91 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Divider, Tag } from 'antd'
+import { Table, Divider, Tag, notification, Skeleton, Button, Popconfirm } from 'antd'
 import axios from 'axios'
-
+import Swal from 'sweetalert2'
 import './index.scss'
 
 function Index() {
   const [data, setData] = useState([])
+  const [loadingData, setLoadingData] = useState(true)
 
   useEffect(() => {
+    loadData()
+  }, [])
+
+  const loadData = () => {
+    setLoadingData(true)
     axios({
       method: 'get',
       url: `http://localhost:8080/reviewbook/approvereviews?token=${localStorage.getItem('tokenAdmin')}`,
     }).then((res) => {
       let arr = []
-      Object.keys(res.data).map((key, i) => {
-        let value = Object.values(res.data[i])[0]
-        arr.push({
-          id: key,
-          stt: i+1,
-          who: value.name,
-          time: value.time,
-          tags: ['Bài đăng đang đợi duyệt']
+      try {
+        Object.values(res.data).map((v, i) => {
+          let value = Object.values(v)[0]
+          arr.push({
+            key: Object.keys(v)[0],
+            id: Object.keys(v)[0],
+            stt: i + 1,
+            image: value.urlImage,
+            desc: value.desc,
+            who: value.name,
+            time: value.time,
+            kind: value.kind ? (value.kind.length > 0 && value.kind) : 'Chưa xác định',
+            tags: ['Bài đăng đang đợi duyệt']
+          })
         })
-      })
+      } catch (err) {
+        arr = []
+      }
       setData([...arr])
+      setLoadingData(false)
     })
-  }, [])
+  }
+
+  const demoImage = (image) => {
+    Swal.fire({
+      imageUrl: image,
+    })
+  }
+
+  const handleApprove = (id) => {
+    axios({
+      method: 'post',
+      url: `http://localhost:8080/reviewbook/approvereviews/${id}?token=${localStorage.getItem('tokenAdmin')}`,
+    }).then((res) => {
+      notification.success({
+        message: `Đã duyệt bài !`,
+        placement: 'bottomRight',
+      })
+      loadData()
+    }).catch((err) => {
+      notification.error({
+        message: err,
+        placement: 'bottomRight',
+      })
+    })
+  }
 
   const columns = [
     {
       title: '#',
       dataIndex: 'stt',
       key: 'stt',
-      render: text => <a>{text}</a>,
+      render: text => <p>{text}</p>,
+    },
+    {
+      title: 'Hình ảnh',
+      dataIndex: 'image',
+      key: 'image',
+      render: (src) => {
+        return <img onClick={() => demoImage(src)} className='img_row' src={src.length > 0 ? src : 'https://shadow888.com/images/default/noimagefound.png'} />
+      },
+    },
+    {
+      title: 'Mô tả',
+      dataIndex: 'desc',
+      key: 'desc',
+      render: (desc) => <p style={{ wordWrap: "break-word", wordBreak: 'break-word', maxHeight: '10em' }}>{desc.substring(0, 40)}</p>
     },
     {
       title: 'Người đăng',
@@ -44,6 +97,16 @@ function Index() {
       title: 'Ngày đăng',
       dataIndex: 'time',
       key: 'time',
+    },
+    {
+      title: 'Thể loại',
+      dataIndex: 'kind',
+      key: 'kind',
+      render: text => (
+        <Tag color={'blue'} >
+          {text.toUpperCase()}
+        </Tag>
+      ),
     },
     {
       title: 'Thẻ',
@@ -65,11 +128,20 @@ function Index() {
     {
       title: 'Action',
       key: 'action',
-      render: (text, record) => (
+      dataIndex: 'id',
+      render: (id) => (
         <span>
-          <a>DUYỆT CÁI NÀY</a>
+          <a onClick={() => handleApprove(id)}>DUYỆT CÁI NÀY</a>
           <Divider type="vertical" />
-          <a style={{color: 'red'}}>BỎ QUA</a>
+          <Popconfirm
+            title="Bạn có chắc muốn xoá chứ?"
+            onConfirm={() => console.log('deleted')}
+            okText="Yes"
+            cancelText="No"
+          >
+            <a style={{ color: 'red' }}>BỎ QUA</a>
+          </Popconfirm>
+
         </span>
       ),
     },
@@ -77,7 +149,8 @@ function Index() {
 
   return (
     <>
-    <Table columns={columns} dataSource={data} />
+      <Button style={{ display: 'block', float: 'right', margin: '1em', zIndex: 100 }} onClick={() => loadData()} type='primary'>Refresh</Button>
+        <Table pagination={{ pageSize: 5 }} columns={columns} dataSource={data} loading={loadingData}/>
     </>
   )
 }

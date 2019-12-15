@@ -24,7 +24,6 @@ function Index(props) {
   return (
     <>
       <Layout>
-        
         <Layout>
           <Sider width={200} style={{ background: '#fff' }}>
             <img src={Logo} className='logo_admin' />
@@ -52,6 +51,7 @@ function Index(props) {
                 padding: 24,
                 margin: 0,
                 minHeight: 280,
+                overflow: 'auto'
               }}
             >
               {

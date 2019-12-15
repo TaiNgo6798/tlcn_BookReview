@@ -1,18 +1,87 @@
 import React, { useState, useEffect } from 'react'
-import { Calendar, Select, Radio, Col, Row, Statistic, Icon } from 'antd'
+import { Calendar, Select, Radio, Col, Row, Statistic, Icon, Spin } from 'antd'
 import Chart from 'chart.js'
+import axios from 'axios'
 import './index.scss'
 
 const { Group, Button } = Radio
 
 function Index() {
+  const [data, setData] = useState([])
+  const [dataNotApprove, setDataNotApprove] = useState([])
+  const [loadingData, setLoadingData] = useState(true)
+  const currentMonth = new Date().getMonth()+1
 
   const onPanelChange = (value, mode) => {
     console.log(value, mode);
   }
 
-  const chartRef = React.createRef();
+  const getMonth() = () => {
+    
+  }
+
+  const loadDataApprove = () => {
+    console.log(currentMonth)
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/reviewbook/approvereviews?token=${localStorage.getItem('tokenAdmin')}`,
+    }).then((res) => {
+      let arr = []
+      try {
+        Object.values(res.data).map((v, i) => {
+          let value = Object.values(v)[0]
+          arr.push({
+            key: Object.keys(v)[0],
+            id: Object.keys(v)[0],
+            stt: i + 1,
+            image: value.urlImage,
+            desc: value.desc,
+            who: value.name,
+            time: value.time,
+            kind: value.kind ? (value.kind.length > 0 && value.kind) : 'Chưa xác định',
+            tags: ['Bài đăng đang đợi duyệt']
+          })
+        })
+      } catch (err) {
+        arr = []
+      }
+      setDataNotApprove([...arr])
+    })
+  }
+
+  const loadData = () => {
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/reviewbook/review/post`,
+    }).then((res) => {
+      console.log(res.data)
+      let arr = []
+      try {
+        Object.values(res.data).map((v, i) => {
+          let value = Object.values(v)[0]
+          arr.push({
+            key: Object.keys(v)[0],
+            id: Object.keys(v)[0],
+            stt: i + 1,
+            image: value.urlImage,
+            desc: value.desc,
+            who: value.name,
+            time: value.time,
+            kind: value.kind ? (value.kind.length > 0 && value.kind) : 'Chưa xác định',
+            tags: ['Bài đã được duyệt']
+          })
+        })
+      } catch (err) {
+        arr = []
+      }
+      setData([...arr])
+      setLoadingData(false)
+    })
+  }
+
   useEffect(() => {
+    loadData()
+    loadDataApprove()
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
       type: 'line',
@@ -62,11 +131,15 @@ function Index() {
 
   return (
     <>
-      <div className='content_dashboard'>
+    <Spin spinning={loadingData} style={{maxHeight: '100vh'}}>
+    <div className='content_dashboard'>
         <div className='static_dashboard'>
           <Row gutter={16}>
             <Col span={12}>
-              <Statistic title="Tổng số bài đăng" value={1128} prefix={<Icon type="book" />} />
+              <Statistic title="Số bài đăng đã được duyệt" value={data.length} prefix={<Icon type="check" />} />
+            </Col>
+            <Col span={12}>
+              <Statistic title="Số bài chưa được duyệt" value={dataNotApprove.length} prefix={<Icon type="clock-circle" />} />
             </Col>
           </Row>
         </div>
@@ -163,6 +236,7 @@ function Index() {
           </Row>
         </div>
       </div>
+    </Spin>
     </>
   )
 }

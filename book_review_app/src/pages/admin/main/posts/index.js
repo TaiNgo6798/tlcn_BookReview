@@ -1,29 +1,101 @@
 import React, { useState, useEffect } from 'react'
-import { Table, Divider, Tag } from 'antd'
-
-
+import { Table, Divider, Tag, notification, Skeleton, Button, Popconfirm } from 'antd'
+import axios from 'axios'
+import Swal from 'sweetalert2'
 import './index.scss'
 
 function Index() {
+  const [data, setData] = useState([])
+  const [loadingData, setLoadingData] = useState(true)
+
+  useEffect(() => {
+    loadData()
+  }, [])
+
+  const deleteHandler = (id) => {
+    console.log('deleted !')
+  }
+
+  const loadData = () => {
+    setLoadingData(true)
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/reviewbook/review/post`,
+    }).then((res) => {
+      let arr = []
+      try {
+        Object.values(res.data).map((v, i) => {
+          let value = Object.values(v)[0]
+          arr.push({
+            key: Object.keys(v)[0],
+            id: Object.keys(v)[0],
+            stt: i + 1,
+            image: value.urlImage,
+            desc: value.desc,
+            who: value.name,
+            time: value.time,
+            kind: value.kind ? (value.kind.length > 0 && value.kind) : 'Chưa xác định',
+            tags: ['Bài đã được duyệt']
+          })
+        })
+      } catch (err) {
+        arr = []
+      }
+      setData([...arr])
+      setLoadingData(false)
+    })
+  }
+
+
+  const demoImage = (image) => {
+    Swal.fire({
+      imageUrl: image,
+    })
+  }
+
 
 
   const columns = [
     {
       title: '#',
-      dataIndex: 'key',
-      key: 'key',
-      render: text => <a>{text}</a>,
+      dataIndex: 'stt',
+      key: 'stt',
+      render: text => <p>{text}</p>,
+    },
+    {
+      title: 'Hình ảnh',
+      dataIndex: 'image',
+      key: 'image',
+      render: (src) => {
+        return <img onClick={() => demoImage(src)} className='img_row' src={src.length > 0 ? src : 'https://shadow888.com/images/default/noimagefound.png'} />
+      },
+    },
+    {
+      title: 'Mô tả',
+      dataIndex: 'desc',
+      key: 'desc',
+      render: (desc) => <p style={{ wordWrap: "break-word", wordBreak: 'break-word', maxHeight: '10em' }}>{desc.substring(0, 40)}</p>
     },
     {
       title: 'Người đăng',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'who',
+      key: 'who',
       render: text => <a>{text}</a>,
     },
     {
       title: 'Ngày đăng',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'time',
+      key: 'time',
+    },
+    {
+      title: 'Thể loại',
+      dataIndex: 'kind',
+      key: 'kind',
+      render: text => (
+        <Tag color={'blue'} >
+          {text.toUpperCase()}
+        </Tag>
+      ),
     },
     {
       title: 'Thẻ',
@@ -31,13 +103,10 @@ function Index() {
       dataIndex: 'tags',
       render: tags => (
         <span>
-          {tags.map(tag => {
-            let color =  'green' 
-            if (tag === 'Bài đang đợi duyệt') {
-              color = 'orange';
-            }
+          {tags.map((tag, i) => {
+            let color = 'green';
             return (
-              <Tag color={color} key={tag}>
+              <Tag color={color} key={i}>
                 {tag.toUpperCase()}
               </Tag>
             );
@@ -48,41 +117,26 @@ function Index() {
     {
       title: 'Action',
       key: 'action',
-      render: (text, record) => (
+      dataIndex: 'id',
+      render: (id) => (
         <span>
-          <a style={{color: 'red'}}>XOÁ</a>
+          <Popconfirm
+            title="Bạn có chắc muốn xoá chứ?"
+            onConfirm={() => deleteHandler(id)}
+            okText="Yes"
+            cancelText="No"
+          >
+            <a style={{ color: 'red' }}>Xoá</a>
+          </Popconfirm>
         </span>
       ),
     },
   ];
 
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['Bài đã duyệt'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['Bài đang đợi duyệt'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-      tags: ['Bài đã duyệt'],
-    },
-  ];
-
   return (
     <>
-    <Table columns={columns} dataSource={data} />
+      <Button style={{ display: 'block', float: 'right', margin: '1em', zIndex: 100 }} onClick={() => loadData()} type='primary'>Refresh</Button>
+        <Table pagination={{ pageSize: 5 }} columns={columns} dataSource={data} loading={loadingData}/>
     </>
   )
 }
