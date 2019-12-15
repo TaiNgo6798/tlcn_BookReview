@@ -59,6 +59,35 @@ userRouter
       }
 
       req.decoded.user = user;
+    
+      //update review
+      var reviewRef = firebase.database().ref().child('Reviews');
+      reviewRef.orderByChild('uid').equalTo(req.decoded.userID).once('value',reviews=>{
+          if(reviews.exists()){
+              reviews.forEach(x => {
+                  var review = x.val();
+                  review.name = user.firstName + " " + user.secondName;                
+                  review.urlUser = user.image;  
+                  console.log(x.key);
+                           
+                  reviewRef.child(x.key).update(review);
+              });
+          }
+      })
+
+      //update approve
+      var approveRef = firebase.database().ref().child('ApproveReviews');
+      approveRef.orderByChild('uid').equalTo(req.decoded.userID).once('value',reviews=>{
+          if(reviews.exists()){
+              reviews.forEach(x => {
+                  var review = x.val();
+                  review.name = user.firstName + " " + user.secondName;                
+                  review.urlUser = user.image;           
+                  approveRef.child(x.key).update(review);
+              });
+          }
+      })
+
 
       userRef.update(user, error => {
         if (error) {
