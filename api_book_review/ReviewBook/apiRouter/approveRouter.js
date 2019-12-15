@@ -114,7 +114,57 @@ approveRouter.route("/approvereviews/:id_review").post((req, res) => {
       message: "You are not the admin"
     });
   }
+})
+.delete((req, res) => {
+  var dbReviews = firebase
+    .database()
+    .ref()
+    .child("ApproveReviews")
+    .child(req.params.review_id);
+  dbReviews.once("value", function(reviews) {
+    dbReviews.remove().then(error => {
+      if (error) {
+        res.send({
+          success: false,
+          message: error.message
+        });
+      } else {
+        firebase
+          .database()
+          .ref()
+          .child("Likes")
+          .child(req.params.review_id)
+          .remove();
+        firebase
+          .database()
+          .ref()
+          .child("Comments")
+          .child(req.params.review_id)
+          .remove();
+
+        if (reviews.val().nameImage) {
+          var reviewStorageRef = firebase
+            .storage()
+            .ref()
+            .child("Review Images")
+            .child(reviews.val().nameImage);
+          reviewStorageRef.delete().then(() => {
+            res.send({
+              success: true,
+              message: "Delete review successful"
+            });
+          });
+        } else {
+          res.send({
+            success: true,
+            message: "Delete review successful"
+          });
+        }
+      }
+    });
+  });
 });
+;
 
 var sendMail = (user,review) => {
   

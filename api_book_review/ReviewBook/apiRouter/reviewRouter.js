@@ -202,21 +202,26 @@ reviewRouter
           review.nameImage = req.body.nameImage;
         }
 
-        firebase.database().ref().child(nameDB).child(dbReviews.key).set(review, error => {
-          if (error) {
-            var errorMessage = error.message;
-            res.send(errorMessage);
-          } else {
-            if(user.role !== 'admin'){
-              dbReviews.remove();
+        firebase
+          .database()
+          .ref()
+          .child(nameDB)
+          .child(dbReviews.key)
+          .set(review, error => {
+            if (error) {
+              var errorMessage = error.message;
+              res.send(errorMessage);
+            } else {
+              if (user.role !== "admin") {
+                dbReviews.remove();
+              }
+              res.send({
+                success: true,
+                review: review,
+                message: "Update review successful"
+              });
             }
-            res.send({
-              success: true,
-              review: review,
-              message: "Update review successful"
-            });
-          }
-        });
+          });
       } else {
         res.send({
           success: false,
@@ -226,60 +231,52 @@ reviewRouter
     });
   })
   .delete((req, res) => {
-    var userID = req.params.id_user;
     var dbReviews = firebase
       .database()
       .ref()
       .child("Reviews")
       .child(req.params.review_id);
     dbReviews.once("value", function(reviews) {
-      if (reviews.val().uid === userID) {
-        dbReviews.remove().then(error => {
-          if (error) {
-            res.send({
-              success: false,
-              message: error.message
-            });
-          } else {
-            firebase
-              .database()
-              .ref()
-              .child("Likes")
-              .child(req.params.review_id)
-              .remove();
-            firebase
-              .database()
-              .ref()
-              .child("Comments")
-              .child(req.params.review_id)
-              .remove();
+      dbReviews.remove().then(error => {
+        if (error) {
+          res.send({
+            success: false,
+            message: error.message
+          });
+        } else {
+          firebase
+            .database()
+            .ref()
+            .child("Likes")
+            .child(req.params.review_id)
+            .remove();
+          firebase
+            .database()
+            .ref()
+            .child("Comments")
+            .child(req.params.review_id)
+            .remove();
 
-            if (reviews.val().nameImage) {
-              var reviewStorageRef = firebase
-                .storage()
-                .ref()
-                .child("Review Images")
-                .child(reviews.val().nameImage);
-              reviewStorageRef.delete().then(() => {
-                res.send({
-                  success: true,
-                  message: "Delete review successful"
-                });
-              });
-            } else {
+          if (reviews.val().nameImage) {
+            var reviewStorageRef = firebase
+              .storage()
+              .ref()
+              .child("Review Images")
+              .child(reviews.val().nameImage);
+            reviewStorageRef.delete().then(() => {
               res.send({
                 success: true,
                 message: "Delete review successful"
               });
-            }
+            });
+          } else {
+            res.send({
+              success: true,
+              message: "Delete review successful"
+            });
           }
-        });
-      } else {
-        res.send({
-          success: false,
-          message: "Not your review"
-        });
-      }
+        }
+      });
     });
   });
 
