@@ -48,7 +48,7 @@ const Index = (props) => {
             phone
           }
           localStorage.setItem('user', JSON.stringify(user))
-          setCurrentUser(user)
+          setCurrentUser({...user})
           onCancel()
         })
       }

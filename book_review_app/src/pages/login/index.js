@@ -115,17 +115,13 @@ const Index = (props) => {
                   )}
                 </Form.Item>
                 <Form.Item>
-                  {getFieldDecorator('remember', {
-                    valuePropName: 'checked',
-                    initialValue: true,
-                  })}
                   <a className="forgotBtn" onClick={() => setForgotForm(true)}>
                     Forgot password
                 </a>
                   <Button type="primary" htmlType="submit" className="login-form-button">
                     Log in
                   </Button>
-                  Or <a onClick={() => { registerClick() }}>register now!</a>
+                  Or <a onClick={() => registerClick() }>register now!</a>
                 </Form.Item>
               </Form>
               </div>

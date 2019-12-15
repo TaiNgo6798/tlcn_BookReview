@@ -28,7 +28,7 @@ function Index() {
     setLoadingData(true)
     axios({
       method: 'get',
-      url: `http://localhost:8080/reviewbook/review/post`,
+      url: `http://localhost:8080/reviewbook/allreivew?token=${localStorage.getItem('tokenAdmin')}`,
     }).then((res) => {
       let arr = []
       try {
@@ -144,7 +144,7 @@ function Index() {
   return (
     <>
       <Button style={{ display: 'block', float: 'right', margin: '1em', zIndex: 100 }} onClick={() => loadData()} type='primary'>Refresh</Button>
-        <Table pagination={{ pageSize: 5 }} columns={columns} dataSource={data} loading={loadingData}/>
+        <Table pagination={{ pageSize: 6 }} columns={columns} dataSource={data} loading={loadingData}/>
     </>
   )
 }

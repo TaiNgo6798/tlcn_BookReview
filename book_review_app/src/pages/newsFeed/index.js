@@ -33,17 +33,21 @@ function Index(props) {
   const dispatch = useDispatch()
 
   useBottomScrollListener(() => {
+    lastPost.numberTime &&
     axios({
       method: 'get',
       url: `http://localhost:8080/reviewbook/review/post/${lastPost.numberTime}`,
     }).then((res) => {
-      res.data.length > 0 &&
-      setLastPost(Object.values(res.data[res.data.length - 1])[0])
-      postNew.map(v => {
-        res.data.unshift(v)
-      })
-      dispatch(loadMore(res.data.success === false ? [] : res.data))
-      removeNewPost()
+      try{
+        res.data.length > 0 &&
+        setLastPost(Object.values(res.data[res.data.length - 1])[0])
+        postNew.map(v => {
+          res.data.unshift(v)
+        })
+        dispatch(loadMore(res.data.success === false ? [] : res.data))
+        removeNewPost()
+      } catch{}
+
     })
   })
 
@@ -56,9 +60,12 @@ function Index(props) {
       dispatch(setPost(res.data))
       setPostList(res.data)
       setLoading(false)
-      if(res.data.success){
-        setLastPost(Object.values(res.data[res.data.length - 1])[0])
-      }
+      try{
+        if(!res.data.success){
+          setLastPost(Object.values(res.data[res.data.length - 1])[0])
+        }
+      } catch{}
+
     })
 
   }, [])
