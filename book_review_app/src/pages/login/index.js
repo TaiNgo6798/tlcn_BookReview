@@ -118,7 +118,7 @@ const Index = (props) => {
                   {getFieldDecorator('remember', {
                     valuePropName: 'checked',
                     initialValue: true,
-                  })(<Checkbox>Remember me</Checkbox>)}
+                  })}
                   <a className="forgotBtn" onClick={() => setForgotForm(true)}>
                     Forgot password
                 </a>

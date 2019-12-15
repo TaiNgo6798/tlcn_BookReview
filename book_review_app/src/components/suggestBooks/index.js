@@ -74,7 +74,7 @@ const Index = () => {
             <Skeleton avatar title={false} loading={item.loading} active>
               <List.Item.Meta
                 avatar={
-                  <Avatar src="http://thuvien.hitu.edu.vn/image/catalog/sachhay/tuoi-tre-dang-gia-bao-nhieu-600x878.jpg" />
+                  <Avatar src="https://images.unsplash.com/photo-1511108690759-009324a90311?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=634&q=80" />
                 }
                 title={<a href="https://ant.design">{item.name.last}</a>}
                 description="Nhà xuất bản trẻ"

@@ -10,18 +10,20 @@ function Index() {
   const [data, setData] = useState([])
   const [dataNotApprove, setDataNotApprove] = useState([])
   const [loadingData, setLoadingData] = useState(true)
-  const currentMonth = new Date().getMonth()+1
+  const currentMonth = new Date().getMonth() + 1
+  const [data4Chart, setData4Chart] = useState('aaa')
 
-  const onPanelChange = (value, mode) => {
-    console.log(value, mode);
+
+  const getMonth = (time) => {
+    let date = new Date(time)
+    return date.getMonth() + 1
   }
 
-  const getMonth() = () => {
-    
+  const postCountByMonth = (month, data) => {
+    return data.filter(v => getMonth(v.time) === month).length
   }
 
   const loadDataApprove = () => {
-    console.log(currentMonth)
     axios({
       method: 'get',
       url: `http://localhost:8080/reviewbook/approvereviews?token=${localStorage.getItem('tokenAdmin')}`,
@@ -52,9 +54,8 @@ function Index() {
   const loadData = () => {
     axios({
       method: 'get',
-      url: `http://localhost:8080/reviewbook/review/post`,
+      url: `http://localhost:8080/reviewbook/allreivew?token=${localStorage.getItem('tokenAdmin')}`,
     }).then((res) => {
-      console.log(res.data)
       let arr = []
       try {
         Object.values(res.data).map((v, i) => {
@@ -74,21 +75,26 @@ function Index() {
       } catch (err) {
         arr = []
       }
+      let chartData = [
+        postCountByMonth(currentMonth, arr),
+        postCountByMonth(currentMonth - 1, arr),
+        postCountByMonth(currentMonth - 2, arr),
+        postCountByMonth(currentMonth - 3, arr),
+      ]
+      drawChart(chartData.reverse())
       setData([...arr])
       setLoadingData(false)
     })
   }
 
-  useEffect(() => {
-    loadData()
-    loadDataApprove()
+  const drawChart = (data) => {
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: ['Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+        labels: [`Tháng ${currentMonth-3}`, `Tháng ${currentMonth-2}`, `Tháng ${currentMonth-1}`, `Tháng ${currentMonth}`],
         datasets: [{
-          data: [3, 7, 12, 9],
+          data,
           backgroundColor: [
             'rgba(54, 162, 235, 0.2)',
             'rgba(54, 162, 235, 0.2)',
@@ -127,32 +133,38 @@ function Index() {
         }
       }
     })
+  }
+
+  useEffect(() => {
+    loadData()
+    loadDataApprove()
+
   }, [])
 
   return (
     <>
-    <Spin spinning={loadingData} style={{maxHeight: '100vh'}}>
-    <div className='content_dashboard'>
-        <div className='static_dashboard'>
-          <Row gutter={16}>
-            <Col span={12}>
-              <Statistic title="Số bài đăng đã được duyệt" value={data.length} prefix={<Icon type="check" />} />
-            </Col>
-            <Col span={12}>
-              <Statistic title="Số bài chưa được duyệt" value={dataNotApprove.length} prefix={<Icon type="clock-circle" />} />
-            </Col>
-          </Row>
-        </div>
-        <div className='bottom_dashboard'>
-          <Row gutter={8}>
-            <Col className="gutter-row" xs={24} sm={24} md={24} lg={16} xl={16}>
-              <div className='chart_dashboard'>
-                <canvas id="myChart" className='content_chart'>
-                </canvas>
-                <h3><i>Số bài đăng 4 tháng gần đây</i></h3>
-              </div>
-            </Col>
-            {/* <Col className="gutter-row" xs={8} sm={12} md={18} lg={24} xl={12}>
+      <Spin spinning={loadingData} style={{ maxHeight: '100vh' }}>
+        <div className='content_dashboard'>
+          <div className='static_dashboard'>
+            <Row gutter={16}>
+              <Col span={12}>
+                <Statistic title="Số bài đăng đã được duyệt" value={data.length} prefix={<Icon type="check" />} />
+              </Col>
+              <Col span={12}>
+                <Statistic title="Số bài chưa được duyệt" value={dataNotApprove.length} prefix={<Icon type="clock-circle" />} />
+              </Col>
+            </Row>
+          </div>
+          <div className='bottom_dashboard'>
+            <Row gutter={8}>
+              <Col className="gutter-row" xs={24} sm={24} md={24} lg={16} xl={16}>
+                <div className='chart_dashboard'>
+                  <canvas id="myChart" className='content_chart'>
+                  </canvas>
+                  <h3><i>Số bài đăng 4 tháng gần đây</i></h3>
+                </div>
+              </Col>
+              {/* <Col className="gutter-row" xs={8} sm={12} md={18} lg={24} xl={12}>
               <div className='calendar_dashboard'>
                 <Calendar
                   fullscreen={false}
@@ -233,10 +245,10 @@ function Index() {
                 />
               </div>
             </Col> */}
-          </Row>
+            </Row>
+          </div>
         </div>
-      </div>
-    </Spin>
+      </Spin>
     </>
   )
 }

@@ -139,12 +139,12 @@ function Index() {
           <a onClick={() => sendMail(col.email)}>Gửi email cấp lại mật khẩu</a>
           <Divider type='vertical'/>
           <Popconfirm
-            title="Bạn có chắc muốn xoá chứ?"
+            title="Bạn có chắc chắn muốn KHOÁ tài khoản này?"
             onConfirm={() => console.log('deleted')}
             okText="Yes"
             cancelText="No"
           >
-            <a style={{ color: 'red' }}>XOÁ</a>
+            <a style={{ color: 'red' }}>KHOÁ</a>
           </Popconfirm>
 
         </span>

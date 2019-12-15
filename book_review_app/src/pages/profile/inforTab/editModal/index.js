@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react'
-import { Modal, Form, Input, Button, Spin, DatePicker, Select } from 'antd'
+import { Modal, Form, Input, Button, Spin, DatePicker, Select, Alert } from 'antd'
 import axios from 'axios'
 // import css
 import './index.scss'
@@ -23,8 +23,7 @@ const Index = (props) => {
       if (!err) {
         const { firstname='', lastname='', gender='', phone='', birthday='' } = values
         setLoading(true)
-        let birthdayGood = new Date(birthday)
-
+        let birthdayGood =  new Date(birthday)
         axios({
           method: 'put',
           url: `http://localhost:8080/reviewbook/user/${currentUser.id}?token=${localStorage.getItem('token')}`,
@@ -33,9 +32,10 @@ const Index = (props) => {
             sName: lastname,
             gender,
             phone,
-            birthday: birthdayGood.toLocaleDateString()
+            birthday: birthdayGood.toString() === 'Invalid Date' ? '' : birthdayGood.toLocaleDateString()
           }
         }).then((res) => {
+          console.log(res.data)
           setLoading(false)
           let { firstName, secondName, gender, birthday, email, image, phone } = res.data.user.user
           let user = {
