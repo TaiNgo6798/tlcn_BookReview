@@ -62,6 +62,11 @@ function Index(props) {
           <p>Số điện thoại</p>
           <p>{user.phone}</p>
         </div>
+        <hr className='hr_profile' />
+        <div className='row_detail_profile'>
+          <p>Email</p>
+          <p>{user.email}</p>
+        </div>
 
         <hr className='hr_profile' />
       </div>

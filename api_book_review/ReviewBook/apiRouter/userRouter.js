@@ -72,7 +72,7 @@ userRouter
             user: req.decoded
           });
         }
-      });
+      });  
     });
   });
 

@@ -19,7 +19,7 @@ function Index() {
       url: `http://localhost:8080/reviewbook/users?token=${localStorage.getItem('tokenAdmin')}`,
     }).then((res) => {
       let arr = []
-      try{
+      try {
         Object.values(res.data).map((v, i) => {
           arr.push({
             key: Object.keys(res.data)[i],
@@ -32,10 +32,10 @@ function Index() {
             gender: v.gender,
             image: v.image,
             phone: v.phone,
-            role: v.role ? [v.role] : ['thường'],
+            role: [v.role ? v.role : 'Thường', typeof (v.lock) !== 'undefined' ? (v.lock === true ? 'Đã bị khoá' : 'false') : ''], //false la khong khoa
           })
         })
-      } catch(err){
+      } catch (err) {
         arr = []
       }
       setData([...arr])
@@ -56,7 +56,7 @@ function Index() {
           message: 'Gửi mail thành công',
           placement: 'bottomRight',
         })
-        
+
       } else {
         notification.error({
           message: 'Gửi mail không thành công :(',
@@ -73,6 +73,23 @@ function Index() {
     })
   }
 
+  const lockAccountHandler = (id, lock) => {
+    axios({
+      method: 'post',
+      url: `http://localhost:8080/reviewbook/user/lock/${id}?token=${localStorage.getItem('tokenAdmin')}`,
+      data: {
+        lock
+      }
+    }).then(res => {
+      console.log(res)
+      notification.success({
+        message: 'Xong !',
+        placement: 'bottomRight',
+      })
+      loadData()
+    })
+
+  }
 
   const columns = [
     {
@@ -120,12 +137,29 @@ function Index() {
       render: tags => (
         <span>
           {tags.map((tag, i) => {
-            let color = tag === 'thường' ? 'green' : 'gold';
-            return (
-              <Tag color={color} key={i}>
-                {tag.toUpperCase()}
-              </Tag>
-            );
+            let color
+            switch (tag) {
+              case 'Thường':
+                color = ''
+                break;
+              case 'Đã bị khoá':
+                color = 'red'
+                break;
+              case 'admin':
+                color = 'gold'
+                break;
+
+              default:
+                break;
+            }
+            {
+              return tag !== 'false' && tag !== '' && (
+                <Tag color={color} key={i}>
+                  {tag}
+                </Tag>
+              )
+            }
+
           })}
         </span>
       ),
@@ -136,17 +170,23 @@ function Index() {
       dataIndex: 'id',
       render: (id, col) => (
         <span>
+          {console.log(col.role)}
+          {
+            col.role[1] === 'Đã bị khoá' ? (
+              <a style={{ color: 'green' }} onClick={() => lockAccountHandler(id, false)}>MỞ KHOÁ</a>
+            ) : (
+                <Popconfirm
+                  title="Bạn có chắc chắn muốn KHOÁ tài khoản này?"
+                  onConfirm={() => lockAccountHandler(id, true)}
+                  okText="Yes"
+                  cancelText="No"
+                >
+                  <a style={{ color: 'red' }}>KHOÁ</a>
+                </Popconfirm>
+              )
+          }
+          <Divider type='vertical' />
           <a onClick={() => sendMail(col.email)}>Gửi email cấp lại mật khẩu</a>
-          <Divider type='vertical'/>
-          <Popconfirm
-            title="Bạn có chắc chắn muốn KHOÁ tài khoản này?"
-            onConfirm={() => console.log('deleted')}
-            okText="Yes"
-            cancelText="No"
-          >
-            <a style={{ color: 'red' }}>KHOÁ</a>
-          </Popconfirm>
-
         </span>
       ),
     },
@@ -155,7 +195,7 @@ function Index() {
   return (
     <>
       <Button style={{ display: 'block', float: 'right', margin: '1em', zIndex: 100 }} onClick={() => loadData()} type='primary'>Refresh</Button>
-        <Table pagination={{ pageSize: 5 }} columns={columns} dataSource={data} loading={loadingData}/>
+      <Table pagination={{ pageSize: 5 }} columns={columns} dataSource={data} loading={loadingData} />
     </>
   )
 }

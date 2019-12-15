@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Divider, Avatar, Input, Upload, Icon, message, Spin } from 'antd'
+import { Button, Divider, Avatar, Input, Upload, Icon, message, Spin, Select } from 'antd'
 // import css
 import './index.scss'
 //import firebase
@@ -15,6 +15,7 @@ import { setPost } from '../../actions/posts/setPost'
 import withAuthLogged from '../../components/utils/hoc/authLogged'
 import withAuthUser from '../../components/utils/hoc/authUser'
 
+const { Option } = Select
 
 const { TextArea } = Input
 
@@ -37,7 +38,6 @@ const Index = (props) => {
   const onSubmitPost = () => {
     window.document.querySelector('.text').value = ''
     window.document.querySelector('[name="title"]').value = ''
-    window.document.querySelector('[name="kind"]').value = ''
     const closeBtn = window.document.querySelector('.close-button')
     setPosting(true)
     axios({
@@ -221,7 +221,16 @@ const Index = (props) => {
               <div className='input-form'>
                 <p style={{ marginBottom: '5px', color: '#B8BCBC' }}>Dòng này được thêm vào cho đỡ trống ...</p>
                 <Input placeholder='Tiêu đề...' onChange={(e) => setTitle(e.target.value)} setfieldvalue={title} name='title' />
-                <Input placeholder='Thể loại...' onChange={(e) => setKind(e.target.value)} setfieldvalue={kind} name='kind' />
+                <Select
+                  style={{ width: 200 }}
+                  placeholder="Chọn thể loại ..."
+                  optionFilterProp="children"
+                  onChange={(e) => setKind(e)}
+                >
+                  <Option value="Văn học">Văn học</Option>
+                  <Option value="Tiểu thuyết">Tiểu thuyết</Option>
+                  <Option value="Truyện ngắn">Truyện ngắn</Option>
+                </Select>
               </div>
             </div>
             {

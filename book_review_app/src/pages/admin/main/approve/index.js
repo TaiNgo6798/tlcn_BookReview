@@ -103,8 +103,8 @@ function Index() {
       dataIndex: 'kind',
       key: 'kind',
       render: text => (
-        <Tag color={'blue'} >
-          {text.toUpperCase()}
+        <Tag color={'magenta'} >
+          {text}
         </Tag>
       ),
     },
@@ -118,7 +118,7 @@ function Index() {
             let color = 'orange';
             return (
               <Tag color={color} key={i}>
-                {tag.toUpperCase()}
+                {tag}
               </Tag>
             );
           })}
@@ -131,7 +131,7 @@ function Index() {
       dataIndex: 'id',
       render: (id) => (
         <span>
-          <a onClick={() => handleApprove(id)}>DUYỆT CÁI NÀY</a>
+          <a onClick={() => handleApprove(id)}>Duyệt bài này</a>
           <Divider type="vertical" />
           <Popconfirm
             title="Bạn có chắc muốn xoá chứ?"
@@ -139,7 +139,7 @@ function Index() {
             okText="Yes"
             cancelText="No"
           >
-            <a style={{ color: 'red' }}>BỎ QUA</a>
+            <a style={{ color: 'red' }}>Bỏ qua</a>
           </Popconfirm>
 
         </span>

@@ -92,8 +92,8 @@ function Index() {
       dataIndex: 'kind',
       key: 'kind',
       render: text => (
-        <Tag color={'blue'} >
-          {text.toUpperCase()}
+        <Tag color={'magenta'} >
+          {text}
         </Tag>
       ),
     },
@@ -107,7 +107,7 @@ function Index() {
             let color = 'green';
             return (
               <Tag color={color} key={i}>
-                {tag.toUpperCase()}
+                {tag}
               </Tag>
             );
           })}
