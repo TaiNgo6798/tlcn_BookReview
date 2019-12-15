@@ -92,12 +92,10 @@ const Index = props => {
       key: snapshot.key,
       value: snapshot.val()
     };
-    console.log(result);
   });
 
   commentRef.on("child_removed", function(snapshot) {
     var result = snapshot.key;
-    console.log(result);
   });
 
   useEffect(() => {
@@ -218,14 +216,12 @@ const Index = props => {
       } else {
         const likeBtn = window.document.querySelector(`[id=${id}]`);
         if (likeBtn.classList.contains("isLiked")) {
-          console.log("liked !");
           likeLocal.push({
             id: idCurrentUser,
             name: `${currentUser.firstName}  ${currentUser.lastName}`
           });
           setLikeLocal([...likeLocal]);
         } else {
-          console.log("disliked !");
           setLikeLocal([...likeLocal.filter(v => v.id !== idCurrentUser)]);
         }
 

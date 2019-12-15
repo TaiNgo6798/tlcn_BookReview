@@ -42,6 +42,24 @@ function Index() {
     })
   }
 
+  const handleDelete = (id) => {
+    axios({
+      method: 'delete',
+      url: `http://localhost:8080/reviewbook/approvereviews/${id}?token=${localStorage.getItem('tokenAdmin')}`,
+    }).then((res) => {
+      notification.success({
+        message: `Đã xoá bài viết !`,
+        placement: 'bottomRight',
+      })
+      loadData()
+    }).catch((err) => {
+      notification.error({
+        message: err.toString(),
+        placement: 'bottomRight',
+      })
+    })
+  }
+
   const demoImage = (image) => {
     Swal.fire({
       imageUrl: image,
@@ -135,7 +153,7 @@ function Index() {
           <Divider type="vertical" />
           <Popconfirm
             title="Bạn có chắc muốn xoá chứ?"
-            onConfirm={() => console.log('deleted')}
+            onConfirm={() => handleDelete(id)}
             okText="Yes"
             cancelText="No"
           >

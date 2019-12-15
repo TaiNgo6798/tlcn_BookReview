@@ -25,7 +25,6 @@ function Index(props) {
     .child(key);
     chatRef.on("child_added", function(snapshot) {
     if (snapshot.val()["numberTime"] > dateNow) {
-      console.log(snapshot.val());
       var result = {
         key: snapshot.key,
         value: snapshot.val()

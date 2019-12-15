@@ -35,7 +35,7 @@ function Index(props) {
           }
         }).then(async function (res) {
           if (res.data.token || res.data.success === true) {
-            console.log(res)
+            localStorage.setItem('idAdmin', Object.keys(res.data)[0])
             localStorage.setItem('tokenAdmin', Object.values(res.data)[1])
             checkAccount()
           } else {

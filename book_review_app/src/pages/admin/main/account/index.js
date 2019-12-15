@@ -81,7 +81,6 @@ function Index() {
         lock
       }
     }).then(res => {
-      console.log(res)
       notification.success({
         message: 'Xong !',
         placement: 'bottomRight',
@@ -170,7 +169,6 @@ function Index() {
       dataIndex: 'id',
       render: (id, col) => (
         <span>
-          {console.log(col.role)}
           {
             col.role[1] === 'Đã bị khoá' ? (
               <a style={{ color: 'green' }} onClick={() => lockAccountHandler(id, false)}>MỞ KHOÁ</a>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react'
-import { Button, Divider, Avatar, Input, Upload, Icon, message, Spin, Modal, Form } from 'antd'
+import { Button, Divider, Avatar, Input, Upload, Icon, message, Spin, Modal, Form, Select } from 'antd'
 // import css
 import './index.scss'
 //import firebase
@@ -14,8 +14,8 @@ import { setPost } from '../../../actions/posts/setPost'
 //import HOC
 // import withAuthLogged from '../../components/utils/hoc/authLogged'
 // import withAuthUser from '../../components/utils/hoc/authUser'
-
-const {TextArea} = Input
+const { Option } = Select
+const { TextArea } = Input
 
 const Index = (props) => {
   const { visible, onCancel, currentUser, idPost } = props
@@ -72,41 +72,40 @@ const Index = (props) => {
   )
 
   const savePostHandler = () => {
-      window.document.querySelector('.text').value = ''
-      window.document.querySelector('[name="title"]').value = ''
-      window.document.querySelector('[name="kind"]').value = ''
-      setPosting(true)
-      axios({
-        method: 'put',
-        url: `http://localhost:8080/reviewbook/review/post/own/${currentUser.id}/${idPost}?token=${localStorage.getItem('token')}`,
-        data: {
-          nameImage,
-          desc,
-          url,
-          title,
-          kind
-        }
-      }).then(() => {
-        if (props.params) {
-          axios({
-            method: 'get',
-            url: `http://localhost:8080/reviewbook/review/post/own/${props.params.userID}`,
-          }).then((res) => {
-            dispatch(setUserPost(res.data))
-            setPosting(false)
-          })
-        } else {
-          axios({
-            method: 'get',
-            url: `http://localhost:8080/reviewbook/review/post`,
-          }).then((res) => {
-            dispatch(setPost(res.data))
-            setPosting(false)
-          })
-        }
-        onCancel()
-      })
-  
+    window.document.querySelector('.text').value = ''
+    window.document.querySelector('[name="title"]').value = ''
+    setPosting(true)
+    axios({
+      method: 'put',
+      url: `http://localhost:8080/reviewbook/review/post/own/${currentUser.id}/${idPost}?token=${localStorage.getItem('token')}`,
+      data: {
+        nameImage,
+        desc,
+        url,
+        title,
+        kind
+      }
+    }).then(() => {
+      if (props.params) {
+        axios({
+          method: 'get',
+          url: `http://localhost:8080/reviewbook/review/post/own/${props.params.userID}`,
+        }).then((res) => {
+          dispatch(setUserPost(res.data))
+          setPosting(false)
+        })
+      } else {
+        axios({
+          method: 'get',
+          url: `http://localhost:8080/reviewbook/review/post`,
+        }).then((res) => {
+          dispatch(setPost(res.data))
+          setPosting(false)
+        })
+      }
+      onCancel()
+    })
+
   }
 
   return (
@@ -117,7 +116,7 @@ const Index = (props) => {
         footer={null}
         width='556px'
         className='edit-form'
-        
+
       >
         <Spin spinning={posting}>
           <div className='editForm'>
@@ -153,15 +152,21 @@ const Index = (props) => {
                     {imageUrl ? <img src={imageUrl} alt="avatar" style={{ width: '100%' }} /> : uploadButton}
                   </Upload>
                   <div className='input-form'>
-                  <p style={{ marginBottom: '5px', color: '#B8BCBC' }}>Dòng này được thêm vào cho đỡ trống ...</p>
-                    <Input placeholder='Tiêu đề...' 
-                    onChange={(e) => setTitle(e.target.value)} 
-                    setfieldvalue={title} 
-                    name='title' />
-                    <Input placeholder={kind}
-                    onChange={(e) => setKind(e.target.value)} 
-                    setfieldvalue={kind} 
-                    name='kind' />
+                    <p style={{ marginBottom: '5px', color: '#B8BCBC' }}>Dòng này được thêm vào cho đỡ trống ...</p>
+                    <Input placeholder='Tiêu đề...'
+                      onChange={(e) => setTitle(e.target.value)}
+                      setfieldvalue={title}
+                      name='title' />
+                    <Select
+                      style={{ width: '100%' }}
+                      placeholder="Chọn thể loại ..."
+                      optionFilterProp="children"
+                      onChange={(e) => setKind(e)}
+                    >
+                      <Option value="Văn học">Văn học</Option>
+                      <Option value="Tiểu thuyết">Tiểu thuyết</Option>
+                      <Option value="Truyện ngắn">Truyện ngắn</Option>
+                    </Select>
                   </div>
                 </div>
                 {

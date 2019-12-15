@@ -37,7 +37,6 @@ function Index(props) {
       method: 'get',
       url: `http://localhost:8080/reviewbook/review/post/${lastPost.numberTime}`,
     }).then((res) => {
-      console.log(res.data)
       res.data.length > 0 &&
       setLastPost(Object.values(res.data[res.data.length - 1])[0])
       postNew.map(v => {
@@ -103,7 +102,7 @@ function Index(props) {
       
       <div className='content'>
         <div className='leftBar'>
-          <LeftBar />
+          {/* <LeftBar /> */}
         </div>
         <div className='wrapper'>
           <div className='center-content'>

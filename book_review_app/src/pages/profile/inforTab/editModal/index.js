@@ -35,7 +35,6 @@ const Index = (props) => {
             birthday: birthdayGood.toString() === 'Invalid Date' ? '' : birthdayGood.toLocaleDateString()
           }
         }).then((res) => {
-          console.log(res.data)
           setLoading(false)
           let { firstName, secondName, gender, birthday, email, image, phone } = res.data.user.user
           let user = {

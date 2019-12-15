@@ -13,7 +13,15 @@ function Index() {
   }, [])
 
   const deleteHandler = (id) => {
-    console.log('deleted !')
+    axios({
+      method: "delete",
+      url: `http://localhost:8080/reviewbook/review/post/own/${
+      localStorage.getItem('idAdmin')
+      }/${id}?token=${localStorage.getItem('tokenAdmin') ? localStorage.getItem('tokenAdmin') : 'shit'}`
+    }).then((res) => {
+      loadData()
+    })
+
   }
 
   const loadData = () => {

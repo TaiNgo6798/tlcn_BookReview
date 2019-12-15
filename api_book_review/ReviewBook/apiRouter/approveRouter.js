@@ -120,7 +120,7 @@ approveRouter.route("/approvereviews/:id_review").post((req, res) => {
     .database()
     .ref()
     .child("ApproveReviews")
-    .child(req.params.review_id);
+    .child(req.params.id_review);
   dbReviews.once("value", function(reviews) {
     dbReviews.remove().then(error => {
       if (error) {
@@ -133,13 +133,13 @@ approveRouter.route("/approvereviews/:id_review").post((req, res) => {
           .database()
           .ref()
           .child("Likes")
-          .child(req.params.review_id)
+          .child(req.params.id_review)
           .remove();
         firebase
           .database()
           .ref()
           .child("Comments")
-          .child(req.params.review_id)
+          .child(req.params.id_review)
           .remove();
 
         if (reviews.val().nameImage) {

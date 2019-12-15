@@ -30,6 +30,7 @@ const Index = (props) => {
   const [kind, setKind] = useState('')
   const [desc, setDesc] = useState('')
   const [posting, setPosting] = useState(false)
+  const [ready, setReady] = useState(false)
 
   //redux
   const dispatch = useDispatch()
@@ -143,6 +144,7 @@ const Index = (props) => {
       getBase64(info.file.originFileObj, imageUrl => {
         setIsLoading(false)
         setImageUrl(imageUrl)
+        setReady(true)
       }
       )
     }
@@ -222,7 +224,7 @@ const Index = (props) => {
                 <p style={{ marginBottom: '5px', color: '#B8BCBC' }}>Dòng này được thêm vào cho đỡ trống ...</p>
                 <Input placeholder='Tiêu đề...' onChange={(e) => setTitle(e.target.value)} setfieldvalue={title} name='title' />
                 <Select
-                  style={{ width: 200 }}
+                  style={{ width: '100%' }}
                   placeholder="Chọn thể loại ..."
                   optionFilterProp="children"
                   onChange={(e) => setKind(e)}
@@ -234,7 +236,7 @@ const Index = (props) => {
               </div>
             </div>
             {
-              !isLoading && (
+              ready && (
                 <Button type='primary' style={{ display: 'block', width: '100%' }} onClick={onSubmitPost}>Đăng</Button>
               )
             }

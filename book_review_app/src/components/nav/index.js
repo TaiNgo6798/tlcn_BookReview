@@ -20,7 +20,7 @@ function Index(props) {
   const loadNotify = () => {
     setInterval(() => {
       setMessageCount(messageCount => messageCount + 1)
-    }, 1000);
+    }, 10000);
   }
   useEffect(() => {
     loadNotify()
