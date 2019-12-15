@@ -2,7 +2,7 @@ var firebase = require("firebase");
 var express = require("express");
 
 const searchRouter = express.Router();
-searchRouter.route("/review/search").get((req, res) => {
+searchRouter.route("/review/search").post((req, res) => {
   var search = new RegExp(req.body.query,"gi");
   var dbReviews = firebase
     .database()

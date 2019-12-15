@@ -1,29 +1,49 @@
 import React, { useState, useEffect } from 'react'
 import { Table, Divider, Tag } from 'antd'
-
+import axios from 'axios'
 
 import './index.scss'
 
 function Index() {
+  const [data, setData] = useState([])
 
+  useEffect(() => {
+    axios({
+      method: 'get',
+      url: `http://localhost:8080/reviewbook/approvereviews?token=${localStorage.getItem('tokenAdmin')}`,
+    }).then((res) => {
+      let arr = []
+      Object.keys(res.data).map((key, i) => {
+        let value = Object.values(res.data[i])[0]
+        arr.push({
+          id: key,
+          stt: i+1,
+          who: value.name,
+          time: value.time,
+          tags: ['Bài đăng đang đợi duyệt']
+        })
+      })
+      setData([...arr])
+    })
+  }, [])
 
   const columns = [
     {
       title: '#',
-      dataIndex: 'key',
-      key: 'key',
+      dataIndex: 'stt',
+      key: 'stt',
       render: text => <a>{text}</a>,
     },
     {
       title: 'Người đăng',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'who',
+      key: 'who',
       render: text => <a>{text}</a>,
     },
     {
       title: 'Ngày đăng',
-      dataIndex: 'age',
-      key: 'age',
+      dataIndex: 'time',
+      key: 'time',
     },
     {
       title: 'Thẻ',
@@ -31,13 +51,10 @@ function Index() {
       dataIndex: 'tags',
       render: tags => (
         <span>
-          {tags.map(tag => {
-            let color =  'green' 
-            if (tag === 'Bài đang đợi duyệt') {
-              color = 'orange';
-            }
+          {tags.map((tag, i) => {
+            let color = 'orange';
             return (
-              <Tag color={color} key={tag}>
+              <Tag color={color} key={i}>
                 {tag.toUpperCase()}
               </Tag>
             );
@@ -55,30 +72,6 @@ function Index() {
           <a style={{color: 'red'}}>BỎ QUA</a>
         </span>
       ),
-    },
-  ];
-
-  const data = [
-    {
-      key: '1',
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      tags: ['Bài đang đợi duyệt'],
-    },
-    {
-      key: '2',
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      tags: ['Bài đang đợi duyệt'],
-    },
-    {
-      key: '3',
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-      tags: ['Bài đang đợi duyệt'],
     },
   ];
 

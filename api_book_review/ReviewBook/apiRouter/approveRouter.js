@@ -5,6 +5,7 @@ var Review = require("./../model/review");
 
 const approveRouter = express.Router();
 approveRouter.route("/approvereviews").get((req, res) => {
+  console.log(req.decoded) 
   var user = req.decoded.user;
   if (user.role === "admin") {
     var approveRef = firebase

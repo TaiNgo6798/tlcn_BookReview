@@ -1,18 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Icon, Button, Row, Col } from 'antd'
+import { withRouter } from 'react-router-dom'
+
+import axios from 'axios'
 
 import './index.scss'
 
 import EditModal from './editModal'
 
-function Index() {
-
+function Index(props) {
+  const { user, setUser } = props
   const currentUser = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : {}
   const { firstName, lastName, gender, id, birthday, email, image, phone } = currentUser
   const [openEdit, setOpenEdit] = useState(false)
+  const { userID } = props.match.params
 
   return <>
-    {openEdit && <EditModal onClose={() => setOpenEdit(false)} currentUser={currentUser}/>}
+    {openEdit && <EditModal onClose={() => setOpenEdit(false)} currentUser={currentUser} setUser={(data) => setUser(data)}/>}
     <div className='container_detail_profile'>
       <div className='titile_detail_profile'>
         <h1>Giới thiệu</h1>
@@ -24,7 +28,10 @@ function Index() {
           <h2><Icon style={{ fontSize: '22px' }} type="user" />  Thông tin cá nhân</h2>
         </Col>
         <Col>
+        {
+          currentUser.id === props.match.params.userID &&
           <Button type="dashed" onClick={() => setOpenEdit(true)}><Icon type="edit" />Chỉnh sửa</Button>
+        }
         </Col>
       </Row>
 
@@ -32,17 +39,17 @@ function Index() {
         <hr className='hr_profile' />
         <div className='row_detail_profile'>
           <p>Tên tài khoản</p>
-          <p>{`${firstName} ${lastName}`}</p>
+          <p>{`${user.firstName} ${user.secondName}`}</p>
         </div>
         <hr className='hr_profile' />
         <div className='row_detail_profile'>
           <p>Giới tính</p>
-          <p>{gender}</p>
+          <p>{user.gender}</p>
         </div>
         <hr className='hr_profile' />
         <div className='row_detail_profile'>
           <p>Ngày sinh</p>
-          <p>{birthday}</p>
+          <p>{user.birthday}</p>
         </div>
         <hr className='hr_profile' />
       </div>
@@ -53,7 +60,7 @@ function Index() {
         <hr className='hr_profile' />
         <div className='row_detail_profile'>
           <p>Số điện thoại</p>
-          <p>{phone}</p>
+          <p>{user.phone}</p>
         </div>
 
         <hr className='hr_profile' />
@@ -90,4 +97,4 @@ function Index() {
   </>
 }
 
-export default Index
+export default withRouter(Index)
